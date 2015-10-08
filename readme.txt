@@ -6,3 +6,4 @@ this is what I modify in 22:00PM
 Creatting a new branch is quick AND Simple
 Hello, WenZuoYi!
 this is What I modify in 23:00PM
+I just want to try stash feature
