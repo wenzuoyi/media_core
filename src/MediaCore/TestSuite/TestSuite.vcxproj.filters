@@ -15,27 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="video_output_media_source.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="audio_output_media_source.cpp">
+    <ClCompile Include="output_media_source_testsuite.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\video_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\video_output_media_source_datatype.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\global_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_output_media_source_datatype.h">
+    <ClInclude Include="output_media_source_testsuite.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
