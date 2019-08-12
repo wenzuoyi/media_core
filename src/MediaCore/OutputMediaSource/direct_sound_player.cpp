@@ -1,7 +1,6 @@
 #include "direct_sound_player.h"
 namespace output {
 	const int DirectSoundPlayer::MAX_AUDIO_BUF = 4;
-	const int DirectSoundPlayer::BUFFER_NOTIFY_SIZE = 19200;
 	const int DirectSoundPlayer::AUDIO_FREQUENCY_INTERVAL = 40;
 
   bool DirectSoundPlayer::Init() {
@@ -55,7 +54,7 @@ namespace output {
     memset(&dsbufferdesc_, 0, sizeof(DSBUFFERDESC));
     dsbufferdesc_.dwSize = sizeof(DSBUFFERDESC);
     dsbufferdesc_.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2;
-    dsbufferdesc_.dwBufferBytes = MAX_AUDIO_BUF * BUFFER_NOTIFY_SIZE;
+    dsbufferdesc_.dwBufferBytes = audio_output_param->sample_rate * 2;
     dsbufferdesc_.lpwfxFormat = new WAVEFORMATEX();
     dsbufferdesc_.lpwfxFormat->wFormatTag = WAVE_FORMAT_PCM;
     (dsbufferdesc_.lpwfxFormat)->nChannels = audio_output_param->channels;
@@ -82,7 +81,7 @@ namespace output {
     for (auto i = 0; i < MAX_AUDIO_BUF; i++) {
       DSBPOSITIONNOTIFY item;
       item.hEventNotify = ::CreateEvent(nullptr, false, false, nullptr);
-      item.dwOffset = i * BUFFER_NOTIFY_SIZE;
+      item.dwOffset = i * (dsbufferdesc_.dwBufferBytes / 4);
       dsb_position_notify_list_.emplace_back(item);
       notify_event_list_.emplace_back(item.hEventNotify);
     }
@@ -96,12 +95,12 @@ namespace output {
       auto result = WAIT_OBJECT_0;
       LPVOID buffer = nullptr;
       DWORD buffer_size = 0;
-      DWORD offset = BUFFER_NOTIFY_SIZE;
+      DWORD offset = 0;
       direct_sound_buffer8_->SetCurrentPosition(0);
       direct_sound_buffer8_->Play(0, 0, DSBPLAY_LOOPING);
       while (!exit_) {
         if ((result >= WAIT_OBJECT_0) && (result <= WAIT_OBJECT_0 + 3)) {
-          direct_sound_buffer8_->Lock(offset, BUFFER_NOTIFY_SIZE, &buffer, &buffer_size, nullptr, nullptr, 0);
+          direct_sound_buffer8_->Lock(offset, (dsbufferdesc_.dwBufferBytes / 4), &buffer, &buffer_size, nullptr, nullptr, 0);
           {
             std::lock_guard<std::mutex> lock_guard(mutex_);
             if (played_audio_buffer_.size() > buffer_size) {
@@ -109,9 +108,9 @@ namespace output {
               played_audio_buffer_.erase(played_audio_buffer_.begin(), played_audio_buffer_.begin() + buffer_size);
             }
           }
-          direct_sound_buffer8_->Unlock(buffer, buffer_size, NULL, 0);
+          direct_sound_buffer8_->Unlock(buffer, buffer_size, nullptr, 0);
           offset += buffer_size;
-          offset %= (BUFFER_NOTIFY_SIZE * MAX_AUDIO_BUF);
+          offset %= (dsbufferdesc_.dwBufferBytes / 4 * MAX_AUDIO_BUF);
         }
         result = WaitForMultipleObjects(MAX_AUDIO_BUF, &notify_event_list_[0], FALSE, INFINITE);
       }
@@ -185,6 +184,9 @@ namespace output {
 
   void DirectSoundPlayer::InputAudioSample(AudioSamplePtr audio_sample) {
     if (audio_sample != nullptr) {
+      while (played_audio_buffer_.size() > dsbufferdesc_.dwBufferBytes / 2) {
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+      }
       std::lock_guard<std::mutex> lock_guard(mutex_);
       played_audio_buffer_.insert(played_audio_buffer_.end(), audio_sample->begin(), audio_sample->end());
     }

@@ -44,8 +44,7 @@ namespace output {
 		bool is_mute_{ false };
 		int previous_volume_value_{ 0 };    
     static const int MAX_AUDIO_BUF;
-	  static const int AUDIO_FREQUENCY_INTERVAL;
-		static const int BUFFER_NOTIFY_SIZE;
+	  static const int AUDIO_FREQUENCY_INTERVAL;		
 	};
 }
 #endif // DIRECT_SOUND_PLAYER_H_
