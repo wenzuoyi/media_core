@@ -30,7 +30,7 @@ namespace output {
 		virtual bool IsMute() const = 0;
 		virtual bool SetVolume(int volume) = 0;
 		virtual int GetVolume() const = 0;
-		virtual void InputAudioSample(AudioSamplePtr audio_sample) = 0;
+		virtual bool InputAudioSample(AudioSamplePtr audio_sample) = 0;
 	};
 }
 #endif // AUDIO_OUTPUT_MEDIA_SOURCE_H_

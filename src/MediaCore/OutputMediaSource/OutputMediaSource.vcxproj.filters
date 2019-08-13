@@ -13,36 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="audio">
+      <UniqueIdentifier>{c4b56b0d-bac3-4594-967f-761a6258087e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video">
+      <UniqueIdentifier>{6d57e2b6-032f-4493-922f-be4ae3625a53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="video_output_media_source.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="direct_sound_player.cpp">
+      <Filter>audio</Filter>
     </ClCompile>
     <ClCompile Include="audio_output_media_source.cpp">
-      <Filter>源文件</Filter>
+      <Filter>audio</Filter>
     </ClCompile>
-    <ClCompile Include="direct_sound_player.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="video_output_media_source.cpp">
+      <Filter>video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\video_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\video_output_media_source_datatype.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\global_output_media_source.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="direct_sound_player.h">
+      <Filter>audio</Filter>
+    </ClInclude>
     <ClInclude Include="include\audio_output_media_source.h">
-      <Filter>头文件</Filter>
+      <Filter>audio</Filter>
     </ClInclude>
     <ClInclude Include="include\audio_output_media_source_datatype.h">
-      <Filter>头文件</Filter>
+      <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="direct_sound_player.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="include\video_output_media_source.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="include\video_output_media_source_datatype.h">
+      <Filter>video</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

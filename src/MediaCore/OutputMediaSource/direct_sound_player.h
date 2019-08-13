@@ -23,12 +23,13 @@ namespace output {
     bool IsMute() const override;
     bool SetVolume(int volume) override;
     int GetVolume() const override;
-    void InputAudioSample(AudioSamplePtr audio_sample) override;
+    bool InputAudioSample(AudioSamplePtr audio_sample) override;
 	private:
 		bool FillSoundBufferParam(AudioOutputParamPtr audio_output_param);
 		bool ConfigNotifyEvent();
     void CreateAudioPlayedTask();
 	  void CreateFrequencyCollectTask();
+	  void CopyBufferToHardwareBuffer(void* buffer, unsigned long buffer_size);
     AudioOutputMediaSourceEvent* sink_{ nullptr };
 		IDirectSound8* direct_sound8_{ nullptr };
 		IDirectSoundBuffer* direct_sound_buffer_{ nullptr };

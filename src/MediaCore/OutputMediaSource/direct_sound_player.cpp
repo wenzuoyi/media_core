@@ -4,9 +4,7 @@ namespace output {
 	const int DirectSoundPlayer::AUDIO_FREQUENCY_INTERVAL = 40;
 
   bool DirectSoundPlayer::Init() {
-    if (FAILED(::DirectSoundCreate8(NULL, &direct_sound8_, NULL)))
-      return false;
-    return true;
+    return SUCCEEDED(::DirectSoundCreate8(NULL, &direct_sound8_, NULL));
   }
 
   void DirectSoundPlayer::Fini() {
@@ -53,7 +51,7 @@ namespace output {
   bool DirectSoundPlayer::FillSoundBufferParam(AudioOutputParamPtr audio_output_param) {
     memset(&dsbufferdesc_, 0, sizeof(DSBUFFERDESC));
     dsbufferdesc_.dwSize = sizeof(DSBUFFERDESC);
-    dsbufferdesc_.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2;
+    dsbufferdesc_.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRLPAN;
     dsbufferdesc_.dwBufferBytes = audio_output_param->sample_rate * 2;
     dsbufferdesc_.lpwfxFormat = new WAVEFORMATEX();
     dsbufferdesc_.lpwfxFormat->wFormatTag = WAVE_FORMAT_PCM;
@@ -101,13 +99,7 @@ namespace output {
       while (!exit_) {
         if ((result >= WAIT_OBJECT_0) && (result <= WAIT_OBJECT_0 + 3)) {
           direct_sound_buffer8_->Lock(offset, (dsbufferdesc_.dwBufferBytes / 4), &buffer, &buffer_size, nullptr, nullptr, 0);
-          {
-            std::lock_guard<std::mutex> lock_guard(mutex_);
-            if (played_audio_buffer_.size() > buffer_size) {
-              memcpy(buffer, &played_audio_buffer_[0], buffer_size);
-              played_audio_buffer_.erase(played_audio_buffer_.begin(), played_audio_buffer_.begin() + buffer_size);
-            }
-          }
+          CopyBufferToHardwareBuffer(buffer, buffer_size);
           direct_sound_buffer8_->Unlock(buffer, buffer_size, nullptr, 0);
           offset += buffer_size;
           offset %= (dsbufferdesc_.dwBufferBytes / 4 * MAX_AUDIO_BUF);
@@ -117,12 +109,26 @@ namespace output {
     });
   }
 
+  void DirectSoundPlayer::CopyBufferToHardwareBuffer(void* buffer, unsigned long buffer_size) {
+    std::lock_guard<std::mutex> lock_guard(mutex_);
+    if (played_audio_buffer_.size() > buffer_size) {
+      memcpy(buffer, &played_audio_buffer_[0], buffer_size);
+      played_audio_buffer_.erase(played_audio_buffer_.begin(), played_audio_buffer_.begin() + buffer_size);
+    } else if (!played_audio_buffer_.empty()) {
+      memset(buffer, 0, buffer_size);
+      memcpy(buffer, &played_audio_buffer_[0], played_audio_buffer_.size());
+      played_audio_buffer_.clear();
+    } else {
+      memset(buffer, 0, buffer_size);
+    }
+  }
+
   void DirectSoundPlayer::CreateFrequencyCollectTask() {
 	  frequency_collect_task_ = std::async(std::launch::async, [this]() {
 	    while(!exit_) {
-        if (direct_sound_buffer8_ == nullptr) {
-          unsigned long frequency{0};
-          direct_sound_buffer8_->GetFrequency(&frequency);
+        if (direct_sound_buffer8_ != nullptr) {
+          long frequency{0};
+          auto result = direct_sound_buffer8_->GetPan(&frequency);
           if (sink_ != nullptr) {
             sink_->OnSampleFrequency(frequency);
           }
@@ -131,7 +137,6 @@ namespace output {
 	    }
 	  });
   }
-
 
   void DirectSoundPlayer::Play() {
 	  exit_ = false;
@@ -182,16 +187,20 @@ namespace output {
 	  return volume;
   }
 
-  void DirectSoundPlayer::InputAudioSample(AudioSamplePtr audio_sample) {
-    if (audio_sample != nullptr) {
-      while (played_audio_buffer_.size() > dsbufferdesc_.dwBufferBytes / 2) {
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
-      }
+  bool DirectSoundPlayer::InputAudioSample(AudioSamplePtr audio_sample) {
+	  if (audio_sample == nullptr) {
+		  return false;
+	  }
+    {
       std::lock_guard<std::mutex> lock_guard(mutex_);
+      if (played_audio_buffer_.size() > dsbufferdesc_.dwBufferBytes / 2) {
+        return false;
+      }
       played_audio_buffer_.insert(played_audio_buffer_.end(), audio_sample->begin(), audio_sample->end());
     }
 	  if (sink_ != nullptr) {
 		  sink_->OnTransmitDataEvent(audio_sample);
 	  }
+	  return true;
   }
 }

@@ -1,4 +1,5 @@
 #include <thread>
+#include <iostream>
 #include "output_media_source_testsuite.h"
 namespace output {
 	std::wstring OutputMediaSourceTestSuite::CONSOLE_TITLE_NAME = L"Simplest Audio Play DirectSound";
@@ -41,8 +42,9 @@ namespace output {
         play_count--;
       }
       auto sample = std::make_shared<AudioSample>(buffer, buffer_size + buffer);
-      audio_output_media_source_->InputAudioSample(sample);
-      std::this_thread::sleep_for(std::chrono::milliseconds(20));
+      while (!audio_output_media_source_->InputAudioSample(sample)) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+      }
     }
 	  audio_output_media_source_->Stop();
     if (buffer != nullptr) {
@@ -64,7 +66,7 @@ namespace output {
   }
 
   void OutputMediaSourceTestSuite::OnSampleFrequency(unsigned long frequency) {
-    
+	  std::cout << "frequency:" << frequency << std::endl;
   }
 
 

@@ -74,8 +74,8 @@
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;D:\libs\boost\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\;D:\libs\boost\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -84,8 +84,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;D:\libs\boost\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\;D:\libs\boost\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
