@@ -23,10 +23,12 @@
     <ClInclude Include="include\audio_calculator.h" />
     <ClInclude Include="include\audio_calculator_datatype.h" />
     <ClInclude Include="include\global_media_handler.h" />
+    <ClInclude Include="s16_audio_calculator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio_calculator.cpp" />
     <ClCompile Include="base_audio_calculator.cpp" />
+    <ClCompile Include="s16_audio_calculator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5D538B2E-02B8-4B6C-A0A3-8AF2987C714C}</ProjectGuid>
@@ -84,8 +86,8 @@
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>D:\libs\boost\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\libs\boost\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,8 +96,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>D:\libs\boost\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\libs\boost\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

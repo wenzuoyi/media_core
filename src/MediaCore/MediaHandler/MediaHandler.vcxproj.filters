@@ -27,12 +27,18 @@
     <ClInclude Include="include\audio_calculator_datatype.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="s16_audio_calculator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio_calculator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="base_audio_calculator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="s16_audio_calculator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

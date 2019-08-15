@@ -11,6 +11,7 @@ namespace handler {
     async_caculate_task_ = std::async(std::launch::async, [this]() {
       while (!exit_) {
         auto item = audio_sample_circle_buffer_.PopBack();
+        CalculateLoudness(item);
       }
     });
   }

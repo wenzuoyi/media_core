@@ -13,6 +13,7 @@ namespace handler {
   public:
 	  AudioCalculatorEvent() = default;
 	  virtual ~AudioCalculatorEvent() = default;
+	  virtual void OnSampleVolumeRatio(std::vector<double>&& ratio_array) = 0;
   };
 	class API_HEADER AudioCalculator {
 	public:
