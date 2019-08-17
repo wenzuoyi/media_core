@@ -1,32 +1,44 @@
-#ifndef VOLUME_COLUMN_HANDLER_H_
-#define VOLUME_COLUMN_HANDLER_H_
+#ifndef VOLUME_COLUMN_HANDLER_IMPL_H_
+#define VOLUME_COLUMN_HANDLER_IMPL_H_
 #include <vector>
 #include <limits>
 #include <algorithm>
 #include <numeric>
-#include "async_audio_handler.h"
+#include "async_audio_handler.hpp"
 
 namespace handler {
-  template <class T>
-  class VolumeColumnHandler final : public AsyncAudioHandler {
+  template <class T, class V>
+  class VolumeColumnHandlerImpl final : public AsyncAudioHandler<V> {
   public:
 	  using PerChannelSamples = std::vector<T>;
 	  using PerChannelSamplesPtr = std::shared_ptr<PerChannelSamples>;
 	  using ChannelSamplesCollection = std::vector<PerChannelSamplesPtr>;
 	  using ChannelSamplesCollectionPtr = std::unique_ptr<ChannelSamplesCollection>;
-    VolumeColumnHandler() = default;
-    virtual ~VolumeColumnHandler() = default;
+    VolumeColumnHandlerImpl() = default;
+    virtual ~VolumeColumnHandlerImpl() = default;
   protected:
+    void SetVolumeColumnHandlerEvent(VolumeColumnHandlerEvent* event) override {
+      if (event_ != event) {
+        event_ = event;
+      }
+    }
+
+	  void SetAudioSampleChannel(int channel) override {
+      if (channel_ != channel) {
+        channel_ = channel;
+      }
+	  }
+
     void Start() override {
       channel_samples_collection_ = std::make_unique<ChannelSamplesCollection>();
       for (auto i = 0; i < channel_; ++i) {
         channel_samples_collection_->push_back(std::make_shared<PerChannelSamples>());
       }
-      AsyncAudioHandler::Start();
+      AsyncAudioHandler<V>::Start();
     }
 
     void Stop() override {
-      AsyncAudioHandler::Stop();
+      AsyncAudioHandler<V>::Stop();
       channel_samples_collection_->clear();
       channel_samples_collection_ = nullptr;
     }
@@ -39,8 +51,8 @@ namespace handler {
         IterateSample(audio_mix_sample, i, sample_item_collection);
         sample_loudness_ratio_collection.push_back(CalculateAverageValue(sample_item_collection));
       }
-      if (sink_ != nullptr) {
-        sink_->OnSampleVolumeRatio(AudioHandlerType::kS16AudioColumnHandler, std::move(sample_loudness_ratio_collection));
+      if (event_ != nullptr) {
+        event_->OnSampleVolumeRatio(std::move(sample_loudness_ratio_collection));
       }
     }
   private:
@@ -68,7 +80,9 @@ namespace handler {
       }
     }
 
+    VolumeColumnHandlerEvent* event_ {nullptr};
 	  ChannelSamplesCollectionPtr channel_samples_collection_;
+	  int channel_{ 2 };
   };
 }
-#endif // VOLUME_COLUMN_HANDLER_H_
+#endif // VOLUME_COLUMN_HANDLER_IMPL_H_

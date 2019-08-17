@@ -18,24 +18,24 @@
     <ClInclude Include="include\global_media_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\audio_handler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="async_audio_handler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\audio_handler_datatype.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="volume_column_handler.h">
+    <ClInclude Include="include\volume_column_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_audio_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="async_audio_handler.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="volume_column_handler_impl.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio_handler.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="async_audio_handler.cpp">
+    <ClCompile Include="volume_column_handler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
