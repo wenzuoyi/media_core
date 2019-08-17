@@ -15,30 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\audio_calculator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="base_audio_calculator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\global_media_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\audio_calculator_datatype.h">
+    <ClInclude Include="include\audio_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="s16_audio_calculator.h">
+    <ClInclude Include="async_audio_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\audio_handler_datatype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="volume_column_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio_calculator.cpp">
+    <ClCompile Include="audio_handler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="base_audio_calculator.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="s16_audio_calculator.cpp">
+    <ClCompile Include="async_audio_handler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

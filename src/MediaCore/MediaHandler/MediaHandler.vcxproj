@@ -19,16 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base_audio_calculator.h" />
-    <ClInclude Include="include\audio_calculator.h" />
-    <ClInclude Include="include\audio_calculator_datatype.h" />
+    <ClInclude Include="async_audio_handler.h" />
+    <ClInclude Include="include\audio_handler.h" />
+    <ClInclude Include="include\audio_handler_datatype.h" />
     <ClInclude Include="include\global_media_handler.h" />
-    <ClInclude Include="s16_audio_calculator.h" />
+    <ClInclude Include="volume_column_handler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio_calculator.cpp" />
-    <ClCompile Include="base_audio_calculator.cpp" />
-    <ClCompile Include="s16_audio_calculator.cpp" />
+    <ClCompile Include="audio_handler.cpp" />
+    <ClCompile Include="async_audio_handler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5D538B2E-02B8-4B6C-A0A3-8AF2987C714C}</ProjectGuid>
