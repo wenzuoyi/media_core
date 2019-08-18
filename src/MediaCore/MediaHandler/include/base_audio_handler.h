@@ -21,7 +21,7 @@ namespace handler {
 		virtual void SetBaseAudioHandlerEvent(BaseAudioHandlerEvent* sink) = 0;
 		virtual void Start() = 0;
 		virtual void Stop() = 0;
-		virtual bool InputAudioSample(AudioSamplePtr audio_sample) = 0;
+		virtual void InputAudioSample(AudioSamplePtr audio_sample) = 0;
 	};
 }
 #endif // AUDIO_HANDLER_H_

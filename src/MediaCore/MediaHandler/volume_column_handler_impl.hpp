@@ -4,11 +4,11 @@
 #include <limits>
 #include <algorithm>
 #include <numeric>
-#include "async_audio_handler.hpp"
+#include "async_handler.h"
 
 namespace handler {
-  template <class T, class V>
-  class VolumeColumnHandlerImpl final : public AsyncAudioHandler<V> {
+  template <class T>
+  class VolumeColumnHandlerImpl final : public VolumeColumnHandler {
   public:
 	  using PerChannelSamples = std::vector<T>;
 	  using PerChannelSamplesPtr = std::shared_ptr<PerChannelSamples>;
@@ -17,9 +17,19 @@ namespace handler {
     VolumeColumnHandlerImpl() = default;
     virtual ~VolumeColumnHandlerImpl() = default;
   protected:
-    void SetVolumeColumnHandlerEvent(VolumeColumnHandlerEvent* event) override {
-      if (event_ != event) {
-        event_ = event;
+    void InputAudioSample(AudioSamplePtr audio_sample) override {
+      async_handler_.InputBinaryPackage(audio_sample);
+    }
+
+    void SetVolumeColumnHandlerEvent(VolumeColumnHandlerEvent* sink) override {
+      if (volume_column_handler_event_ != sink) {
+        volume_column_handler_event_ = sink;
+      }
+    }
+
+    void SetBaseAudioHandlerEvent(BaseAudioHandlerEvent* sink) override {
+      if (base_audio_handler_event_ != sink) {
+        base_audio_handler_event_ = sink;
       }
     }
 
@@ -34,16 +44,22 @@ namespace handler {
       for (auto i = 0; i < channel_; ++i) {
         channel_samples_collection_->push_back(std::make_shared<PerChannelSamples>());
       }
-      AsyncAudioHandler<V>::Start();
+      async_handler_.Start([this](MediaBinaryPackagePtr media_binary_package) {
+        CalculateAudioSample(media_binary_package);
+        if (base_audio_handler_event_ != nullptr) {
+          base_audio_handler_event_->OnTransmitAudioSample(AudioHandlerType::kAudioColumn, media_binary_package);
+        }
+      });
     }
 
     void Stop() override {
-      AsyncAudioHandler<V>::Stop();
+      async_handler_.Stop();
       channel_samples_collection_->clear();
       channel_samples_collection_ = nullptr;
     }
 
-    void CalculateAudioSample(AudioSamplePtr audio_mix_sample) override {
+  private:
+    void CalculateAudioSample(AudioSamplePtr audio_mix_sample) {
       std::vector<double> sample_loudness_ratio_collection;
       for (auto i = 0U; i < static_cast<unsigned>(channel_); ++i) {
         auto sample_item_collection = (*channel_samples_collection_)[i];
@@ -51,11 +67,11 @@ namespace handler {
         IterateSample(audio_mix_sample, i, sample_item_collection);
         sample_loudness_ratio_collection.push_back(CalculateAverageValue(sample_item_collection));
       }
-      if (event_ != nullptr) {
-        event_->OnSampleVolumeRatio(std::move(sample_loudness_ratio_collection));
+      if (volume_column_handler_event_ != nullptr) {
+        volume_column_handler_event_->OnSampleVolumeRatio(std::move(sample_loudness_ratio_collection));
       }
     }
-  private:
+
     double CalculateAverageValue(PerChannelSamplesPtr item) const {
       auto average_value = std::accumulate(item->begin(), item->end(), 0) / static_cast<int>(item->size());
       auto diff = (std::numeric_limits<T>::max)() - (std::numeric_limits<T>::min)();
@@ -80,8 +96,10 @@ namespace handler {
       }
     }
 
-    VolumeColumnHandlerEvent* event_ {nullptr};
+    VolumeColumnHandlerEvent* volume_column_handler_event_ {nullptr};
+    BaseAudioHandlerEvent* base_audio_handler_event_{nullptr};
 	  ChannelSamplesCollectionPtr channel_samples_collection_;
+	  AsyncHandler async_handler_;
 	  int channel_{ 2 };
   };
 }

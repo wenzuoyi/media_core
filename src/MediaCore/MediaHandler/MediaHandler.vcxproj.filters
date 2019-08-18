@@ -27,15 +27,18 @@
     <ClInclude Include="include\base_audio_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="async_audio_handler.hpp">
+    <ClInclude Include="volume_column_handler_impl.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="volume_column_handler_impl.hpp">
+    <ClInclude Include="async_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="volume_column_handler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="asnyc_handler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

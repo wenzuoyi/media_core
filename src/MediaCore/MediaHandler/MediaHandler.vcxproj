@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="async_audio_handler.hpp" />
+    <ClInclude Include="async_handler.h" />
     <ClInclude Include="include\base_audio_handler.h" />
     <ClInclude Include="include\audio_handler_datatype.h" />
     <ClInclude Include="include\global_media_handler.h" />
@@ -27,6 +27,7 @@
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="asnyc_handler.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
