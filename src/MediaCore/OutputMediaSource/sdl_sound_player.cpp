@@ -40,12 +40,12 @@ namespace output {
     if (volume < 0) {
       return false;
     }
-    volume_ = volume * 128 / 100;
+    volume_ = volume * SDL_MIX_MAXVOLUME / 100;
     return true;
   }
 
   int SDLSoundPlayer::GetVolume() const {
-    return volume_ * 100 / 128;
+    return volume_ * 100 / SDL_MIX_MAXVOLUME;
   }
 
   void SDLSoundPlayer::SDL_AudioCallback(void* user_data, uint8_t* stream, int len) {

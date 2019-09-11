@@ -21,7 +21,7 @@ namespace output {
       dsbufferdesc_.lpwfxFormat = nullptr;
     }
     if (direct_sound8_ != nullptr) {
-      direct_sound8_->Release();
+      direct_sound8_->Release();	  
       direct_sound8_ = nullptr;
     }
   }
@@ -35,10 +35,7 @@ namespace output {
 		  return false;
 	  }
 	  FillSoundBufferParam(audio_output_param);
-    if (!ConfigNotifyEvent()) {
-		  return false;
-    }
-	  return true;
+    return ConfigNotifyEvent();
   }
 
   void DirectSoundPlayer::FillSoundBufferParam(AudioOutputParamPtr audio_output_param) {	  
