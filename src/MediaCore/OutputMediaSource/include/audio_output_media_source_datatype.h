@@ -14,5 +14,10 @@ namespace output {
     unsigned channels{2};
   };
   using AudioOutputParamPtr = std::shared_ptr<AudioOutputParam>;
+
+  enum class PlayingMode {
+    kDirectSound = 0,
+    kSDL = 1,
+  };
 }
 #endif // AUDIO_OUTPUT_MEDIA_SOURCE_DATATYPE_H_

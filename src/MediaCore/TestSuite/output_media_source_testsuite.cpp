@@ -1,14 +1,17 @@
 #include <thread>
 #include <iostream>
+#include <cassert>
 #include "output_media_source_testsuite.h"
 namespace output {
 	std::wstring OutputMediaSourceTestSuite::CONSOLE_TITLE_NAME = L"Simplest Audio Play DirectSound";
 
   void OutputMediaSourceTestSuite::Init() {
-    audio_output_media_source_ = AudioOutputMediaSource::CreateInstance();
+    audio_output_media_source_ = AudioOutputMediaSource::CreateInstance(PlayingMode::kDirectSound);
     if (audio_output_media_source_ != nullptr) {
       audio_output_media_source_->SetAudioOutputMediaSourceEvent(this);
-      audio_output_media_source_->Init();
+      if (!audio_output_media_source_->Init()) {
+		    std::cout << "error:open!" << std::endl;
+      }
     }
   }
 
@@ -30,7 +33,9 @@ namespace output {
 	  config->sample_rate = 44100;
 	  config->channels = 2;
 	  config->player_wnd = FindWindow(nullptr, CONSOLE_TITLE_NAME.c_str());
-	  audio_output_media_source_->SetAudioOutputMediaParam(config);
+	  if (!audio_output_media_source_->SetAudioOutputMediaParam(config)) {
+		  std::cout << "error: create buffer" << std::endl;
+	  }
 	  audio_output_media_source_->Play();
 	  auto buffer_size = config->sample_rate / 25 * config->bits_per_sample / 8 * config->channels;
 	  auto buffer = new char[buffer_size];

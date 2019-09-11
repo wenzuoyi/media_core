@@ -19,7 +19,7 @@ namespace output {
 	public:
 		AudioOutputMediaSource() = default;
 		virtual ~AudioOutputMediaSource() = default;
-		static AudioOutputMediaSourcePtr CreateInstance();
+		static AudioOutputMediaSourcePtr CreateInstance(PlayingMode playing_mode);
 		virtual bool Init() = 0;
 		virtual void Fini() = 0;
 		virtual void SetAudioOutputMediaSourceEvent(AudioOutputMediaSourceEvent* sink) = 0;

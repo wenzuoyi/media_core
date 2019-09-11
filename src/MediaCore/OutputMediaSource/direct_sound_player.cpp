@@ -1,7 +1,7 @@
 #include "direct_sound_player.h"
+#include <cmath>
 namespace output {
 	const int DirectSoundPlayer::MAX_AUDIO_BUF = 4;
-	const int DirectSoundPlayer::AUDIO_FREQUENCY_INTERVAL = 40;
 
   bool DirectSoundPlayer::Init() {
     return SUCCEEDED(::DirectSoundCreate8(NULL, &direct_sound8_, NULL));
@@ -26,29 +26,22 @@ namespace output {
     }
   }
 
-  void DirectSoundPlayer::SetAudioOutputMediaSourceEvent(AudioOutputMediaSourceEvent* sink) {
-    if (sink != nullptr && sink_ != sink) {
-      sink_ = sink;
-    }
-  }
-
   bool DirectSoundPlayer::SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) {
+	  BaseAudioPlayer::SetAudioOutputMediaParam(audio_output_param);
     if (direct_sound8_ == nullptr || audio_output_param == nullptr) {
 		  return false;
     }	
 	  if (FAILED(direct_sound8_->SetCooperativeLevel(audio_output_param->player_wnd, DSSCL_NORMAL))) {
 		  return false;
 	  }
-    if (!FillSoundBufferParam(audio_output_param)) {
-		  return false;
-    }
+	  FillSoundBufferParam(audio_output_param);
     if (!ConfigNotifyEvent()) {
 		  return false;
     }
 	  return true;
   }
 
-  bool DirectSoundPlayer::FillSoundBufferParam(AudioOutputParamPtr audio_output_param) {
+  void DirectSoundPlayer::FillSoundBufferParam(AudioOutputParamPtr audio_output_param) {	  
     memset(&dsbufferdesc_, 0, sizeof(DSBUFFERDESC));
     dsbufferdesc_.dwSize = sizeof(DSBUFFERDESC);
     dsbufferdesc_.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRLPAN;
@@ -62,18 +55,16 @@ namespace output {
     (dsbufferdesc_.lpwfxFormat)->nBlockAlign = (audio_output_param->bits_per_sample / 8) * audio_output_param->channels;
     (dsbufferdesc_.lpwfxFormat)->wBitsPerSample = audio_output_param->bits_per_sample;
     (dsbufferdesc_.lpwfxFormat)->cbSize = 0;
-    if (FAILED(direct_sound8_->CreateSoundBuffer(&dsbufferdesc_, &direct_sound_buffer_, NULL))) {
-      return false;
-    }
-    if (FAILED(direct_sound_buffer_->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&direct_sound_buffer8_))) {
-      return false;
-    }
-    return true;
+    auto result{false};
+    do {
+    } while (FAILED(direct_sound8_->CreateSoundBuffer(&dsbufferdesc_, &direct_sound_buffer_, NULL)));
+    do {
+    } while (FAILED(direct_sound_buffer_->QueryInterface(IID_IDirectSoundBuffer8, reinterpret_cast<LPVOID*>(&direct_sound_buffer8_))));
   }
 
   bool DirectSoundPlayer::ConfigNotifyEvent() {
     IDirectSoundNotify8* direct_sound_notify{nullptr};
-    if (FAILED(direct_sound_buffer8_->QueryInterface(IID_IDirectSoundNotify, (LPVOID*)&direct_sound_notify))) {
+    if (FAILED(direct_sound_buffer8_->QueryInterface(IID_IDirectSoundNotify, reinterpret_cast<LPVOID*>(&direct_sound_notify)))) {
       return false;
     }
     for (auto i = 0; i < MAX_AUDIO_BUF; i++) {
@@ -110,70 +101,39 @@ namespace output {
   }
 
   void DirectSoundPlayer::CopyBufferToHardwareBuffer(void* buffer, unsigned long buffer_size) {
+	  memset(buffer, 0, buffer_size);
     std::lock_guard<std::mutex> lock_guard(mutex_);
-    if (played_audio_buffer_.size() > buffer_size) {
-      memcpy(buffer, &played_audio_buffer_[0], buffer_size);
-      played_audio_buffer_.erase(played_audio_buffer_.begin(), played_audio_buffer_.begin() + buffer_size);
-    } else if (!played_audio_buffer_.empty()) {
-      memset(buffer, 0, buffer_size);
-      memcpy(buffer, &played_audio_buffer_[0], played_audio_buffer_.size());
-      played_audio_buffer_.clear();
-    } else {
-      memset(buffer, 0, buffer_size);
+    if (audio_playing_buffer_.size() > buffer_size) {
+      memcpy(buffer, &audio_playing_buffer_[0], buffer_size);
+      audio_playing_buffer_.erase(audio_playing_buffer_.begin(), audio_playing_buffer_.begin() + buffer_size);
+    } else if (!audio_playing_buffer_.empty()) {
+      memcpy(buffer, &audio_playing_buffer_[0], audio_playing_buffer_.size());
+      audio_playing_buffer_.clear();
     }
-  }
-
-  void DirectSoundPlayer::CreateFrequencyCollectTask() {
-	  frequency_collect_task_ = std::async(std::launch::async, [this]() {
-	    while(!exit_) {
-        if (direct_sound_buffer8_ != nullptr) {
-          long frequency{0};
-          auto result = direct_sound_buffer8_->GetPan(&frequency);
-          if (sink_ != nullptr) {
-            sink_->OnSampleFrequency(frequency);
-          }
-		      std::this_thread::sleep_for(std::chrono::milliseconds(AUDIO_FREQUENCY_INTERVAL));
-        }
-	    }
-	  });
   }
 
   void DirectSoundPlayer::Play() {
 	  exit_ = false;
 	  CreateAudioPlayedTask();
-	  CreateFrequencyCollectTask();
   }
 
   void DirectSoundPlayer::Stop() {
 	  exit_ = true;
 	  play_audio_task_.wait();
-	  frequency_collect_task_.wait();
 	  direct_sound_buffer8_->Stop();
-	  played_audio_buffer_.clear();
-  }
-
-  void DirectSoundPlayer::Mute() {
-    if (is_mute_) {
-      SetVolume(previous_volume_value_);
-    } else {
-      previous_volume_value_ = GetVolume();
-      SetVolume(0);
-    }
-    is_mute_ = !is_mute_;
-  }
-
-  bool DirectSoundPlayer::IsMute() const {
-	  return is_mute_;
   }
 
   bool DirectSoundPlayer::SetVolume(int volume) {
-    if (volume < 0) {
-      return false;
+    unsigned long dsVol;
+    if (volume == 0)
+      dsVol = DSBVOLUME_MIN;
+    else if (volume > 100)
+      dsVol = DSBVOLUME_MAX;
+    else {
+      auto decibels = 20.0 * log10(static_cast<double>(volume) / 100.0f);
+      dsVol = static_cast<DWORD>(decibels * 100.0);
     }
-    if (FAILED(direct_sound_buffer8_->SetVolume(volume))) {
-      return false;
-    }
-	  return true;
+    return SUCCEEDED(direct_sound_buffer8_->SetVolume(dsVol));
   }
 
   int DirectSoundPlayer::GetVolume() const {
@@ -184,23 +144,8 @@ namespace output {
     if (FAILED(direct_sound_buffer8_->GetVolume(&volume))) {
 		  return 0;
     }
-	  return volume;
-  }
-
-  bool DirectSoundPlayer::InputAudioSample(AudioSamplePtr audio_sample) {
-	  if (audio_sample == nullptr) {
-		  return false;
-	  }
-    {
-      std::lock_guard<std::mutex> lock_guard(mutex_);
-      if (played_audio_buffer_.size() > dsbufferdesc_.dwBufferBytes / 2) {
-        return false;
-      }
-      played_audio_buffer_.insert(played_audio_buffer_.end(), audio_sample->begin(), audio_sample->end());
-    }
-	  if (sink_ != nullptr) {
-		  sink_->OnTransmitDataEvent(audio_sample);
-	  }
-	  return true;
+    auto var = static_cast<double>(volume) / 200.0f;
+    auto result = 100.0 * std::pow(10.0f, var);
+	  return static_cast<int>(result);
   }
 }

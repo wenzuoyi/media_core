@@ -30,6 +30,12 @@
     <ClCompile Include="video_output_media_source.cpp">
       <Filter>video</Filter>
     </ClCompile>
+    <ClCompile Include="sdl_sound_player.cpp">
+      <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="base_audio_player.cpp">
+      <Filter>audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_output_media_source.h">
@@ -49,6 +55,12 @@
     </ClInclude>
     <ClInclude Include="include\video_output_media_source_datatype.h">
       <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="sdl_sound_player.h">
+      <Filter>audio</Filter>
+    </ClInclude>
+    <ClInclude Include="base_audio_player.h">
+      <Filter>audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
