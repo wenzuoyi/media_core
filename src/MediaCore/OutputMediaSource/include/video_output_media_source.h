@@ -12,7 +12,6 @@ namespace output {
 	  VideoOutputMediaSourceEvent() = default;
 	  virtual ~VideoOutputMediaSourceEvent() = default;
 	  virtual void OnVideoOutputMediaExceptionEvent(unsigned error_code) = 0;
-	  virtual void OnOSDDisplayEvent(HDC hdc) = 0;
 	  virtual void OnTransmitDataEvent(VideoFramePtr video_frame) = 0;
   };
 
@@ -21,12 +20,15 @@ namespace output {
     VideoOutputMediaSource() = default;
     virtual ~VideoOutputMediaSource() = default;
     static VideoOutputMediaSourcePtr CreateInstance(RenderMode render_mode);
+    virtual void Init() = 0;
+    virtual void Fini() = 0;
 	  virtual void SetEvent(VideoOutputMediaSourceEvent* sink) = 0;
     virtual void SetVideoOutputMediaParam(VideoOutputParamPtr video_output_param) = 0;
-    virtual void EnableOSD(bool enable) = 0;
+    virtual bool Play() = 0;
+    virtual void Stop() = 0;
+    virtual void SetOSD(OSDParamListPtr osd_param_list) = 0;
     virtual void SetDisplayRatio(DisplayRatio display_ratio) = 0;
-    virtual void Flip(bool enable) = 0;
-	  virtual void Mirror(bool mirror) = 0;
+    virtual void Rotate(RotateType rotate_type) = 0;
 	  virtual bool InputVideoFrame(VideoFramePtr video_frame) = 0;
   };
 }

@@ -1,18 +1,28 @@
 #ifndef VIDEO_OUTPUT_MEDIA_SOURCE_DATATYPE_H_
 #define VIDEO_OUTPUT_MEDIA_SOURCE_DATATYPE_H_
 #include <vector>
+#include <array>
+#include <string>
 #include <memory>
 #include <Windows.h>
 
 namespace output {
-  enum class DisplayRatio {
-    kOriginStreamRatio = 0,
-    kDisplayWindowRatio = 1,
+	enum class RotateType {
+		kDegree90 = 0,
+		kDegree180 = 1,
+		kDegree270 = 2
+	};
+
+	enum class DisplayRatio {
+		kAdapter = 0,
+		kRatio43 = 1,
+		kRatio169 = 2
   };
 
   enum class RenderMode {
     kD3D = 0,
     kSdl = 1,
+    kGDI = 2,
   };
 
   enum class ColorSpace {
@@ -30,5 +40,16 @@ namespace output {
     ColorSpace color_space{ColorSpace::kYUV420P};
   };
   using VideoOutputParamPtr = std::shared_ptr<VideoOutputParam>;
+
+  struct OSDParam {
+	  bool enable{ false };
+	  int x_pos{ 0 };
+	  int y_pos{ 0 };
+	  int width{ 0 };
+	  int height{ 0 };
+	  std::wstring content;
+  };
+  using OSDParamList = std::array<OSDParam, 8>;
+  using OSDParamListPtr = std::shared_ptr<OSDParamList>;
 }
 #endif // VIDEO_OUTPUT_MEDIA_SOURCE_DATATYPE_H_
