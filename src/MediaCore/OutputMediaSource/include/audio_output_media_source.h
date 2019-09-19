@@ -6,7 +6,7 @@ namespace output {
 	class AudioOutputMediaSource;
 	using AudioOutputMediaSourcePtr = std::shared_ptr<AudioOutputMediaSource>;
 
-  class API_HEADER AudioOutputMediaSourceEvent {
+  class OUTPUT_MEDIA_API_HEADER AudioOutputMediaSourceEvent {
   public:
 	  AudioOutputMediaSourceEvent() = default;
 	  virtual ~AudioOutputMediaSourceEvent() = default;
@@ -15,7 +15,7 @@ namespace output {
 	  virtual void OnSampleFrequency(unsigned long frequency) = 0;
   };
 
-	class API_HEADER AudioOutputMediaSource {
+	class OUTPUT_MEDIA_API_HEADER AudioOutputMediaSource {
 	public:
 		AudioOutputMediaSource() = default;
 		virtual ~AudioOutputMediaSource() = default;

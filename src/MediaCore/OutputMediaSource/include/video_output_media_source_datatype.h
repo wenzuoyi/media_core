@@ -7,12 +7,6 @@
 #include <Windows.h>
 
 namespace output {
-	enum class RotateType {
-		kDegree90 = 0,
-		kDegree180 = 1,
-		kDegree270 = 2
-	};
-
 	enum class DisplayRatio {
 		kAdapter = 0,
 		kRatio43 = 1,
@@ -29,8 +23,14 @@ namespace output {
     kYUV420P = 0,
     kBGRA = 1,
   };
-
-  using VideoFrame = std::vector<unsigned char>;
+  using Buffer = std::vector<unsigned char>;
+  using BufferPtr = std::shared_ptr<Buffer>;
+  struct VideoFrame {
+	  int width;
+	  int height;
+	  std::array<BufferPtr, 3> data;
+	  std::array<int, 3> line_size;
+  };
   using VideoFramePtr = std::shared_ptr<VideoFrame>;
 
   struct VideoOutputParam {
@@ -40,14 +40,14 @@ namespace output {
     ColorSpace color_space{ColorSpace::kYUV420P};
   };
   using VideoOutputParamPtr = std::shared_ptr<VideoOutputParam>;
-
+  
   struct OSDParam {
 	  bool enable{ false };
 	  int x_pos{ 0 };
 	  int y_pos{ 0 };
 	  int width{ 0 };
 	  int height{ 0 };
-	  std::wstring content;
+	  std::string content;
   };
   using OSDParamList = std::array<OSDParam, 8>;
   using OSDParamListPtr = std::shared_ptr<OSDParamList>;

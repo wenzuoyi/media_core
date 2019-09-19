@@ -86,8 +86,8 @@
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -96,8 +96,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -108,12 +108,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;MEDIA_HANDLER_API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,7 +139,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;API_EXPORT_FLAG;NDEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;MEDIA_HANDLER_API_EXPORT_FLAG;NDEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -146,6 +147,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

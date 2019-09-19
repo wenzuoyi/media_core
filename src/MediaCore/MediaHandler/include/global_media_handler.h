@@ -1,8 +1,8 @@
-#ifndef GLOBAL_OUTPUT_MEDIA_SOURCE_H_
-#define GLOBAL_OUTPUT_MEDIA_SOURCE_H_
-#ifdef API_EXPORT_FLAG
-#define API_HEADER __declspec(dllexport)
+#ifndef GLOBAL_MEDIA_HANDLER_H_
+#define GLOBAL_MEDIA_HANDLER_H_
+#ifdef MEDIA_HANDLER_API_EXPORT_FLAG
+#define MEDIA_HANDLER_API_HEADER __declspec(dllexport)
 #else
-#define API_HEADER __declspec(dllimport)
+#define MEDIA_HANDLER_API_HEADER __declspec(dllimport)
 #endif
-#endif // GLOBAL_OUTPUT_MEDIA_SOURCE_H_
+#endif // GLOBAL_MEDIA_HANDLER_H_

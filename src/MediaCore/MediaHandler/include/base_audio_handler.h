@@ -8,13 +8,13 @@ namespace handler {
   enum class AudioHandlerType {
     kAudioColumn= 0
   };
-  class API_HEADER BaseAudioHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER BaseAudioHandlerEvent {
   public:
 	  BaseAudioHandlerEvent() = default;
 	  virtual ~BaseAudioHandlerEvent() = default;
 	  virtual void OnTransmitAudioSample(AudioHandlerType audio_event, AudioSamplePtr audio_sample) = 0;
   };
-	class API_HEADER BaseAudioHandler {
+	class MEDIA_HANDLER_API_HEADER BaseAudioHandler {
 	public:
 		BaseAudioHandler() = default;
 		virtual ~BaseAudioHandler() = default;

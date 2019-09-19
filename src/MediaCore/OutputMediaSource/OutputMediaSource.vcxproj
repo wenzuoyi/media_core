@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -74,8 +74,8 @@
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>D:\libs\boost\include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\libs\boost\lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -86,8 +86,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>D:\libs\boost\include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\libs\boost\lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,13 +100,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>API_EXPORT_FLAG;WIN32;_DEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OUTPUT_MEDIA_API_EXPORT_FLAG;WIN32;_DEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dsound.lib;dxguid.lib;D3d9.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,7 +132,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>API_EXPORT_FLAG;WIN32;NDEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OUTPUT_MEDIA_API_EXPORT_FLAG;WIN32;NDEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -139,7 +140,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dsound.lib;dxguid.lib;D3d9.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
