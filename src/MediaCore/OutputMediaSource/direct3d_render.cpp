@@ -11,6 +11,10 @@ namespace output {
     return var; \
   } \
 
+
+  Direct3DRender::Direct3DRender() : video_frames_list_(3), roi_() {
+  }
+  
   void Direct3DRender::Init() {
 	  d3d_ = :: Direct3DCreate9(D3D_SDK_VERSION);
 	  assert(d3d_ != nullptr);
@@ -34,11 +38,7 @@ namespace output {
     if (video_output_param != nullptr && video_output_param != param_) {
       param_ = video_output_param;
     }
-    RECT rect;
-    GetClientRect(param_->render_wnd, &rect);
-    window_width_ = rect.right - rect.left;
-    window_height_ = rect.bottom - rect.top;
-    window_ruler_->SetWindowSize(window_width_, window_height_);
+	  ResizeWindow();
   }
 
   bool Direct3DRender::CreateD3dDevice() {
@@ -223,6 +223,14 @@ namespace output {
 
   void Direct3DRender::CloseROI() {
 	  enable_roi_ = false;
+  }
+
+  void Direct3DRender::ResizeWindow() {
+	  RECT rect;
+	  GetClientRect(param_->render_wnd, &rect);
+	  window_width_ = rect.right - rect.left;
+	  window_height_ = rect.bottom - rect.top;
+	  window_ruler_->SetWindowSize(window_width_, window_height_);
   }
 }
 

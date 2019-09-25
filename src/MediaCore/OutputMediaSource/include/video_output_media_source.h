@@ -29,6 +29,7 @@ namespace output {
     virtual void Stop() = 0;
     virtual void OpenROI(const RECT& region) = 0;
     virtual void CloseROI() = 0;
+    virtual void ResizeWindow() = 0;
     virtual void SetOSD(OSDParamListPtr osd_param_list) = 0;
     virtual void SetDisplayRatio(DisplayRatio display_ratio) = 0;
 	  virtual void InputVideoFrame(VideoFramePtr video_frame) = 0;

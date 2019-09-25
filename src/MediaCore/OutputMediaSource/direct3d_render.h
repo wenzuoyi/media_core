@@ -9,8 +9,8 @@
 namespace output {
 	class Direct3DRender : public VideoOutputMediaSource {
 	public:
-		Direct3DRender() = default;
-		virtual ~Direct3DRender() = default;
+		Direct3DRender();
+    virtual ~Direct3DRender() = default;
   protected:
     void Init() override;
     void Fini() override;
@@ -23,6 +23,7 @@ namespace output {
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void OpenROI(const RECT& region) override;
     void CloseROI() override;
+    void ResizeWindow() override;
 	private:
     bool CreateD3dDevice();
 	  bool CreateD3dSurface();
