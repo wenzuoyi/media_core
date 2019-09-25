@@ -86,7 +86,11 @@ namespace output {
 		CopyBufferToSurface(video_frame, &surface);
 	  video_frame = nullptr;
 	  DXRETURNVOID(source_surface_->UnlockRect())
-    DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE))
+    if (enable_roi_) {
+		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
+    } else {
+		  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
+    }
     HDC hdc;
     DXRETURNVOID(customize_surface_->GetDC(&hdc));
     if (sink_ != nullptr) {
@@ -123,7 +127,7 @@ namespace output {
   void Direct3DRender::CopyYData(VideoFramePtr video_frame, unsigned char* target_data, int target_lines_size, int i) {
     const auto source_y_object = (video_frame->data)[0];
     const auto source_y_data = &((*source_y_object)[0]);
-    auto source_y_linesize = (video_frame->line_size)[0];
+    const auto source_y_linesize = (video_frame->line_size)[0];
     memcpy(target_data + i * target_lines_size, source_y_data + i * source_y_linesize, source_y_linesize);
   }
 
@@ -204,10 +208,21 @@ namespace output {
       window_ruler_->SetAspectRatio(std::make_pair(16, 9));
     }
   }
-  
-  bool Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
-	  video_frames_list_.PushFront(video_frame);
-	  return true;
+
+  void Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
+    video_frames_list_.PushFront(video_frame);
+    if (sink_ != nullptr) {
+      sink_->OnTransmitDataEvent(video_frame);
+    }
+  }
+
+  void Direct3DRender::OpenROI(const RECT& region) {
+	  enable_roi_ = true;
+	  roi_ = region;
+  }
+
+  void Direct3DRender::CloseROI() {
+	  enable_roi_ = false;
   }
 }
 

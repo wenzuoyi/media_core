@@ -20,7 +20,9 @@ namespace output {
     void Stop() override;
     void SetOSD(OSDParamListPtr osd_param_list) override;
     void SetDisplayRatio(DisplayRatio display_ratio) override;
-    bool InputVideoFrame(VideoFramePtr video_frame) override;
+    void InputVideoFrame(VideoFramePtr video_frame) override;
+    void OpenROI(const RECT& region) override;
+    void CloseROI() override;
 	private:
     bool CreateD3dDevice();
 	  bool CreateD3dSurface();
@@ -45,6 +47,8 @@ namespace output {
 		utils::WindowRulerPtr window_ruler_;
 		long window_width_{ 0 };
 		long window_height_{ 0 };
+		bool enable_roi_{ false };
+		RECT roi_;
 	};
 }
 #endif // DIRECT3D_RENDER_H_
