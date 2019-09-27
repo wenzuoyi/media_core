@@ -1,0 +1,9 @@
+src/MediaCore/obj/
+src/MediaCore/bin/
+src/MediaCore/pdb/
+*.vcxproj.user
+*.sln.DotSettings.user
+*.VC.db
+*.VC.VC.opendb
+*.suo
+*.exp
