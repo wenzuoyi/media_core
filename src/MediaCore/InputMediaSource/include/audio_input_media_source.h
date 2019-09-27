@@ -5,7 +5,7 @@
 #include "global_input_media_source.h"
 
 namespace input {
-  class API_HEADER AudioInputMediaSourceEvent {
+  class  INPUT_MEDIA_API_HEADER AudioInputMediaSourceEvent {
   public:
     AudioInputMediaSourceEvent() = default;
     virtual ~AudioInputMediaSourceEvent() = default;
@@ -16,7 +16,7 @@ namespace input {
   class AudioInputMediaSource;
   using AudioInputMediaSourcePtr = std::shared_ptr<AudioInputMediaSource>;
 
-  class API_HEADER AudioInputMediaSource {
+  class  INPUT_MEDIA_API_HEADER AudioInputMediaSource {
   public:
     AudioInputMediaSource() = default;
     virtual ~AudioInputMediaSource() = default;

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="characterset">
+      <UniqueIdentifier>{68a9da6b-2c06-4076-9cf8-2761c59f62db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="circlebuffer">
+      <UniqueIdentifier>{1f42f367-e6a3-4bd6-836d-16f828e01187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ruler">
+      <UniqueIdentifier>{001b5d9a-d655-4876-9a9e-9020aa06b2b4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\character_set_convertor.h">
+      <Filter>characterset</Filter>
+    </ClInclude>
+    <ClInclude Include="character_set_convertor_impl.h">
+      <Filter>characterset</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bound_circle_buffer.hpp">
+      <Filter>circlebuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\global_media_utils_source.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\window_ruler.h">
+      <Filter>ruler</Filter>
+    </ClInclude>
+    <ClInclude Include="window_ruler_impl.h">
+      <Filter>ruler</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="character_set_convertor.cpp">
+      <Filter>characterset</Filter>
+    </ClCompile>
+    <ClCompile Include="character_set_convertor_impl.cpp">
+      <Filter>characterset</Filter>
+    </ClCompile>
+    <ClCompile Include="window_ruler.cpp">
+      <Filter>ruler</Filter>
+    </ClCompile>
+    <ClCompile Include="window_ruler_impl.cpp">
+      <Filter>ruler</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

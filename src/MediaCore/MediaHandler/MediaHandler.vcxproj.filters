@@ -13,30 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="volume_column">
+      <UniqueIdentifier>{abb83172-1097-4ef9-9f21-d4e26624a15a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="video_output_media_source.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="audio_output_media_source.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="include\global_media_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\audio_handler_datatype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_audio_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="async_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\volume_column_handler.h">
+      <Filter>volume_column</Filter>
+    </ClInclude>
+    <ClInclude Include="volume_column_handler_impl.hpp">
+      <Filter>volume_column</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\video_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\video_output_media_source_datatype.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\global_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_output_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_output_media_source_datatype.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="asnyc_handler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="volume_column_handler.cpp">
+      <Filter>volume_column</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
