@@ -63,7 +63,7 @@ namespace output {
     const auto request_copy_buffersize = static_cast<std::size_t>(len);
     const auto copy_size = (request_copy_buffersize > audio_playing_buffer_size ? audio_playing_buffer_size :
                               request_copy_buffersize);
-    ::SDL_MixAudio(stream, reinterpret_cast<Uint8*>(&audio_playing_buffer_[0]), copy_size, volume_);
+    ::SDL_MixAudio(stream, reinterpret_cast<Uint8*>(&audio_playing_buffer_[0]), static_cast<Uint32>(copy_size), volume_);
     audio_playing_buffer_.erase(audio_playing_buffer_.begin(), audio_playing_buffer_.begin() + copy_size);
   }
 }

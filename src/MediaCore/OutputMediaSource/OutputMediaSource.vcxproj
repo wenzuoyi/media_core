@@ -71,28 +71,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)..\..\libs\sdl\include\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\libs\sdl\lib\x86\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformName)\$(Configuration)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,8 +111,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,12 +122,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OUTPUT_MEDIA_API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <OmitFramePointers>false</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,7 +151,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>$(SolutionDir)lib\$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,17 +160,22 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>API_EXPORT_FLAG;NDEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>OUTPUT_MEDIA_API_EXPORT_FLAG;NDEBUG;_WINDOWS;_USRDLL;OUTPUTMEDIASOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <OmitFramePointers>false</OmitFramePointers>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;d3dx9.lib;D3d9.lib;SDL2.lib;SDL2main.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

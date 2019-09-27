@@ -153,7 +153,7 @@ namespace output {
         rect.right = item.x_pos + item.width;
         rect.bottom = item.y_pos + item.height;
         const auto content = utils::CharacterSetConvertor::Instance()->UTF8ToUnicode(item.content);
-        font_->DrawText(nullptr, &content[0], content.length(), &rect,
+        font_->DrawText(nullptr, &content[0], static_cast<INT>(content.length()), &rect,
                         DT_SINGLELINE | DT_NOCLIP | DT_CENTER | DT_VCENTER, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f));
       }
     }
