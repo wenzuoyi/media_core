@@ -1,6 +1,7 @@
 src/MediaCore/obj/
 src/MediaCore/bin/
 src/MediaCore/pdb/
+src/MediaCore/lib/
 *.vcxproj.user
 *.sln.DotSettings.user
 *.VC.db
