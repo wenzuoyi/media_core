@@ -30,14 +30,32 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX) {
   CDialogEx::DoDataExchange(pDX);
 }
 
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+END_MESSAGE_MAP()
+
 const int TestSuiteGUIDialog::VIDEO_WIDTH = 320;
 const int TestSuiteGUIDialog::VIDEO_HEIGHT = 180;
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP() // TestSuiteGUIDialog 对话框
 TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
+
+void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
+  CDialogEx::DoDataExchange(pDX);
+  DDX_Control(pDX, IDC_STATIC_MAIN, display_area_);
+}
+
+BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
+  ON_WM_SYSCOMMAND()
+  ON_WM_PAINT()
+  ON_WM_QUERYDRAGICON()
+  ON_WM_CREATE()
+  ON_WM_DESTROY()
+  ON_COMMAND(ID_RENDER_OPEN, &TestSuiteGUIDialog::OnRenderOpenFile)
+  ON_COMMAND(ID_RENDER_CLOSE, &TestSuiteGUIDialog::OnRenderCloseFile)
+  ON_COMMAND(ID_RENDER_PLAY, &TestSuiteGUIDialog::OnRenderPlay)
+  ON_COMMAND(ID_RENDER_STOP, &TestSuiteGUIDialog::OnRenderStop)
+END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 }
@@ -47,17 +65,6 @@ void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
 
 void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
 }
-
-void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
-  CDialogEx::DoDataExchange(pDX);
-  DDX_Control(pDX, IDC_STATIC_MAIN, display_area_);
-}
-
-BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
-    ON_WM_SYSCOMMAND()
-    ON_WM_PAINT()
-    ON_WM_QUERYDRAGICON()
-END_MESSAGE_MAP()
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
   CDialogEx::OnInitDialog();
@@ -85,6 +92,13 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
 	  video_param->render_wnd = display_area_.m_hWnd;
 	  video_output_media_source_->SetVideoOutputMediaParam(video_param);
   }
+  EnableRenderMenuItem({
+    {ID_RENDER_OPEN, true}, {ID_RENDER_PLAY, false}, {ID_RENDER_STOP, false}, {ID_RENDER_CLOSE, false}
+  });
+  EnableRenderMenuItem({
+    {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false}, { ID_RENDER_IMAGERATIO_43, false},
+    {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false}
+  });
   return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -115,13 +129,6 @@ void TestSuiteGUIDialog::OnPaint() {
 
 HCURSOR TestSuiteGUIDialog::OnQueryDragIcon() {
   return static_cast<HCURSOR>(m_hIcon);
-}
-
-void TestSuiteGUIDialog::OnBnClickedButtonOpen() {
-  ifs_.open(LR"(D:\proj\simplest_media_play\test_yuv420p_320x180.yuv)", std::ios_base::binary);
-  if (ifs_.fail()) {
-	  AfxMessageBox(L"打开文件失败!");
-  }
 }
 
 void TestSuiteGUIDialog::StartReadMediaFile() {
@@ -182,31 +189,6 @@ void TestSuiteGUIDialog::PostVideoFrame(const std::vector<char>& buffer) const {
   }
 }
 
-void TestSuiteGUIDialog::OnBnClickedButtonPlayctrl() {
-  if (video_output_media_source_ == nullptr) {
-    return;
-  }
-  if (!is_playing_) {
-    if (video_output_media_source_->Play()) {
-      //GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Stop");
-      StartReadMediaFile();
-      is_playing_ = true;
-    }
-  } else {
-    //GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Playing");
-    StopReadFile();
-    video_output_media_source_->Stop();
-    is_playing_ = false;
-  }
-}
-
-void TestSuiteGUIDialog::OnBnClickedButtonClose() {
-  ifs_.close();
-  if (ifs_.fail()) {
-    AfxMessageBox(L"关闭文件失败");
-  }
-}
-
 int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   if (CDialogEx::OnCreate(lpCreateStruct) == -1)
     return -1;
@@ -224,4 +206,81 @@ void TestSuiteGUIDialog::OnDestroy() {
     video_output_media_source_ = nullptr;
   }
   CDialogEx::OnDestroy();
+}
+
+
+void TestSuiteGUIDialog::OnRenderOpenFile() {
+  CFileDialog file_dialog(TRUE, _T("*.yuv"), nullptr, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
+                          _T("渲染文件(*.yuv)|*.yuv| All Files (*.*) |*.*||"), nullptr); // 打开文件对话框的标题名
+  file_dialog.m_ofn.lpstrTitle = _T("选择渲染文件");
+  if (file_dialog.DoModal() == IDOK) {
+	  const auto open_file_path = file_dialog.GetPathName();
+    auto open_file_path_string = std::wstring(static_cast<LPCTSTR>(open_file_path));
+	  ifs_.open(open_file_path_string, std::ios_base::binary);
+	  if (ifs_.fail()) {
+	    AfxMessageBox(L"打开文件失败!");
+	  }
+	  EnableRenderMenuItem({
+		  { ID_RENDER_OPEN, false },{ ID_RENDER_PLAY, true },{ ID_RENDER_STOP, false },{ ID_RENDER_CLOSE, true }
+	  });
+	  EnableRenderMenuItem({
+		  { ID_RENDER_OSD, false },{ ID_RENDER_IMAGERATIO_ADPATER, false },{ ID_RENDER_IMAGERATIO_43, false },
+		  { ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false }
+	  });
+  }
+}
+
+void TestSuiteGUIDialog::OnRenderCloseFile() {
+	ifs_.close();
+	EnableRenderMenuItem({
+		{ ID_RENDER_OPEN, true },{ ID_RENDER_PLAY, false },{ ID_RENDER_STOP, false },{ ID_RENDER_CLOSE, false }
+	});
+	EnableRenderMenuItem({
+		{ ID_RENDER_OSD, false },{ ID_RENDER_IMAGERATIO_ADPATER, false },{ ID_RENDER_IMAGERATIO_43, false },
+		{ ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false }
+	});
+}
+
+void TestSuiteGUIDialog::OnRenderPlay() {
+	if (video_output_media_source_ == nullptr) {
+	  return;
+	}
+	if (!is_playing_) {
+	  if (video_output_media_source_->Play()) {
+	    StartReadMediaFile();
+	    is_playing_ = true;
+      EnableRenderMenuItem({
+        {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, false}, {ID_RENDER_STOP, true}, {ID_RENDER_CLOSE, false}
+      });
+      EnableRenderMenuItem({
+        {ID_RENDER_OSD, true}, {ID_RENDER_IMAGERATIO_ADPATER, true }, {ID_RENDER_IMAGERATIO_43, true },
+        {ID_RENDER_IMAGERATIO_169, true }, {ID_RENDER_IMAGERATIO_ROI, true }
+      });
+	  }
+	}
+}
+
+void TestSuiteGUIDialog::OnRenderStop() {
+	if (video_output_media_source_ == nullptr) {
+		return;
+	}
+  if (is_playing_) {
+    StopReadFile();
+    video_output_media_source_->Stop();
+    is_playing_ = false;
+    EnableRenderMenuItem({
+      {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, true}, {ID_RENDER_STOP, false}, {ID_RENDER_CLOSE, true}
+    });
+    EnableRenderMenuItem({
+      {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false }, {ID_RENDER_IMAGERATIO_43, false },
+      {ID_RENDER_IMAGERATIO_169, false }, {ID_RENDER_IMAGERATIO_ROI, false }
+    });
+  }
+}
+
+void TestSuiteGUIDialog::EnableRenderMenuItem(std::map<unsigned, bool>&& menu_items_map) const {
+	auto menu = GetMenu();
+  for (const auto& item : menu_items_map) {
+	  menu->EnableMenuItem(item.first, item.second ? MF_ENABLED : MF_GRAYED);
+  }
 }

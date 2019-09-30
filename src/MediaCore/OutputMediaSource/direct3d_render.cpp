@@ -54,20 +54,26 @@ namespace output {
   }
 
   bool Direct3DRender::CreateD3dSurface() {
-    auto var = device_->CreateOffscreenPlainSurface(320, 180,
+    if (param_ == nullptr) {
+      return false;
+    }
+    auto var = device_->CreateOffscreenPlainSurface(param_->width, param_->height,
                                                static_cast<D3DFORMAT>(MAKEFOURCC('Y', 'V', '1', '2')), D3DPOOL_DEFAULT,
                                                &source_surface_, nullptr);
     DXRETURNVALUE(var, false)
-    var = device_->CreateOffscreenPlainSurface(320, 180, D3DFMT_X8R8G8B8,
+    var = device_->CreateOffscreenPlainSurface(param_->width, param_->height, D3DFMT_X8R8G8B8,
                                                            D3DPOOL_DEFAULT, &customize_surface_, nullptr);
 		return SUCCEEDED(var);
   }
 
   bool Direct3DRender::CreateRenderTask() {
+	  exit_ = false;
     render_task_ = std::async(std::launch::async, [this]() {
       while (!exit_) {
         auto item = video_frames_list_.PopBack();
-        Render(item);
+        if (item != nullptr) {
+          Render(item);
+        }
       }
     });
 	  return true;
@@ -179,6 +185,7 @@ namespace output {
 
   void Direct3DRender::Stop() {
 	  exit_ = true;
+	  InputVideoFrame(VideoFramePtr());
 	  render_task_.wait();
     if (customize_surface_ != nullptr) {
       customize_surface_->Release();
