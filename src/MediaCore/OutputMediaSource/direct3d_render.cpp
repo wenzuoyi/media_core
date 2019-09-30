@@ -54,11 +54,11 @@ namespace output {
   }
 
   bool Direct3DRender::CreateD3dSurface() {
-    auto var = device_->CreateOffscreenPlainSurface(window_width_, window_height_,
+    auto var = device_->CreateOffscreenPlainSurface(320, 180,
                                                static_cast<D3DFORMAT>(MAKEFOURCC('Y', 'V', '1', '2')), D3DPOOL_DEFAULT,
                                                &source_surface_, nullptr);
     DXRETURNVALUE(var, false)
-    var = device_->CreateOffscreenPlainSurface(window_width_, window_height_, D3DFMT_X8R8G8B8,
+    var = device_->CreateOffscreenPlainSurface(320, 180, D3DFMT_X8R8G8B8,
                                                            D3DPOOL_DEFAULT, &customize_surface_, nullptr);
 		return SUCCEEDED(var);
   }
@@ -113,19 +113,18 @@ namespace output {
   }
 
   void Direct3DRender::CopyBufferToSurface(VideoFramePtr video_frame, D3DLOCKED_RECT* surface) {
-	  auto target = static_cast<BYTE *>(surface->pBits);
-	  auto stride = surface->Pitch;
-	  for (auto i = 0; i < video_frame->height; i++) {
-		  CopyYData(video_frame, target, stride, i);
-		  const auto offset = stride * video_frame->height;
-		  if (i < video_frame->height / 2) {
-			  CopyUVData(video_frame, target, stride, i);
-		  }
-	  }
+    auto target = static_cast<BYTE *>(surface->pBits);
+    auto stride = surface->Pitch;
+    for (auto i = 0; i < video_frame->height; i++) {
+      CopyYData(video_frame, target, stride, i);
+      if (i < video_frame->height / 2) {
+        CopyUVData(video_frame, target, stride, i);
+      }
+    }
   }
 
   void Direct3DRender::CopyYData(VideoFramePtr video_frame, unsigned char* target_data, int target_lines_size, int i) {
-    const auto source_y_object = (video_frame->data)[0];
+    const auto source_y_object = video_frame->data[0];
     const auto source_y_data = &((*source_y_object)[0]);
     const auto source_y_linesize = (video_frame->line_size)[0];
     memcpy(target_data + i * target_lines_size, source_y_data + i * source_y_linesize, source_y_linesize);
@@ -134,17 +133,20 @@ namespace output {
   void Direct3DRender::CopyUVData(VideoFramePtr video_frame, unsigned char* target_data, int target_lines_size, int i) {
     const auto target_u = (target_lines_size * video_frame->height + target_data);
     const auto target_v = (target_lines_size * video_frame->height * 5 / 4 + target_data);
-	  const auto source_u_object = (video_frame->data)[1];
-	  const auto source_u_data = &((*source_u_object)[1]);
-	  auto source_u_linesize = (video_frame->line_size)[1];
-	  memcpy(target_u + i * target_lines_size / 2, source_u_data + i * source_u_linesize, source_u_linesize);
-    const auto source_v_object = (video_frame->data)[2];
-	  const auto source_v_data = &((*source_u_object)[2]);
-	  auto source_v_linesize = (video_frame->line_size)[2];
-	  memcpy(target_v + i * target_lines_size / 2, source_v_data + i * source_u_linesize, source_v_linesize);
+	  const auto source_u_object = video_frame->data[1];
+	  const auto source_u_data = &((*source_u_object)[0]);
+	  const auto source_u_linesize = video_frame->line_size[1];
+    const auto source_v_object = video_frame->data[2];
+	  const auto source_v_data = &((*source_v_object)[0]);
+	  const auto source_v_linesize = video_frame->line_size[2];
+	  memcpy(target_v + i * target_lines_size / 2, source_u_data + i * source_u_linesize, source_u_linesize);
+	  memcpy(target_u + i * target_lines_size / 2, source_v_data + i * source_v_linesize, source_v_linesize);
   }
-  
+
   void Direct3DRender::SetOSDContent() const {
+    if (osd_param_list_ == nullptr || osd_param_list_->empty()) {
+      return;
+    }
     for (const auto& item : *osd_param_list_) {
       if (item.enable) {
         RECT rect;
@@ -161,6 +163,9 @@ namespace output {
 
   bool Direct3DRender::Play() {
     if (!CreateD3dDevice()) {
+      return false;
+    }
+    if (!CreateD3dSurface()) {
       return false;
     }
     if (!CreateOSDFont()) {

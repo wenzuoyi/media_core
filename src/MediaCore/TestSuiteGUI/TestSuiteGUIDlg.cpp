@@ -2,9 +2,12 @@
 //
 #include "stdafx.h"
 #include <vector>
+#include <chrono>
 #include "TestSuiteGUI.h"
 #include "TestSuiteGUIDlg.h"
 #include "afxdialogex.h"
+
+using namespace std::chrono_literals;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -127,14 +130,24 @@ void CTestSuiteGUIDlg::OnBnClickedButtonOpen() {
 void CTestSuiteGUIDlg::StartReadMediaFile() {
   exit_ = false;
   read_file_task_ = std::async(std::launch::async, [this]() {
+	  ifs_.seekg(0, std::ios_base::end);
+	  auto left_read_bytes = ifs_.tellg();
+	  ifs_.seekg(0, std::ios_base::beg);
     while (!exit_) {
-      std::vector<char> buffer(VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2, 0);
+      std::vector<char> buffer(GetYUVFrameSize(), 0);
       ifs_.read(&buffer[0], buffer.size());
       if (ifs_.fail()) {
-        ifs_.seekg(0, std::ios_base::beg);
+        return;
       }
       if (ifs_.gcount() != buffer.size()) {
         buffer.resize(ifs_.gcount());
+      }
+      left_read_bytes -= buffer.size();
+      PostVideoFrame(buffer);
+      std::this_thread::sleep_for(40ms);
+      if (left_read_bytes <= 0) {
+        left_read_bytes = ifs_.tellg();
+        ifs_.seekg(0, std::ios_base::beg);
       }
     }
   });
@@ -143,6 +156,33 @@ void CTestSuiteGUIDlg::StartReadMediaFile() {
 void CTestSuiteGUIDlg::StopReadFile() {
   exit_ = true;
   read_file_task_.wait();
+}
+
+void CTestSuiteGUIDlg::PostVideoFrame(const std::vector<char>& buffer) const {
+  auto offset = 0;
+  const auto y_stride = VIDEO_WIDTH;
+  const auto y_size = (y_stride * VIDEO_HEIGHT);
+  auto y_data = std::make_shared<output::Buffer>(buffer.begin() + offset, buffer.begin() + offset + y_size);
+  offset += y_size;
+  const auto u_stride = y_stride / 2;
+  const auto u_size = (u_stride * VIDEO_HEIGHT / 2);
+  auto u_data = std::make_shared<output::Buffer>(buffer.begin() + offset, buffer.begin() + offset + u_size);
+  offset += u_size;
+  const auto v_stride = y_stride / 2;
+  const auto v_size = (v_stride * VIDEO_HEIGHT / 2);
+  auto v_data = std::make_shared<output::Buffer>(buffer.begin() + offset, buffer.begin() + offset + v_size);
+  auto video_frame = std::make_shared<output::VideoFrame>();
+  video_frame->width = VIDEO_WIDTH;
+  video_frame->height = VIDEO_HEIGHT;
+  video_frame->data[0] = y_data;
+  video_frame->line_size[0] = y_stride;
+  video_frame->data[1] = u_data;
+  video_frame->line_size[1] = u_stride;
+  video_frame->data[2] = v_data;
+  video_frame->line_size[2] = v_stride;
+  if (video_output_media_source_ != nullptr) {
+    video_output_media_source_->InputVideoFrame(video_frame);
+  }
 }
 
 void CTestSuiteGUIDlg::OnBnClickedButtonPlayctrl() {

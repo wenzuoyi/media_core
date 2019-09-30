@@ -29,13 +29,14 @@ protected:
 private:
 	void StartReadMediaFile();
 	void StopReadFile();
-  static inline int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
+	void PostVideoFrame(const std::vector<char>& buffer) const;
 	bool is_playing_{ false };
 	std::ifstream ifs_;
 	bool exit_{ false };
 	std::future<void> read_file_task_;
 	CStatic display_area_;
 	output::VideoOutputMediaSourcePtr video_output_media_source_;
+  static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;
 	static const int VIDEO_HEIGHT;
 };
