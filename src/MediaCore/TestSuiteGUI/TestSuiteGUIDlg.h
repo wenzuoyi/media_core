@@ -4,9 +4,9 @@
 #include <fstream>
 #include "afxwin.h"
 #include "video_output_media_source.h"
-class CTestSuiteGUIDlg : public CDialogEx, public output::VideoOutputMediaSourceEvent {
+class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent {
 public:
-	CTestSuiteGUIDlg(CWnd* pParent = NULL);	// 标准构造函数
+	TestSuiteGUIDialog(CWnd* pParent = NULL);	// 标准构造函数
 	afx_msg void OnBnClickedButtonOpen();
   afx_msg void OnBnClickedButtonPlayctrl();
 	afx_msg void OnBnClickedButtonClose();

@@ -20,9 +20,7 @@ public:
   #endif
 protected:
   virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV 支持
-  // 实现
-protected:
-DECLARE_MESSAGE_MAP()
+  DECLARE_MESSAGE_MAP()
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX) {
@@ -32,37 +30,36 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX) {
   CDialogEx::DoDataExchange(pDX);
 }
 
-const int CTestSuiteGUIDlg::VIDEO_WIDTH = 320;
-const int CTestSuiteGUIDlg::VIDEO_HEIGHT = 180;
+const int TestSuiteGUIDialog::VIDEO_WIDTH = 320;
+const int TestSuiteGUIDialog::VIDEO_HEIGHT = 180;
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP() // CTestSuiteGUIDlg 对话框
-CTestSuiteGUIDlg::CTestSuiteGUIDlg(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
+END_MESSAGE_MAP() // TestSuiteGUIDialog 对话框
+TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CTestSuiteGUIDlg::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
+void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 }
 
-void CTestSuiteGUIDlg::OnCustomPainting(HDC hdc) {
+void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
 }
 
-void CTestSuiteGUIDlg::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
+void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
 }
 
-void CTestSuiteGUIDlg::DoDataExchange(CDataExchange* pDX) {
+void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
   CDialogEx::DoDataExchange(pDX);
   DDX_Control(pDX, IDC_STATIC_MAIN, display_area_);
 }
 
-BEGIN_MESSAGE_MAP(CTestSuiteGUIDlg, CDialogEx)
-    ON_WM_SYSCOMMAND() ON_WM_PAINT() ON_WM_QUERYDRAGICON()
-    ON_BN_CLICKED(IDC_BUTTON_OPEN, &CTestSuiteGUIDlg::OnBnClickedButtonOpen)
-    ON_BN_CLICKED(IDC_BUTTON_PLAYCTRL, &CTestSuiteGUIDlg::OnBnClickedButtonPlayctrl)
-    ON_BN_CLICKED(IDC_BUTTON_CLOSE, &CTestSuiteGUIDlg::OnBnClickedButtonClose) ON_WM_CREATE() ON_WM_DESTROY()
+BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
+    ON_WM_SYSCOMMAND()
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
 END_MESSAGE_MAP()
 
-BOOL CTestSuiteGUIDlg::OnInitDialog() {
+BOOL TestSuiteGUIDialog::OnInitDialog() {
   CDialogEx::OnInitDialog();
   ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
   ASSERT(IDM_ABOUTBOX < 0xF000);
@@ -91,7 +88,7 @@ BOOL CTestSuiteGUIDlg::OnInitDialog() {
   return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-void CTestSuiteGUIDlg::OnSysCommand(UINT nID, LPARAM lParam) {
+void TestSuiteGUIDialog::OnSysCommand(UINT nID, LPARAM lParam) {
   if ((nID & 0xFFF0) == IDM_ABOUTBOX) {
     CAboutDlg dlgAbout;
     dlgAbout.DoModal();
@@ -100,7 +97,7 @@ void CTestSuiteGUIDlg::OnSysCommand(UINT nID, LPARAM lParam) {
   }
 }
 
-void CTestSuiteGUIDlg::OnPaint() {
+void TestSuiteGUIDialog::OnPaint() {
   if (IsIconic()) {
     CPaintDC dc(this); // 用于绘制的设备上下文
     SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0); // 使图标在工作区矩形中居中
@@ -116,18 +113,18 @@ void CTestSuiteGUIDlg::OnPaint() {
   }
 }
 
-HCURSOR CTestSuiteGUIDlg::OnQueryDragIcon() {
+HCURSOR TestSuiteGUIDialog::OnQueryDragIcon() {
   return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CTestSuiteGUIDlg::OnBnClickedButtonOpen() {
+void TestSuiteGUIDialog::OnBnClickedButtonOpen() {
   ifs_.open(LR"(D:\proj\simplest_media_play\test_yuv420p_320x180.yuv)", std::ios_base::binary);
   if (ifs_.fail()) {
 	  AfxMessageBox(L"打开文件失败!");
   }
 }
 
-void CTestSuiteGUIDlg::StartReadMediaFile() {
+void TestSuiteGUIDialog::StartReadMediaFile() {
   exit_ = false;
   read_file_task_ = std::async(std::launch::async, [this]() {
 	  ifs_.seekg(0, std::ios_base::end);
@@ -153,12 +150,12 @@ void CTestSuiteGUIDlg::StartReadMediaFile() {
   });
 }
 
-void CTestSuiteGUIDlg::StopReadFile() {
+void TestSuiteGUIDialog::StopReadFile() {
   exit_ = true;
   read_file_task_.wait();
 }
 
-void CTestSuiteGUIDlg::PostVideoFrame(const std::vector<char>& buffer) const {
+void TestSuiteGUIDialog::PostVideoFrame(const std::vector<char>& buffer) const {
   auto offset = 0;
   const auto y_stride = VIDEO_WIDTH;
   const auto y_size = (y_stride * VIDEO_HEIGHT);
@@ -185,32 +182,32 @@ void CTestSuiteGUIDlg::PostVideoFrame(const std::vector<char>& buffer) const {
   }
 }
 
-void CTestSuiteGUIDlg::OnBnClickedButtonPlayctrl() {
+void TestSuiteGUIDialog::OnBnClickedButtonPlayctrl() {
   if (video_output_media_source_ == nullptr) {
     return;
   }
   if (!is_playing_) {
     if (video_output_media_source_->Play()) {
-      GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Stop");
+      //GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Stop");
       StartReadMediaFile();
       is_playing_ = true;
     }
   } else {
-    GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Playing");
+    //GetDlgItem(IDC_BUTTON_PLAYCTRL)->SetWindowText(L"Playing");
     StopReadFile();
     video_output_media_source_->Stop();
     is_playing_ = false;
   }
 }
 
-void CTestSuiteGUIDlg::OnBnClickedButtonClose() {
+void TestSuiteGUIDialog::OnBnClickedButtonClose() {
   ifs_.close();
   if (ifs_.fail()) {
     AfxMessageBox(L"关闭文件失败");
   }
 }
 
-int CTestSuiteGUIDlg::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   if (CDialogEx::OnCreate(lpCreateStruct) == -1)
     return -1;
   video_output_media_source_ = output::VideoOutputMediaSource::CreateInstance(output::RenderMode::kD3D);
@@ -221,7 +218,7 @@ int CTestSuiteGUIDlg::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   return 0;
 }
 
-void CTestSuiteGUIDlg::OnDestroy() {
+void TestSuiteGUIDialog::OnDestroy() {
   if (video_output_media_source_ != nullptr) {
     video_output_media_source_->Fini();
     video_output_media_source_ = nullptr;

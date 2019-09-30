@@ -70,7 +70,7 @@ BOOL TestSuiteGUIApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CTestSuiteGUIDlg dlg;
+	TestSuiteGUIDialog dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
@@ -103,4 +103,3 @@ BOOL TestSuiteGUIApp::InitInstance()
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
 }
-
