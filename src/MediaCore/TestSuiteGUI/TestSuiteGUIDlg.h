@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 #include "afxwin.h"
+#include "osd_config_dialog.h"
 #include "video_output_media_source.h"
 class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent {
 public:
@@ -26,6 +27,7 @@ protected:
 	afx_msg void OnRenderStop();
 	afx_msg void OnRenderOpenFile();
 	afx_msg void OnRenderCloseFile();
+	afx_msg void OnRenderOSDConfig();
 	afx_msg HCURSOR OnQueryDragIcon();	
 	DECLARE_MESSAGE_MAP()
 private:
@@ -38,6 +40,7 @@ private:
 	bool exit_{ false };
 	std::future<void> read_file_task_;
 	CStatic display_area_;
+	OSDConfigDialog osd_config_dialog_;
 	output::VideoOutputMediaSourcePtr video_output_media_source_;
   static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;

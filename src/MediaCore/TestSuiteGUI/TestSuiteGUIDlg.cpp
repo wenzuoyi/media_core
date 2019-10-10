@@ -5,8 +5,8 @@
 #include <chrono>
 #include "TestSuiteGUI.h"
 #include "TestSuiteGUIDlg.h"
+#include "character_set_convertor.h"
 #include "afxdialogex.h"
-
 using namespace std::chrono_literals;
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,6 +55,7 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
   ON_COMMAND(ID_RENDER_CLOSE, &TestSuiteGUIDialog::OnRenderCloseFile)
   ON_COMMAND(ID_RENDER_PLAY, &TestSuiteGUIDialog::OnRenderPlay)
   ON_COMMAND(ID_RENDER_STOP, &TestSuiteGUIDialog::OnRenderStop)
+	ON_COMMAND(ID_RENDER_OSD, &TestSuiteGUIDialog::OnRenderOSDConfig)
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
@@ -282,5 +283,23 @@ void TestSuiteGUIDialog::EnableRenderMenuItem(std::map<unsigned, bool>&& menu_it
 	auto menu = GetMenu();
   for (const auto& item : menu_items_map) {
 	  menu->EnableMenuItem(item.first, item.second ? MF_ENABLED : MF_GRAYED);
+  }
+}
+
+void TestSuiteGUIDialog::OnRenderOSDConfig() {
+  if (osd_config_dialog_.DoModal() == IDOK && video_output_media_source_ != nullptr) {
+    auto result = osd_config_dialog_.GetConfigResultList();
+    auto osd_param = std::make_shared<output::OSDParamList>();
+    for (auto i = 0U; i < result->size(); ++i) {
+      auto item = (*result)[i];
+      auto& param_item = (*osd_param)[item->index];
+      param_item.height = item->height;
+      param_item.width = item->width;
+      param_item.x_pos = item->x_pos;
+      param_item.y_pos = item->y_pos;
+      param_item.enable = item->enable;
+	    param_item.content = utils::CharacterSetConvertor::Instance()->UnicodeToUTF8(item->content);
+    }
+    video_output_media_source_->SetOSD(osd_param);
   }
 }
