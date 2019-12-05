@@ -1,9 +1,12 @@
 src/MediaCore/obj/
 src/MediaCore/bin/
 src/MediaCore/pdb/
+src/MediaCore/lib/
+src/MediaCore/ipch/
 *.vcxproj.user
 *.sln.DotSettings.user
 *.VC.db
 *.VC.VC.opendb
 *.suo
 *.exp
+src/MediaCore/.svn/
