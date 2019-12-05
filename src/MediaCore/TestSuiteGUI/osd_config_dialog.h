@@ -6,13 +6,15 @@
 class OSDConfigDialog : public CDialogEx {
 DECLARE_DYNAMIC(OSDConfigDialog)
 public:
-  OSDConfigDialog(CWnd* pParent = NULL); // 标准构造函数
+  OSDConfigDialog(CWnd* pParent = NULL); // 标准构造函数  
   virtual ~OSDConfigDialog(); // 对话框数据
   virtual BOOL OnInitDialog();
   OSDConfigResultListPtr GetConfigResultList() const;
+  void SetConfigResultList(OSDConfigResultListPtr osd_config_result);
   afx_msg void OnBnClickedOk();
   afx_msg void OnBnClickedApplyButton();
   afx_msg void OnBnClickedCancel();
+  afx_msg void OnCbnSelchangeOsdIdsCombox();
   #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ADDOSDCONTENT_DIALOG };
   #endif
@@ -33,5 +35,7 @@ private:
 	CSpinButtonCtrl width_spin_;
 	CSpinButtonCtrl height_spin_;
 	CString content;
+public:
+	afx_msg void OnBnClickedOsdEnableCheck();
 };
 #endif // OSD_CONFIG_DIALOG_H_

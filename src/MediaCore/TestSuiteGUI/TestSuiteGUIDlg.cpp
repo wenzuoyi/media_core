@@ -287,6 +287,15 @@ void TestSuiteGUIDialog::EnableRenderMenuItem(std::map<unsigned, bool>&& menu_it
 }
 
 void TestSuiteGUIDialog::OnRenderOSDConfig() {
+  if (osd_config_result_list_ == nullptr) {
+	  osd_config_result_list_ = std::make_shared<OSDConfigResultList>();
+	  for (auto i = 0U; i < 8; ++i) {
+		  auto osd_config_item = std::make_shared<OSDConfigResult>();
+		  osd_config_item->index = i;
+		  osd_config_result_list_->emplace_back(osd_config_item);
+	  }
+  }
+  osd_config_dialog_.SetConfigResultList(osd_config_result_list_);
   if (osd_config_dialog_.DoModal() == IDOK && video_output_media_source_ != nullptr) {
     auto result = osd_config_dialog_.GetConfigResultList();
     auto osd_param = std::make_shared<output::OSDParamList>();

@@ -41,6 +41,7 @@ private:
 	std::future<void> read_file_task_;
 	CStatic display_area_;
 	OSDConfigDialog osd_config_dialog_;
+	OSDConfigResultListPtr osd_config_result_list_;
 	output::VideoOutputMediaSourcePtr video_output_media_source_;
   static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;

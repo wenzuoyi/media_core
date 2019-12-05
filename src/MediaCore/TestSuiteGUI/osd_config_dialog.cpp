@@ -31,21 +31,21 @@ BEGIN_MESSAGE_MAP(OSDConfigDialog, CDialogEx)
 	ON_BN_CLICKED(IDC_OK, &OSDConfigDialog::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_APPLY_BUTTON, &OSDConfigDialog::OnBnClickedApplyButton)
 	ON_BN_CLICKED(IDC_CANCEL, &OSDConfigDialog::OnBnClickedCancel)
+	ON_CBN_SELCHANGE(IDC_OSD_IDS_COMBO, &OSDConfigDialog::OnCbnSelchangeOsdIdsCombox)
+	ON_BN_CLICKED(IDC_OSD_ENABLE_CHECK, &OSDConfigDialog::OnBnClickedOsdEnableCheck)
 END_MESSAGE_MAP()
 
 BOOL OSDConfigDialog::OnInitDialog() {
   if (!CDialogEx::OnInitDialog()) {
     return FALSE;
   }
-  osd_config_result_list_ = std::make_shared<OSDConfigResultList>();
-  for (auto i = 0U; i < 8; ++i) {
-    std::wostringstream woss;
-    woss << i;
-    auto temp_ids = woss.str();
-    osd_ids_.AddString(temp_ids.c_str());
-	  auto osd_config_item = std::make_shared<OSDConfigResult>();
-	  osd_config_item->index = i;
-	  osd_config_result_list_->emplace_back(osd_config_item);
+  if (osd_config_result_list_ != nullptr) {
+    for (auto item : *osd_config_result_list_) {
+      std::wostringstream woss;
+      woss << item->index;
+      auto temp_ids = woss.str();
+      osd_ids_.AddString(temp_ids.c_str());
+    }
   }
   osd_ids_.SetCurSel(0);
   x_pos_ = y_pos_ = 0;
@@ -61,6 +61,12 @@ OSDConfigResultListPtr OSDConfigDialog::GetConfigResultList() const {
 	return osd_config_result_list_;
 }
 
+void OSDConfigDialog::SetConfigResultList(OSDConfigResultListPtr osd_config_result) {
+  if (osd_config_result != nullptr && osd_config_result != osd_config_result_list_) {
+	  osd_config_result_list_ = osd_config_result;
+  }
+}
+
 void OSDConfigDialog::OnBnClickedOk() {
 	UpdateData();
 	AssignItemValue();
@@ -74,6 +80,9 @@ void OSDConfigDialog::OnBnClickedApplyButton() {
 }
 
 void OSDConfigDialog::AssignItemValue() const {
+  if (osd_config_result_list_ == nullptr) {
+	  return;
+  }
 	auto current_select = osd_ids_.GetCurSel();
 	auto item = osd_config_result_list_->at(current_select);
 	item->enable = (osd_enable_ != 0);
@@ -87,4 +96,34 @@ void OSDConfigDialog::AssignItemValue() const {
 void OSDConfigDialog::OnBnClickedCancel() {
 	UpdateData();
 	CDialogEx::OnCancel();
+}
+
+void OSDConfigDialog::OnCbnSelchangeOsdIdsCombox() {
+	auto current_select = osd_ids_.GetCurSel();
+  if (current_select < osd_config_result_list_->size()) {
+	  auto item = osd_config_result_list_->at(current_select);
+	  osd_enable_ = item->enable;
+	  x_pos_ = item->x_pos;
+	  y_pos_ = item->y_pos;
+	  width_ = item->width;
+	  height_ = item->height;
+	  content = CString(item->content.c_str());	  
+	  UpdateData(FALSE);
+  }
+}
+
+
+void OSDConfigDialog::OnBnClickedOsdEnableCheck() {
+	UpdateData();
+	auto current_select = osd_ids_.GetCurSel();
+  if (!osd_enable_ && current_select < osd_config_result_list_->size()) {
+	  auto item = osd_config_result_list_->at(current_select);
+	  osd_enable_ = item->enable = false;
+	  x_pos_ = item->x_pos = 0;
+	  y_pos_ = item->y_pos = 0;
+	  width_ = item->width = 0;
+	  height_ = item->height = 0;
+	  content = CString();
+	  UpdateData(FALSE);
+  }
 }
