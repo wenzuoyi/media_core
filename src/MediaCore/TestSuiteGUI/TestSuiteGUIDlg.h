@@ -3,6 +3,7 @@
 #include <future>
 #include <fstream>
 #include <map>
+#include <memory>
 #include "afxwin.h"
 #include "osd_config_dialog.h"
 #include "video_output_media_source.h"
@@ -28,13 +29,22 @@ protected:
 	afx_msg void OnRenderOpenFile();
 	afx_msg void OnRenderCloseFile();
 	afx_msg void OnRenderOSDConfig();
-	afx_msg HCURSOR OnQueryDragIcon();	
-	DECLARE_MESSAGE_MAP()
+	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnRenderImageratioAdpater();
+	afx_msg void OnRenderImageratio43();
+	afx_msg void OnRenderImageratio169();
+	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
+DECLARE_MESSAGE_MAP()
 private:
-	void StartReadMediaFile();
+	using ControlAnchorsItem = std::shared_ptr<CRect>;
+	using ControlAnchorsMap = std::map<unsigned, ControlAnchorsItem>;
+  void AppendControlAnchorsInfo();
+  void UpdateControlAnchorsInfo();
+  void StartReadMediaFile();
 	void StopReadFile();
 	void PostVideoFrame(const std::vector<char>& buffer) const;
 	void EnableRenderMenuItem(std::map<unsigned, bool>&& menu_items_map) const;
+	void MutexPictureImageRatioMenuItems(unsigned ui_id);
 	bool is_playing_{ false };
 	std::ifstream ifs_;
 	bool exit_{ false };
@@ -46,6 +56,7 @@ private:
   static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;
 	static const int VIDEO_HEIGHT;
+	ControlAnchorsMap control_anchors_map_;
 };
 
 

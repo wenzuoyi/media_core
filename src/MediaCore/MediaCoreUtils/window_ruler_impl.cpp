@@ -35,7 +35,7 @@ namespace utils {
       result_ = RECT{0, 0, window_width_, window_height_};
 	    return;
     }
-    if (window_width_ > window_height_) {
+    if (window_width_ < window_height_) {
 		  result_.left = (window_width_ - window_height_ * ratio_.first / ratio_.second) / 2;
 		  result_.top = 0;
 		  result_.right = result_.left + (window_height_ * ratio_.first / ratio_.second);

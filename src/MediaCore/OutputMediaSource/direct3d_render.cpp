@@ -75,6 +75,7 @@ namespace output {
           Render(item);
         }
       }
+	    video_frames_list_.Clear();
     });
 	  return true;
   }
@@ -86,7 +87,7 @@ namespace output {
   }
 
   void Direct3DRender::Render(VideoFramePtr video_frame) const {
-	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 255, 0), 1.0f, 0))
+	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0))
     D3DLOCKED_RECT surface;
 	  DXRETURNVOID(source_surface_->LockRect(&surface, nullptr, D3DLOCK_DONOTWAIT))
 		CopyBufferToSurface(video_frame, &surface);
@@ -187,6 +188,7 @@ namespace output {
 	  exit_ = true;
 	  InputVideoFrame(VideoFramePtr());
 	  render_task_.wait();
+	  video_frames_list_.Clear();
     if (customize_surface_ != nullptr) {
       customize_surface_->Release();
       customize_surface_ = nullptr;
