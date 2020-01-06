@@ -36,8 +36,6 @@ protected:
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 DECLARE_MESSAGE_MAP()
 private:
-	using ControlAnchorsItem = std::shared_ptr<CRect>;
-	using ControlAnchorsMap = std::map<unsigned, ControlAnchorsItem>;
   void AppendControlAnchorsInfo();
   void UpdateControlAnchorsInfo();
   void StartReadMediaFile();
@@ -52,11 +50,11 @@ private:
 	CStatic display_area_;
 	OSDConfigDialog osd_config_dialog_;
 	OSDConfigResultListPtr osd_config_result_list_;
+
 	output::VideoOutputMediaSourcePtr video_output_media_source_;
   static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;
 	static const int VIDEO_HEIGHT;
-	ControlAnchorsMap control_anchors_map_;
 };
 
 

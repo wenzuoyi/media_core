@@ -346,47 +346,88 @@ void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {
 
 
 void TestSuiteGUIDialog::OnSizing(UINT fwSide, LPRECT pRect) {
-	RECT orgin_rect;
-	display_area_.GetWindowRect(&orgin_rect);
+	// RECT orgin_rect;
+	// display_area_.GetWindowRect(&orgin_rect);
 	CDialogEx::OnSizing(fwSide, pRect);
 	UpdateControlAnchorsInfo();
-	//video_output_media_source_->Stop();
-	//video_output_media_source_->ResizeWindow();
-	//video_output_media_source_->Play();
 }
 
 void TestSuiteGUIDialog::AppendControlAnchorsInfo() {
-	std::vector<unsigned> layout_ids{ 0, IDC_STATIC_MAIN, IDC_SLIDER1 };
-  for (auto control_id : layout_ids) {
-    auto region = std::make_shared<CRect>();
-    if (control_id == 0) {
-      GetClientRect(region.get());
-    } else {
-      GetDlgItem(control_id)->GetWindowRect(region.get());
-    }
-    control_anchors_map_.insert(std::make_pair(control_id, region));
-  }
+	//std::vector<unsigned> layout_ids{ 0, IDC_STATIC_MAIN, IDC_SLIDER1 };
+ // for (auto control_id : layout_ids) {
+ //   auto region = std::make_shared<CRect>();
+ //   if (control_id == 0) {
+ //     GetClientRect(region.get());
+ //   } else {
+ //     GetDlgItem(control_id)->GetWindowRect(region.get());
+ //   }
+ //   control_anchors_map_.insert(std::make_pair(control_id, region));
+ // }
+  //CRect origin_window_size;
+  //GetClientRect(&origin_window_size);
+  //const auto origin_window_width = origin_window_size.Width();
+  //const auto origin_window_height = origin_window_size.Height();
+  //auto sub_window_handler = ::GetWindow(m_hWnd, GW_CHILD); //列出所有控件   
+  //while (sub_window_handler != nullptr) {
+  //  CRect child_control_rect;
+  //  const auto child_control_id = ::GetDlgCtrlID(sub_window_handler);
+  //  GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
+  //  ScreenToClient(child_control_rect);
+  //  CRect target_rect;
+  //  target_rect.left = static_cast<long>(static_cast<double>(child_control_rect.left) * x_zoom_factor);
+  //  target_rect.top = static_cast<long>(static_cast<double>(child_control_rect.top) * y_zoom_factor);
+  //  target_rect.right = static_cast<long>(static_cast<double>(child_control_rect.right) * x_zoom_factor);
+  //  target_rect.bottom = static_cast<long>(static_cast<double>(child_control_rect.bottom) * y_zoom_factor);;
+  //  GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
+  //  sub_window_handler = ::GetWindow(sub_window_handler, GW_HWNDNEXT);
+  //}
+
+
 }
 
 void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
-	auto item = std::make_shared<CRect>();
-	GetClientRect(item.get());
-	const auto current_client_region_width = item->Width();
-	const auto current_client_region_height = item->Height();
-	const auto orgin_client_region_width = control_anchors_map_[0]->Width();
-	const auto orgin_client_region_height = control_anchors_map_[0]->Height();
-	std::vector<unsigned> layout_ids{ IDC_STATIC_MAIN, IDC_SLIDER1};
-	for (auto control_id : layout_ids) {
-	  auto sub_item= control_anchors_map_[control_id];
-	  CRect temp;
-	  temp.left = sub_item->left * current_client_region_width / orgin_client_region_width;
-	  temp.top = sub_item->top * current_client_region_height / orgin_client_region_height;
-	  temp.right = temp.left + sub_item->Width() * current_client_region_width / orgin_client_region_width;
-	  temp.bottom = temp.top + sub_item->Height() * current_client_region_height / orgin_client_region_height;
-	  TRACE("(%d,%d,%d,%d)\r\n", temp.left, temp.top, temp.right, temp.bottom);
-	  //GetDlgItem(control_id)->ClientToScreen(&temp);
-	  GetDlgItem(control_id)->MoveWindow(temp.left, temp.top, temp.Width(), temp.Height());
-	  UpdateWindow();
-	}
+	// auto item = std::make_shared<CRect>();
+	// GetClientRect(item.get());
+	// if (item->Width() == control_anchors_map_[0]->Width() && item->Height() == control_anchors_map_[0]->Height()) {
+	   //  return;
+	// }
+
+	// const auto current_client_region_width = item->Width();
+	// const auto current_client_region_height = item->Height();
+	// const auto orgin_client_region_width = control_anchors_map_[0]->Width();
+	// const auto orgin_client_region_height = control_anchors_map_[0]->Height();
+	// std::vector<unsigned> layout_ids{IDC_STATIC_MAIN, IDC_SLIDER1};
+	// for (auto control_id : layout_ids) {
+	//   auto sub_item = control_anchors_map_[control_id];
+	//   CRect temp;
+	//   temp.left = sub_item->left * current_client_region_width / orgin_client_region_width;
+	//   temp.top = sub_item->top * current_client_region_height / orgin_client_region_height;
+	//   temp.right = sub_item->right * current_client_region_width / orgin_client_region_width;
+	//   temp.bottom = sub_item->bottom * current_client_region_height / orgin_client_region_height;
+	//   TRACE("(%d,%d,%d,%d)\r\n", temp.left, temp.top, temp.right, temp.bottom);
+	//   
+	   //GetDlgItem(control_id)->MoveWindow(temp.left, temp.top, temp.Width(), temp.Height());
+// }
+	//CRect current_layout;
+	//GetClientRect(&current_layout); //取客户区大小   
+	//const auto x_zoom_factor = static_cast<double>(current_layout.Width()) / static_cast<double>(orgin_layout_.Width());
+ // const auto y_zoom_factor = static_cast<double>(current_layout.Height()) / static_cast<double>(orgin_layout_.Height());
+ // auto child_control_handler = ::GetWindow(m_hWnd, GW_CHILD); //列出所有控件   
+	//while (child_control_handler != nullptr) {
+	//	CRect child_control_rect;
+	//	auto child_control_id = ::GetDlgCtrlID(child_control_handler);
+	//	GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
+	//	ScreenToClient(child_control_rect);
+	//	CRect  target_rect;
+	//	target_rect.left = static_cast<long>(static_cast<double>(child_control_rect.left)*x_zoom_factor);
+	//	target_rect.top = static_cast<long>(static_cast<double>(child_control_rect.top)*y_zoom_factor);
+	//	target_rect.right = static_cast<long>(static_cast<double>(child_control_rect.right)*x_zoom_factor);
+	//	target_rect.bottom = static_cast<long>(static_cast<double>(child_control_rect.bottom)*y_zoom_factor);;
+	//	GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
+	//	child_control_handler = ::GetWindow(child_control_handler, GW_HWNDNEXT);
+	//}
+
+	//orgin_layout_ = current_layout;
 }
+
 
