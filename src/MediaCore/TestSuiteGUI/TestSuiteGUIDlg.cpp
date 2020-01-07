@@ -396,6 +396,9 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 		GetDlgItem(child_control_id)->Invalidate();
 		sub_control_handler = ::GetWindow(sub_control_handler, GW_HWNDNEXT);
 	}
+  if (video_output_media_source_ != nullptr) {
+	  video_output_media_source_->ResizeWindow();
+  }
 }
 
 

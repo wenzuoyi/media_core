@@ -23,12 +23,12 @@ namespace output {
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void OpenROI(const RECT& region) override;
     void CloseROI() override;
+    void ResizeWindow();
 	private:
     bool CreateD3dDevice();
 	  bool CreateD3dSurface();
 	  bool CreateRenderTask();
 	  bool CreateOSDFont();
-    void ResizeWindow();
 	  void Render(VideoFramePtr video_frame) const;
 	  void SetOSDContent() const;
     static void CopyBufferToSurface(VideoFramePtr video_frame, D3DLOCKED_RECT* surface);
@@ -50,6 +50,7 @@ namespace output {
 		long window_height_{ 0 };
 		bool enable_roi_{ false };
 		RECT roi_;
+		bool is_playing_{ false };
 	};
 }
 #endif // DIRECT3D_RENDER_H_

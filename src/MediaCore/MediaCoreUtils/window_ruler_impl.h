@@ -12,6 +12,7 @@ namespace utils {
 	  bool IsAutoAdaptFrom() const;
     RECT GetRendingArea() const override;
 	private:
+    static inline auto Ratio(const int data1, const int data2) -> double { return static_cast<double>(data1) / static_cast<double>(data2); }
 		void CalculateFromSize();
 		int window_width_{ 0 };
 		int window_height_{ 0 };

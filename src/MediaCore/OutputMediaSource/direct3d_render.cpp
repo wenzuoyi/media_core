@@ -11,7 +11,6 @@ namespace output {
     return var; \
   } \
 
-
   Direct3DRender::Direct3DRender() : video_frames_list_(3), roi_() {
   }
   
@@ -181,6 +180,7 @@ namespace output {
     if (!CreateRenderTask()) {
       return false;
     }
+    is_playing_ = true;
     return true;
   }
 
@@ -205,6 +205,7 @@ namespace output {
       font_->Release();
       font_ = nullptr;
     }
+    is_playing_ = false;
   }
 
   void Direct3DRender::SetOSD(OSDParamListPtr osd_param_list) {
@@ -240,6 +241,10 @@ namespace output {
   }
 
   void Direct3DRender::ResizeWindow() {
+    if (is_playing_) {
+      Stop();
+      Play();
+    }
 	  RECT rect;
 	  GetClientRect(param_->render_wnd, &rect);
 	  window_width_ = rect.right - rect.left;
