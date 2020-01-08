@@ -23,7 +23,7 @@ namespace output {
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void OpenROI(const RECT& region) override;
     void CloseROI() override;
-    void ResizeWindow();
+    void ResizeWindow() override;
 	private:
     bool CreateD3dDevice();
 	  bool CreateD3dSurface();
