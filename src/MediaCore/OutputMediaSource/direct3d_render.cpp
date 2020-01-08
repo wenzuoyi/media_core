@@ -11,7 +11,6 @@ namespace output {
     return var; \
   } \
 
-
   Direct3DRender::Direct3DRender() : video_frames_list_(3), roi_() {
   }
   
@@ -75,6 +74,7 @@ namespace output {
           Render(item);
         }
       }
+	    video_frames_list_.Clear();
     });
 	  return true;
   }
@@ -86,7 +86,7 @@ namespace output {
   }
 
   void Direct3DRender::Render(VideoFramePtr video_frame) const {
-	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 255, 0), 1.0f, 0))
+	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0))
     D3DLOCKED_RECT surface;
 	  DXRETURNVOID(source_surface_->LockRect(&surface, nullptr, D3DLOCK_DONOTWAIT))
 		CopyBufferToSurface(video_frame, &surface);
@@ -180,6 +180,7 @@ namespace output {
     if (!CreateRenderTask()) {
       return false;
     }
+    is_playing_ = true;
     return true;
   }
 
@@ -187,6 +188,7 @@ namespace output {
 	  exit_ = true;
 	  InputVideoFrame(VideoFramePtr());
 	  render_task_.wait();
+	  video_frames_list_.Clear();
     if (customize_surface_ != nullptr) {
       customize_surface_->Release();
       customize_surface_ = nullptr;
@@ -203,6 +205,7 @@ namespace output {
       font_->Release();
       font_ = nullptr;
     }
+    is_playing_ = false;
   }
 
   void Direct3DRender::SetOSD(OSDParamListPtr osd_param_list) {
@@ -238,6 +241,10 @@ namespace output {
   }
 
   void Direct3DRender::ResizeWindow() {
+    if (is_playing_) {
+      Stop();
+      Play();
+    }
 	  RECT rect;
 	  GetClientRect(param_->render_wnd, &rect);
 	  window_width_ = rect.right - rect.left;

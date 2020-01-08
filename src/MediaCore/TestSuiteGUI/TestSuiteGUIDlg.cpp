@@ -2,6 +2,7 @@
 //
 #include "stdafx.h"
 #include <vector>
+#include <sstream>
 #include <chrono>
 #include "TestSuiteGUI.h"
 #include "TestSuiteGUIDlg.h"
@@ -56,6 +57,10 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
   ON_COMMAND(ID_RENDER_PLAY, &TestSuiteGUIDialog::OnRenderPlay)
   ON_COMMAND(ID_RENDER_STOP, &TestSuiteGUIDialog::OnRenderStop)
 	ON_COMMAND(ID_RENDER_OSD, &TestSuiteGUIDialog::OnRenderOSDConfig)
+	ON_COMMAND(ID_RENDER_IMAGERATIO_ADPATER, &TestSuiteGUIDialog::OnRenderImageratioAdpater)
+	ON_COMMAND(ID_RENDER_IMAGERATIO_43, &TestSuiteGUIDialog::OnRenderImageratio43)
+	ON_COMMAND(ID_RENDER_IMAGERATIO_169, &TestSuiteGUIDialog::OnRenderImageratio169)
+	ON_WM_SIZING()
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
@@ -84,7 +89,6 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
   }
   SetIcon(m_hIcon, TRUE); // 设置大图标
   SetIcon(m_hIcon, FALSE); // 设置小图标
-  ShowWindow(SW_MINIMIZE);
   if (video_output_media_source_ != nullptr) {
 	  video_output_media_source_->Init();
 	  auto video_param = std::make_shared<output::VideoOutputParam>();
@@ -100,6 +104,7 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
     {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false}, { ID_RENDER_IMAGERATIO_43, false},
     {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false}
   });
+  InitControlAnchorsBaseInfo();
   return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -108,7 +113,14 @@ void TestSuiteGUIDialog::OnSysCommand(UINT nID, LPARAM lParam) {
     CAboutDlg dlgAbout;
     dlgAbout.DoModal();
   } else {
+    if (nID == 0xF012 || nID == 0xF032 || nID == 0xF122) {
+      return;
+    }
     CDialogEx::OnSysCommand(nID, lParam);
+    if (nID == SC_MAXIMIZE || nID == SC_RESTORE) {
+		  UpdateControlAnchorsInfo();
+    }
+	  TRACE("command:0x%x", nID);
   }
 }
 
@@ -312,3 +324,81 @@ void TestSuiteGUIDialog::OnRenderOSDConfig() {
     video_output_media_source_->SetOSD(osd_param);
   }
 }
+
+
+void TestSuiteGUIDialog::OnRenderImageratioAdpater() {
+	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_ADPATER);
+	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kAdapter);
+}
+
+
+void TestSuiteGUIDialog::OnRenderImageratio43() {
+	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_43);
+	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kRatio43);
+}
+
+
+void TestSuiteGUIDialog::OnRenderImageratio169() {
+	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_169);
+	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kRatio169);
+}
+
+void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {
+  auto menu = GetMenu();
+  menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ADPATER, (ui_id == ID_RENDER_IMAGERATIO_ADPATER ? MF_CHECKED : MF_UNCHECKED));
+  menu->CheckMenuItem(ID_RENDER_IMAGERATIO_43, (ui_id == ID_RENDER_IMAGERATIO_43 ? MF_CHECKED : MF_UNCHECKED));
+  menu->CheckMenuItem(ID_RENDER_IMAGERATIO_169, (ui_id == ID_RENDER_IMAGERATIO_169 ? MF_CHECKED : MF_UNCHECKED));
+  UpdateData(FALSE);
+}
+
+
+void TestSuiteGUIDialog::OnSizing(UINT fwSide, LPRECT pRect) {
+	CDialogEx::OnSizing(fwSide, pRect);
+	UpdateControlAnchorsInfo();
+}
+
+void TestSuiteGUIDialog::InitControlAnchorsBaseInfo() {
+  CRect origin_window_size;
+  GetClientRect(&origin_window_size);
+  const auto origin_window_width = origin_window_size.Width();
+  const auto origin_window_height = origin_window_size.Height();
+  auto sub_window_handler = ::GetWindow(m_hWnd, GW_CHILD);
+  while (sub_window_handler != nullptr) {
+    CRect child_control_rect;
+    const auto child_control_id = ::GetDlgCtrlID(sub_window_handler);
+    GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
+    ScreenToClient(child_control_rect);
+    auto anchor_base_info = std::make_shared<AnchorBaseInfo>();
+    anchor_base_map_.insert(std::make_pair(child_control_id, anchor_base_info));
+    anchor_base_info->left = static_cast<double>(child_control_rect.left) / static_cast<double>(origin_window_width);
+    anchor_base_info->top = static_cast<double>(child_control_rect.top) / static_cast<double>(origin_window_height);
+    anchor_base_info->right = static_cast<double>(child_control_rect.right) / static_cast<double>(origin_window_width);
+    anchor_base_info->bottom = static_cast<double>(child_control_rect.bottom) / static_cast<double>(origin_window_height);
+    sub_window_handler = ::GetWindow(sub_window_handler, GW_HWNDNEXT);
+  }
+}
+
+void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
+	CRect current_layout;
+	GetClientRect(&current_layout);
+	const auto width = static_cast<double>(current_layout.Width());
+	const auto height = static_cast<double>(current_layout.Height());
+  auto sub_control_handler = ::GetWindow(m_hWnd, GW_CHILD);
+	while (sub_control_handler != nullptr) {
+		auto child_control_id = ::GetDlgCtrlID(sub_control_handler);
+		auto origin_rect = anchor_base_map_[child_control_id];
+		CRect  target_rect;
+		target_rect.left = static_cast<long>(origin_rect->left * width);
+		target_rect.top = static_cast<long>(origin_rect->top * height);
+		target_rect.right = static_cast<long>(origin_rect->right * width);
+		target_rect.bottom = static_cast<long>(origin_rect->bottom* height);
+		GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
+		GetDlgItem(child_control_id)->Invalidate();
+		sub_control_handler = ::GetWindow(sub_control_handler, GW_HWNDNEXT);
+	}
+  if (video_output_media_source_ != nullptr) {
+	  video_output_media_source_->ResizeWindow();
+  }
+}
+
+

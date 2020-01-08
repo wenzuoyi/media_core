@@ -3,9 +3,18 @@
 #include <future>
 #include <fstream>
 #include <map>
+#include <memory>
 #include "afxwin.h"
 #include "osd_config_dialog.h"
 #include "video_output_media_source.h"
+struct AnchorBaseInfo {
+	double top;
+	double left;
+	double right;
+	double bottom;
+};
+using AnchorBaseInfoPtr = std::shared_ptr<AnchorBaseInfo>;
+using AnchorBaseMap = std::map<unsigned long, AnchorBaseInfoPtr>;
 class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent {
 public:
 	TestSuiteGUIDialog(CWnd* pParent = NULL);	// 标准构造函数
@@ -28,13 +37,20 @@ protected:
 	afx_msg void OnRenderOpenFile();
 	afx_msg void OnRenderCloseFile();
 	afx_msg void OnRenderOSDConfig();
-	afx_msg HCURSOR OnQueryDragIcon();	
-	DECLARE_MESSAGE_MAP()
+	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnRenderImageratioAdpater();
+	afx_msg void OnRenderImageratio43();
+	afx_msg void OnRenderImageratio169();
+	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
+DECLARE_MESSAGE_MAP()
 private:
-	void StartReadMediaFile();
+  void InitControlAnchorsBaseInfo();
+  void UpdateControlAnchorsInfo();
+  void StartReadMediaFile();
 	void StopReadFile();
 	void PostVideoFrame(const std::vector<char>& buffer) const;
 	void EnableRenderMenuItem(std::map<unsigned, bool>&& menu_items_map) const;
+	void MutexPictureImageRatioMenuItems(unsigned ui_id);
 	bool is_playing_{ false };
 	std::ifstream ifs_;
 	bool exit_{ false };
@@ -42,6 +58,7 @@ private:
 	CStatic display_area_;
 	OSDConfigDialog osd_config_dialog_;
 	OSDConfigResultListPtr osd_config_result_list_;
+	AnchorBaseMap anchor_base_map_;
 	output::VideoOutputMediaSourcePtr video_output_media_source_;
   static int GetYUVFrameSize() { return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;}
 	static const int VIDEO_WIDTH;

@@ -50,6 +50,7 @@ namespace output {
 		long window_height_{ 0 };
 		bool enable_roi_{ false };
 		RECT roi_;
+		bool is_playing_{ false };
 	};
 }
 #endif // DIRECT3D_RENDER_H_
