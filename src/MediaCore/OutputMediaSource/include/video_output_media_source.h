@@ -28,8 +28,8 @@ namespace output {
     virtual void SetVideoOutputMediaParam(VideoOutputParamPtr video_output_param) = 0;
     virtual bool Play() = 0;
     virtual void Stop() = 0;
-    virtual void OpenROI(const RECT& region) = 0;
-    virtual void CloseROI() = 0;
+    virtual void EnableROI(bool enable) = 0;
+    virtual void UpdateROI(const RECT& roi) = 0;
     virtual void SetOSD(OSDParamListPtr osd_param_list) = 0;
     virtual void SetDisplayRatio(DisplayRatio display_ratio) = 0;
     virtual void InputVideoFrame(VideoFramePtr video_frame) = 0;

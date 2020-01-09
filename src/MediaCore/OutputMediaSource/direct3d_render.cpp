@@ -92,7 +92,7 @@ namespace output {
 		CopyBufferToSurface(video_frame, &surface);
 	  video_frame = nullptr;
 	  DXRETURNVOID(source_surface_->UnlockRect())
-    if (enable_roi_) {
+    if (enable_roi_ && update_roi_) {
 		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
     } else {
 		  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
@@ -231,13 +231,21 @@ namespace output {
     }
   }
 
-  void Direct3DRender::OpenROI(const RECT& region) {
-	  enable_roi_ = true;
-	  roi_ = region;
+  void Direct3DRender::EnableROI(bool enable) {
+	  enable_roi_ = enable;
+    if(enable_roi_) {
+		  update_roi_ = false;
+    }
   }
 
-  void Direct3DRender::CloseROI() {
-	  enable_roi_ = false;
+  void Direct3DRender::UpdateROI(const RECT& roi) {
+    if (std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom) == std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom)) {
+      return;
+    }
+    roi_ = roi;
+    if (!update_roi_) {
+      update_roi_ = true;
+    }
   }
 
   void Direct3DRender::ResizeWindow() {

@@ -21,8 +21,8 @@ namespace output {
     void SetOSD(OSDParamListPtr osd_param_list) override;
     void SetDisplayRatio(DisplayRatio display_ratio) override;
     void InputVideoFrame(VideoFramePtr video_frame) override;
-    void OpenROI(const RECT& region) override;
-    void CloseROI() override;
+    void EnableROI(bool enable) override;
+    void UpdateROI(const RECT& roi) override;
     void ResizeWindow() override;
 	private:
     bool CreateD3dDevice();
@@ -49,6 +49,7 @@ namespace output {
 		long window_width_{ 0 };
 		long window_height_{ 0 };
 		bool enable_roi_{ false };
+		bool update_roi_{ false };
 		RECT roi_;
 		bool is_playing_{ false };
 	};
