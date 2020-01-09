@@ -42,6 +42,9 @@ protected:
 	afx_msg void OnRenderImageratio43();
 	afx_msg void OnRenderImageratio169();
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
+	afx_msg void OnRenderImageratioROI();
+	afx_msg void OnUpdateRendeCheckROI(CCmdUI *pCmdUI);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 DECLARE_MESSAGE_MAP()
 private:
   void InitControlAnchorsBaseInfo();
@@ -54,8 +57,10 @@ private:
 	bool is_playing_{ false };
 	std::ifstream ifs_;
 	bool exit_{ false };
+	bool roi_check_status_{ false };
 	std::future<void> read_file_task_;
 	CStatic display_area_;
+	HCURSOR arrow_style_cursor_, cross_style_cursor_;
 	OSDConfigDialog osd_config_dialog_;
 	OSDConfigResultListPtr osd_config_result_list_;
 	AnchorBaseMap anchor_base_map_;

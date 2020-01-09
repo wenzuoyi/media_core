@@ -34,6 +34,7 @@ namespace output {
     virtual void SetDisplayRatio(DisplayRatio display_ratio) = 0;
     virtual void InputVideoFrame(VideoFramePtr video_frame) = 0;
     virtual void ResizeWindow() = 0;
+	  virtual bool IsValidRendingArea(const POINT& point) const = 0;
   };
 }
 #endif // VIDEO_OUTPUT_MEDIA_SOURCE_H_

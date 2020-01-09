@@ -39,6 +39,8 @@ const int TestSuiteGUIDialog::VIDEO_HEIGHT = 180;
 
 TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+  cross_style_cursor_ = LoadCursor(NULL, IDC_CROSS);
+  arrow_style_cursor_ = LoadCursor(NULL, IDC_ARROW);
 }
 
 void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
@@ -61,6 +63,9 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_43, &TestSuiteGUIDialog::OnRenderImageratio43)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_169, &TestSuiteGUIDialog::OnRenderImageratio169)
 	ON_WM_SIZING()
+	ON_COMMAND(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnRenderImageratioROI)
+	ON_UPDATE_COMMAND_UI(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnUpdateRendeCheckROI)
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
@@ -215,6 +220,9 @@ int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 void TestSuiteGUIDialog::OnDestroy() {
   if (video_output_media_source_ != nullptr) {
+    if (is_playing_) {
+		  OnRenderStop();
+    }
     video_output_media_source_->Fini();
     video_output_media_source_ = nullptr;
   }
@@ -401,4 +409,28 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
   }
 }
 
+void TestSuiteGUIDialog::OnRenderImageratioROI() {
+  if (video_output_media_source_ != nullptr) {
+	  video_output_media_source_->EnableROI(roi_check_status_);
+  }
+}
 
+
+void TestSuiteGUIDialog::OnUpdateRendeCheckROI(CCmdUI *pCmdUI) {
+	roi_check_status_ = !roi_check_status_;
+	pCmdUI->SetCheck(roi_check_status_);
+}
+
+void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
+  CDialogEx::OnMouseMove(nFlags, point);
+  TRACE("(%d, %d)\r\n", point.x, point.y);
+
+  if (roi_check_status_) {
+    POINT current_pos{point.x, point.y};
+    if (video_output_media_source_ != nullptr && video_output_media_source_->IsValidRendingArea(current_pos)) {
+      SetCursor(cross_style_cursor_);
+    } else {
+      SetCursor(arrow_style_cursor_);
+    }
+  }
+}

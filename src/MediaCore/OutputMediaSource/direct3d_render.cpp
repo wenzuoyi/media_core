@@ -85,7 +85,7 @@ namespace output {
         FF_DONTCARE, TEXT("Î¢ÈíÑÅºÚ"), &font_));
   }
 
-  void Direct3DRender::Render(VideoFramePtr video_frame) const {
+  void Direct3DRender::Render(VideoFramePtr video_frame) const {    
 	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0))
     D3DLOCKED_RECT surface;
 	  DXRETURNVOID(source_surface_->LockRect(&surface, nullptr, D3DLOCK_DONOTWAIT))
@@ -222,6 +222,7 @@ namespace output {
     } else if (display_ratio == DisplayRatio::kRatio169) {
       window_ruler_->SetAspectRatio(std::make_pair(16, 9));
     }
+    TransformCoordinateSystem();
   }
 
   void Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
@@ -232,9 +233,12 @@ namespace output {
   }
 
   void Direct3DRender::EnableROI(bool enable) {
-	  enable_roi_ = enable;
-    if(enable_roi_) {
-		  update_roi_ = false;
+    if (enable == enable_roi_) {
+      return;
+    }
+    enable_roi_ = enable;
+    if (enable_roi_) {
+      update_roi_ = false;
     }
   }
 
@@ -248,6 +252,17 @@ namespace output {
     }
   }
 
+  void Direct3DRender::TransformCoordinateSystem() {
+    const auto rending_area = window_ruler_->GetRendingArea();
+    std::tie(left_top_corner_.x, left_top_corner_.y) = std::make_tuple(rending_area.left, rending_area.top);
+    std::tie(right_bottom_corner_.x, right_bottom_corner_.y) = std::make_tuple(rending_area.right, rending_area.bottom);
+    ::ClientToScreen(param_->render_wnd, &left_top_corner_);
+    ::ClientToScreen(param_->render_wnd, &right_bottom_corner_);
+    const auto parent = ::GetParent(param_->render_wnd);
+    ::ScreenToClient(parent, &left_top_corner_);
+    ::ScreenToClient(parent, &right_bottom_corner_);
+  }
+
   void Direct3DRender::ResizeWindow() {
     if (is_playing_) {
       Stop();
@@ -258,6 +273,20 @@ namespace output {
 	  window_width_ = rect.right - rect.left;
 	  window_height_ = rect.bottom - rect.top;
 	  window_ruler_->SetWindowSize(window_width_, window_height_);
+	  TransformCoordinateSystem();
+  }
+
+  bool Direct3DRender::IsValidRendingArea(const POINT& point) const {
+    if (window_ruler_ == nullptr) {
+      return false;
+    }
+    if (point.x < left_top_corner_.x || point.x > right_bottom_corner_.x) {
+      return false;
+    }
+    if (point.y < left_top_corner_.y || point.y > right_bottom_corner_.y) {
+      return false;
+    }
+    return true;
   }
 }
 
