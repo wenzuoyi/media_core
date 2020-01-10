@@ -61,7 +61,7 @@ namespace output {
                                                &source_surface_, nullptr);
     DXRETURNVALUE(var, false)
     var = device_->CreateOffscreenPlainSurface(param_->width, param_->height, D3DFMT_X8R8G8B8,
-                                                           D3DPOOL_DEFAULT, &customize_surface_, nullptr);
+                                                           D3DPOOL_DEFAULT, &customize_surface_, nullptr);  	
 		return SUCCEEDED(var);
   }
 
@@ -95,10 +95,10 @@ namespace output {
     if (enable_roi_ && update_roi_) {
 		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
     } else {
-		  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
+		  (device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
     }
     HDC hdc;
-    DXRETURNVOID(customize_surface_->GetDC(&hdc));
+    DXRETURNVOID(customize_surface_->GetDC(&hdc));    
     if (sink_ != nullptr) {
       sink_->OnCustomPainting(hdc);
     }
