@@ -87,9 +87,9 @@ void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
 	//::SetBkMode(hdc, TRANSPARENT);
 	//::TextOut(hdc, 100, 100, L"Hello", 5);
-  //if (!is_click_mouse_) {
-	 // return;
-  //}
+  if (!is_click_mouse_) {
+	  return;
+  }
   auto client_dc = CDC::FromHandle(hdc);
   CPen pen;
   pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
@@ -97,10 +97,13 @@ void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
   client_dc->SelectObject(pen);
   auto previous_brush = client_dc->SelectObject(empty_brush);
   auto previous_mode = client_dc->SetROP2(R2_NOTXORPEN);
-  //CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
-  //CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
-  current_point_ = CPoint(220, 220);
-  CRect current_rect(CPoint(0, 0), CPoint(50, 50));
+  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
+  left_top_corner.x = (left_top_corner.x * VIDEO_WIDTH / control_width_);
+  left_top_corner.y = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
+  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
+  right_bottom_corner.x = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
+  right_bottom_corner.y = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);
+  CRect current_rect(left_top_corner, right_bottom_corner);
   client_dc->Rectangle(&current_rect);
   client_dc->SelectObject(previous_brush);
   client_dc->SetROP2(previous_mode);
@@ -407,9 +410,11 @@ void TestSuiteGUIDialog::InitControlAnchorsBaseInfo() {
     const auto child_control_id = ::GetDlgCtrlID(sub_window_handler);
     GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
     if (child_control_id == IDC_STATIC_MAIN) {
-      CPoint temp = child_control_rect.TopLeft();
+      auto temp = child_control_rect.TopLeft();
       ScreenToClient(&temp);
       display_area_left_corner_ = temp;
+	    control_width_ = origin_window_width;
+		  control_height_ = origin_window_height;
     }
     ScreenToClient(child_control_rect);
     auto anchor_base_info = std::make_shared<AnchorBaseInfo>();
@@ -440,6 +445,8 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 			CRect temp_rect;
 			GetDlgItem(child_control_id)->GetClientRect(&temp_rect);
 			display_area_left_corner_ = temp_rect.TopLeft();
+      control_width_ = target_rect.right - target_rect.left;
+      control_height_ = target_rect.bottom - target_rect.top;
 		}
 		GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
 		GetDlgItem(child_control_id)->Invalidate();
@@ -471,23 +478,23 @@ void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
       SetCursor(arrow_style_cursor_);
     }
   }
-  //if (is_click_mouse_) {
-	 // CPoint  temp;
-	 // temp.x = point.x - display_area_left_corner_.x;
-	 // temp.y = point.y - display_area_left_corner_.y;
-	 // current_point_ = temp;
-  //}
+  if (is_click_mouse_) {
+	  CPoint  temp;
+	  temp.x = point.x - display_area_left_corner_.x;
+	  temp.y = point.y - display_area_left_corner_.y;
+	  current_point_ = temp;
+  }
 }
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
 	CDialogEx::OnLButtonUp(nFlags, point);
-  //if (is_click_mouse_) {
-	 // CPoint  temp;
-	 // temp.x = point.x - display_area_left_corner_.x;
-	 // temp.y = point.y - display_area_left_corner_.y;
-	 // current_point_ = temp;
-	 // is_click_mouse_ = false;
-  //}
+  if (is_click_mouse_) {
+	  CPoint  temp;
+	  temp.x = point.x - display_area_left_corner_.x;
+	  temp.y = point.y - display_area_left_corner_.y;
+	  current_point_ = temp;
+	  is_click_mouse_ = false;
+  }
 }
 
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
@@ -498,13 +505,8 @@ void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
   temp.y = point.y - display_area_left_corner_.y;
   start_point_ = temp;
   current_point_ = temp;
-  TRACE("(%d, %d)", temp.x, temp.y);
-}
+  start_point_ratio_.x = static_cast<double>(temp.x) / static_cast<double>(control_width_);
+  start_point_ratio_.y = static_cast<double>(temp.y) / static_cast<double>(control_height_);
 
-CPoint TestSuiteGUIDialog::TransformCoordinateSystem(HWND source, HWND target, const CPoint& point) {
-	POINT temp{ point.x, point.y };
-	POINT result;
-	::ClientToScreen(source, &temp);
-	::ScreenToClient(target, &result);
-	return CPoint(result.x, result.y);
+  TRACE("(%d, %d)", temp.x, temp.y);
 }

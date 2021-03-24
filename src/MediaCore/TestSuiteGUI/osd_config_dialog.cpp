@@ -39,6 +39,10 @@ BOOL OSDConfigDialog::OnInitDialog() {
   if (!CDialogEx::OnInitDialog()) {
     return FALSE;
   }
+  xpos_spin_.SetRange32(0, 1920);
+  ypos_spin_.SetRange32(0, 1080);
+  width_spin_.SetRange32(0, 1920);
+  height_spin_.SetRange32(0, 1080);
   if (osd_config_result_list_ != nullptr) {
     for (auto item : *osd_config_result_list_) {
       std::wostringstream woss;
@@ -46,14 +50,17 @@ BOOL OSDConfigDialog::OnInitDialog() {
       auto temp_ids = woss.str();
       osd_ids_.AddString(temp_ids.c_str());
     }
+    if (current_select_osd_index_ < osd_config_result_list_->size()) {
+      osd_ids_.SetCurSel(current_select_osd_index_);
+      auto item = osd_config_result_list_->at(current_select_osd_index_);
+      x_pos_ = item->x_pos;
+      y_pos_ = item->y_pos;
+      width_ = item->width;
+      height_ = item->height;
+      osd_enable_ = (item->enable ? 1 : 0);
+      UpdateData(FALSE);
+    }
   }
-  osd_ids_.SetCurSel(0);
-  x_pos_ = y_pos_ = 0;
-  xpos_spin_.SetRange32(0, 1920);
-  ypos_spin_.SetRange32(0, 1080);
-  width_ = height_ = 0;
-  width_spin_.SetRange32(0, 1920);
-  height_spin_.SetRange32(0, 1080);
   return TRUE;
 }
 
@@ -79,12 +86,12 @@ void OSDConfigDialog::OnBnClickedApplyButton() {
 	AssignItemValue();
 }
 
-void OSDConfigDialog::AssignItemValue() const {
+void OSDConfigDialog::AssignItemValue() {
   if (osd_config_result_list_ == nullptr) {
 	  return;
   }
-	auto current_select = osd_ids_.GetCurSel();
-	auto item = osd_config_result_list_->at(current_select);
+  current_select_osd_index_ = osd_ids_.GetCurSel();
+	auto item = osd_config_result_list_->at(current_select_osd_index_);
 	item->enable = (osd_enable_ != 0);
 	item->x_pos = x_pos_;
 	item->y_pos = y_pos_;

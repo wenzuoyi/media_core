@@ -15,6 +15,11 @@ struct AnchorBaseInfo {
   double bottom;
 };
 
+struct PointRatio {
+	double x;
+	double y;
+};
+
 using AnchorBaseInfoPtr = std::shared_ptr<AnchorBaseInfo>;
 using AnchorBaseMap = std::map<unsigned long, AnchorBaseInfoPtr>;
 
@@ -70,12 +75,13 @@ private:
   std::future<void> read_file_task_;
   CStatic display_area_;
   CPoint start_point_, current_point_, display_area_left_corner_;
+  int control_width_, control_height_;
+  PointRatio start_point_ratio_, end_point_ratio_;
   HCURSOR arrow_style_cursor_, cross_style_cursor_;
   OSDConfigDialog osd_config_dialog_;
   OSDConfigResultListPtr osd_config_result_list_;
   AnchorBaseMap anchor_base_map_;
   output::VideoOutputMediaSourcePtr video_output_media_source_;  
-  static CPoint TransformCoordinateSystem(HWND source, HWND target, const CPoint& point);
   static const int VIDEO_WIDTH;
   static const int VIDEO_HEIGHT;
 };

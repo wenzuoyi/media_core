@@ -22,8 +22,9 @@ protected:
   virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV Ö§³Ö
 DECLARE_MESSAGE_MAP()
 private:
-	void AssignItemValue() const;
+	void AssignItemValue();
 	int osd_enable_{ 0 };
+	int current_select_osd_index_{ 0 };
 	unsigned x_pos_{ 100 };
 	unsigned y_pos_{ 100 };
 	unsigned width_ {50};
