@@ -54,7 +54,7 @@ namespace output {
 		bool enable_roi_{ false };
 		bool update_roi_{ false };
 		bool is_playing_{ false };
-		RECT roi_;
+		mutable RECT roi_;
 	};
 }
 #endif // DIRECT3D_RENDER_H_

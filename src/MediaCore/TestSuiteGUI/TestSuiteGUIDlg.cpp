@@ -78,7 +78,7 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_43, &TestSuiteGUIDialog::OnRenderImageratio43)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_169, &TestSuiteGUIDialog::OnRenderImageratio169)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnRenderImageratioROI)
-	ON_UPDATE_COMMAND_UI(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnUpdateRendeCheckROI)
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
@@ -459,19 +459,18 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 }
 
 void TestSuiteGUIDialog::OnRenderImageratioROI() {
+	roi_check_status_ = !roi_check_status_;
+	auto menu = GetMenu();
+	menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, roi_check_status_ ? MF_CHECKED : MF_UNCHECKED);
   if (video_output_media_source_ != nullptr) {
 	  video_output_media_source_->EnableROI(roi_check_status_);
+	  is_roi_playing_ = false;
   }
-}
-
-void TestSuiteGUIDialog::OnUpdateRendeCheckROI(CCmdUI *pCmdUI) {
-	roi_check_status_ = !roi_check_status_;
-	pCmdUI->SetCheck(roi_check_status_);
 }
 
 void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
   CDialogEx::OnMouseMove(nFlags, point);
-  if (roi_check_status_) {
+  if (roi_check_status_ && !is_roi_playing_) {
     POINT current_pos{point.x, point.y};
     if (video_output_media_source_ != nullptr && video_output_media_source_->IsValidRendingArea(current_pos)) {
       SetCursor(cross_style_cursor_);
@@ -487,15 +486,31 @@ void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
 	CDialogEx::OnLButtonUp(nFlags, point);
-  if (is_click_mouse_) {
+  if (is_click_mouse_ && !is_roi_playing_) {
 	  current_point_ = point - display_area_left_corner_;
 	  is_click_mouse_ = false;
+	  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
+	  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
+	  RECT rect;
+    rect.left = (left_top_corner.x * VIDEO_WIDTH / control_width_);
+	  rect.top = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
+	  rect.right = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
+	  rect.bottom = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);     
+	  video_output_media_source_->UpdateROI(rect);
+	  is_roi_playing_ = true;
   }
 }
 
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonDown(nFlags, point);
-  is_click_mouse_ = true;
-  point -= display_area_left_corner_;
-  start_point_ = current_point_ = point;
+  if (!is_roi_playing_) {
+	  is_click_mouse_ = true;
+	  point -= display_area_left_corner_;
+	  start_point_ = current_point_ = point;
+  }
+}
+
+void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
+	CDialogEx::OnLButtonDblClk(nFlags, point);
+	OnRenderImageratioROI();
 }

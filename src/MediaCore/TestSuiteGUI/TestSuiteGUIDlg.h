@@ -45,7 +45,6 @@ protected:
   afx_msg void OnRenderImageratio169();
   afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
   afx_msg void OnRenderImageratioROI();
-  afx_msg void OnUpdateRendeCheckROI(CCmdUI* pCmdUI);
   afx_msg void OnMouseMove(UINT nFlags, CPoint point);
   afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
   afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -66,6 +65,7 @@ private:
   bool exit_{false};
   bool roi_check_status_{false};
   bool is_click_mouse_{ false };
+  bool is_roi_playing_{ false };
   std::future<void> read_file_task_;
   CStatic display_area_;
   CPoint start_point_, current_point_, display_area_left_corner_;
@@ -77,5 +77,7 @@ private:
   output::VideoOutputMediaSourcePtr video_output_media_source_;  
   static const int VIDEO_WIDTH;
   static const int VIDEO_HEIGHT;
+public:
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 };
 #endif // TEST_SUITE_GUI_DLG_H_

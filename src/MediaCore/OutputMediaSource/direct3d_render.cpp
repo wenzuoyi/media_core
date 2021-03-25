@@ -85,32 +85,32 @@ namespace output {
         FF_DONTCARE, TEXT("Î¢ÈíÑÅºÚ"), &font_));
   }
 
-  void Direct3DRender::Render(VideoFramePtr video_frame) const {    
+  void Direct3DRender::Render(VideoFramePtr video_frame) const {
 	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0))
-    D3DLOCKED_RECT surface;
+		D3DLOCKED_RECT surface;
 	  DXRETURNVOID(source_surface_->LockRect(&surface, nullptr, D3DLOCK_DONOTWAIT))
 		CopyBufferToSurface(video_frame, &surface);
 	  video_frame = nullptr;
 	  DXRETURNVOID(source_surface_->UnlockRect())
-    if (enable_roi_ && update_roi_) {
-		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
-    } else {
-		  device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE);
-    }
-    HDC hdc;
-    DXRETURNVOID(customize_surface_->GetDC(&hdc));    
-    if (sink_ != nullptr) {
-      sink_->OnCustomPainting(hdc);
-    }
-    DXRETURNVOID(customize_surface_->ReleaseDC(hdc));
+	  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
+	  HDC hdc;
+	  DXRETURNVOID(customize_surface_->GetDC(&hdc));
+	  if (sink_ != nullptr) {
+		  sink_->OnCustomPainting(hdc);
+	  }
+	  DXRETURNVOID(customize_surface_->ReleaseDC(hdc));
 	  DXRETURNVOID(device_->BeginScene());
 	  LPDIRECT3DSURFACE9 target_surface{ nullptr };
 	  DXRETURNVOID(device_->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target_surface))
+    RECT* source_rect = nullptr;
+    if (enable_roi_ && update_roi_) {
+      source_rect = &roi_;
+    }
     if (window_ruler_->IsAutoAdaptFrom()) {
-		  DXRETURNVOID(device_->StretchRect(customize_surface_, nullptr, target_surface, nullptr, D3DTEXF_LINEAR))
+		  DXRETURNVOID(device_->StretchRect(customize_surface_, source_rect, target_surface, nullptr, D3DTEXF_LINEAR))
     } else {
       const auto rect = window_ruler_->GetRendingArea();
-		  DXRETURNVOID(device_->StretchRect(customize_surface_, nullptr, target_surface, &rect, D3DTEXF_LINEAR))
+		  DXRETURNVOID(device_->StretchRect(customize_surface_, source_rect, target_surface, &rect, D3DTEXF_LINEAR))
     }
     SetOSDContent();
 	  DXRETURNVOID(device_->EndScene());
@@ -237,13 +237,12 @@ namespace output {
       return;
     }
     enable_roi_ = enable;
-    if (enable_roi_) {
-      update_roi_ = false;
-    }
+    update_roi_ = false;
+    roi_ = {0, 0, 0, 0};
   }
 
   void Direct3DRender::UpdateROI(const RECT& roi) {
-    if (std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom) == std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom)) {
+    if (std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom) == std::tie(roi.left, roi.top, roi.right, roi.bottom)) {
       return;
     }
     roi_ = roi;
