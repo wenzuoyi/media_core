@@ -2,7 +2,6 @@
 //
 #include "stdafx.h"
 #include <vector>
-#include <sstream>
 #include <chrono>
 #include "TestSuiteGUI.h"
 #include "TestSuiteGUIDlg.h"
@@ -37,8 +36,22 @@ END_MESSAGE_MAP()
 const int TestSuiteGUIDialog::VIDEO_WIDTH = 320;
 const int TestSuiteGUIDialog::VIDEO_HEIGHT = 180;
 
+int TestSuiteGUIDialog::GetYUVFrameSize() {
+	return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;
+}
+
+int TestSuiteGUIDialog::MinValue(int left, int right) {
+	return left < right ? left : right;
+}
+
+int TestSuiteGUIDialog::MaxValue(int left, int right) {
+  return left > right ? left : right;
+}
+
 TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+  cross_style_cursor_ = LoadCursor(NULL, IDC_CROSS);
+  arrow_style_cursor_ = LoadCursor(NULL, IDC_ARROW);
 }
 
 void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
@@ -51,6 +64,10 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
   ON_WM_PAINT()
   ON_WM_QUERYDRAGICON()
   ON_WM_CREATE()
+	ON_WM_SIZING()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
+	ON_WM_LBUTTONDOWN()
   ON_WM_DESTROY()
   ON_COMMAND(ID_RENDER_OPEN, &TestSuiteGUIDialog::OnRenderOpenFile)
   ON_COMMAND(ID_RENDER_CLOSE, &TestSuiteGUIDialog::OnRenderCloseFile)
@@ -60,13 +77,36 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_ADPATER, &TestSuiteGUIDialog::OnRenderImageratioAdpater)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_43, &TestSuiteGUIDialog::OnRenderImageratio43)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_169, &TestSuiteGUIDialog::OnRenderImageratio169)
-	ON_WM_SIZING()
+	ON_COMMAND(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnRenderImageratioROI)
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 }
 
 void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
+	//::SetBkMode(hdc, TRANSPARENT);
+	//::TextOut(hdc, 100, 100, L"Hello", 5);
+  if (!is_click_mouse_) {
+	  return;
+  }
+  auto client_dc = CDC::FromHandle(hdc);
+  CPen pen;
+  pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+  auto empty_brush = CBrush::FromHandle(static_cast<HBRUSH>(GetStockObject(NULL_BRUSH)));
+  client_dc->SelectObject(pen);
+  auto previous_brush = client_dc->SelectObject(empty_brush);
+  auto previous_mode = client_dc->SetROP2(R2_NOTXORPEN);
+  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
+  left_top_corner.x = (left_top_corner.x * VIDEO_WIDTH / control_width_);
+  left_top_corner.y = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
+  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
+  right_bottom_corner.x = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
+  right_bottom_corner.y = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);
+  CRect current_rect(left_top_corner, right_bottom_corner);
+  client_dc->Rectangle(&current_rect);
+  client_dc->SelectObject(previous_brush);
+  client_dc->SetROP2(previous_mode);
 }
 
 void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
@@ -215,6 +255,9 @@ int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 void TestSuiteGUIDialog::OnDestroy() {
   if (video_output_media_source_ != nullptr) {
+    if (is_playing_) {
+		  OnRenderStop();
+    }
     video_output_media_source_->Fini();
     video_output_media_source_ = nullptr;
   }
@@ -351,7 +394,6 @@ void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {
   UpdateData(FALSE);
 }
 
-
 void TestSuiteGUIDialog::OnSizing(UINT fwSide, LPRECT pRect) {
 	CDialogEx::OnSizing(fwSide, pRect);
 	UpdateControlAnchorsInfo();
@@ -367,6 +409,13 @@ void TestSuiteGUIDialog::InitControlAnchorsBaseInfo() {
     CRect child_control_rect;
     const auto child_control_id = ::GetDlgCtrlID(sub_window_handler);
     GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
+    if (child_control_id == IDC_STATIC_MAIN) {
+      auto temp = child_control_rect.TopLeft();
+      ScreenToClient(&temp);
+      display_area_left_corner_ = temp;
+	    control_width_ = child_control_rect.Width();
+		  control_height_ = child_control_rect.Height();
+    }
     ScreenToClient(child_control_rect);
     auto anchor_base_info = std::make_shared<AnchorBaseInfo>();
     anchor_base_map_.insert(std::make_pair(child_control_id, anchor_base_info));
@@ -394,6 +443,14 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 		target_rect.bottom = static_cast<long>(origin_rect->bottom* height);
 		GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
 		GetDlgItem(child_control_id)->Invalidate();
+		if (child_control_id == IDC_STATIC_MAIN) {
+			CRect temp_rect;
+			GetDlgItem(child_control_id)->GetWindowRect(&temp_rect);
+			ScreenToClient(&temp_rect);
+			display_area_left_corner_ = temp_rect.TopLeft();
+			control_width_ = temp_rect.Width();
+			control_height_ = temp_rect.Height();
+		}
 		sub_control_handler = ::GetWindow(sub_control_handler, GW_HWNDNEXT);
 	}
   if (video_output_media_source_ != nullptr) {
@@ -401,4 +458,59 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
   }
 }
 
+void TestSuiteGUIDialog::OnRenderImageratioROI() {
+	roi_check_status_ = !roi_check_status_;
+	auto menu = GetMenu();
+	menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, roi_check_status_ ? MF_CHECKED : MF_UNCHECKED);
+  if (video_output_media_source_ != nullptr) {
+	  video_output_media_source_->EnableROI(roi_check_status_);
+	  is_roi_playing_ = false;
+  }
+}
 
+void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
+  CDialogEx::OnMouseMove(nFlags, point);
+  if (roi_check_status_ && !is_roi_playing_) {
+    POINT current_pos{point.x, point.y};
+    if (video_output_media_source_ != nullptr && video_output_media_source_->IsValidRendingArea(current_pos)) {
+      SetCursor(cross_style_cursor_);
+    } else {
+      SetCursor(arrow_style_cursor_);
+    }
+  }
+  if (is_click_mouse_) {
+	  point -= display_area_left_corner_;
+	  current_point_ = point;
+  }
+}
+
+void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
+	CDialogEx::OnLButtonUp(nFlags, point);
+  if (is_click_mouse_ && !is_roi_playing_) {
+	  current_point_ = point - display_area_left_corner_;
+	  is_click_mouse_ = false;
+	  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
+	  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
+	  RECT rect;
+    rect.left = (left_top_corner.x * VIDEO_WIDTH / control_width_);
+	  rect.top = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
+	  rect.right = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
+	  rect.bottom = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);     
+	  video_output_media_source_->UpdateROI(rect);
+	  is_roi_playing_ = true;
+  }
+}
+
+void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
+  CDialogEx::OnLButtonDown(nFlags, point);
+  if (!is_roi_playing_) {
+	  is_click_mouse_ = true;
+	  point -= display_area_left_corner_;
+	  start_point_ = current_point_ = point;
+  }
+}
+
+void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
+	CDialogEx::OnLButtonDblClk(nFlags, point);
+	OnRenderImageratioROI();
+}

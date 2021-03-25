@@ -61,7 +61,7 @@ namespace output {
                                                &source_surface_, nullptr);
     DXRETURNVALUE(var, false)
     var = device_->CreateOffscreenPlainSurface(param_->width, param_->height, D3DFMT_X8R8G8B8,
-                                                           D3DPOOL_DEFAULT, &customize_surface_, nullptr);
+                                                           D3DPOOL_DEFAULT, &customize_surface_, nullptr);  	
 		return SUCCEEDED(var);
   }
 
@@ -87,30 +87,30 @@ namespace output {
 
   void Direct3DRender::Render(VideoFramePtr video_frame) const {
 	  DXRETURNVOID(device_->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0))
-    D3DLOCKED_RECT surface;
+		D3DLOCKED_RECT surface;
 	  DXRETURNVOID(source_surface_->LockRect(&surface, nullptr, D3DLOCK_DONOTWAIT))
 		CopyBufferToSurface(video_frame, &surface);
 	  video_frame = nullptr;
 	  DXRETURNVOID(source_surface_->UnlockRect())
-    if (enable_roi_) {
-		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
-    } else {
-		  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
-    }
-    HDC hdc;
-    DXRETURNVOID(customize_surface_->GetDC(&hdc));
-    if (sink_ != nullptr) {
-      sink_->OnCustomPainting(hdc);
-    }
-    DXRETURNVOID(customize_surface_->ReleaseDC(hdc));
+	  DXRETURNVOID(device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
+	  HDC hdc;
+	  DXRETURNVOID(customize_surface_->GetDC(&hdc));
+	  if (sink_ != nullptr) {
+		  sink_->OnCustomPainting(hdc);
+	  }
+	  DXRETURNVOID(customize_surface_->ReleaseDC(hdc));
 	  DXRETURNVOID(device_->BeginScene());
 	  LPDIRECT3DSURFACE9 target_surface{ nullptr };
 	  DXRETURNVOID(device_->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target_surface))
+    RECT* source_rect = nullptr;
+    if (enable_roi_ && update_roi_) {
+      source_rect = &roi_;
+    }
     if (window_ruler_->IsAutoAdaptFrom()) {
-		  DXRETURNVOID(device_->StretchRect(customize_surface_, nullptr, target_surface, nullptr, D3DTEXF_LINEAR))
+		  DXRETURNVOID(device_->StretchRect(customize_surface_, source_rect, target_surface, nullptr, D3DTEXF_LINEAR))
     } else {
       const auto rect = window_ruler_->GetRendingArea();
-		  DXRETURNVOID(device_->StretchRect(customize_surface_, nullptr, target_surface, &rect, D3DTEXF_LINEAR))
+		  DXRETURNVOID(device_->StretchRect(customize_surface_, source_rect, target_surface, &rect, D3DTEXF_LINEAR))
     }
     SetOSDContent();
 	  DXRETURNVOID(device_->EndScene());
@@ -222,6 +222,7 @@ namespace output {
     } else if (display_ratio == DisplayRatio::kRatio169) {
       window_ruler_->SetAspectRatio(std::make_pair(16, 9));
     }
+    TransformCoordinateSystem();
   }
 
   void Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
@@ -231,13 +232,34 @@ namespace output {
     }
   }
 
-  void Direct3DRender::OpenROI(const RECT& region) {
-	  enable_roi_ = true;
-	  roi_ = region;
+  void Direct3DRender::EnableROI(bool enable) {
+    if (enable == enable_roi_) {
+      return;
+    }
+    enable_roi_ = enable;
+    update_roi_ = false;
+    roi_ = {0, 0, 0, 0};
   }
 
-  void Direct3DRender::CloseROI() {
-	  enable_roi_ = false;
+  void Direct3DRender::UpdateROI(const RECT& roi) {
+    if (std::tie(roi_.left, roi_.top, roi_.right, roi_.bottom) == std::tie(roi.left, roi.top, roi.right, roi.bottom)) {
+      return;
+    }
+    roi_ = roi;
+    if (!update_roi_) {
+      update_roi_ = true;
+    }
+  }
+
+  void Direct3DRender::TransformCoordinateSystem() {
+    const auto rending_area = window_ruler_->GetRendingArea();
+    std::tie(left_top_corner_.x, left_top_corner_.y) = std::make_tuple(rending_area.left, rending_area.top);
+    std::tie(right_bottom_corner_.x, right_bottom_corner_.y) = std::make_tuple(rending_area.right, rending_area.bottom);
+    ::ClientToScreen(param_->render_wnd, &left_top_corner_);
+    ::ClientToScreen(param_->render_wnd, &right_bottom_corner_);
+    const auto parent = ::GetParent(param_->render_wnd);
+    ::ScreenToClient(parent, &left_top_corner_);
+    ::ScreenToClient(parent, &right_bottom_corner_);
   }
 
   void Direct3DRender::ResizeWindow() {
@@ -250,6 +272,20 @@ namespace output {
 	  window_width_ = rect.right - rect.left;
 	  window_height_ = rect.bottom - rect.top;
 	  window_ruler_->SetWindowSize(window_width_, window_height_);
+	  TransformCoordinateSystem();
+  }
+
+  bool Direct3DRender::IsValidRendingArea(const POINT& point) const {
+    if (window_ruler_ == nullptr) {
+      return false;
+    }
+    if (point.x < left_top_corner_.x || point.x > right_bottom_corner_.x) {
+      return false;
+    }
+    if (point.y < left_top_corner_.y || point.y > right_bottom_corner_.y) {
+      return false;
+    }
+    return true;
   }
 }
 
