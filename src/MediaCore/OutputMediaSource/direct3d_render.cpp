@@ -95,7 +95,7 @@ namespace output {
     if (enable_roi_ && update_roi_) {
 		  DXRETURNVOID(device_->StretchRect(source_surface_, &roi_, customize_surface_, nullptr, D3DTEXF_NONE));
     } else {
-		  (device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE));
+		  device_->StretchRect(source_surface_, nullptr, customize_surface_, nullptr, D3DTEXF_NONE);
     }
     HDC hdc;
     DXRETURNVOID(customize_surface_->GetDC(&hdc));    

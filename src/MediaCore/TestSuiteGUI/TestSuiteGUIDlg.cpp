@@ -92,7 +92,7 @@ void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
   }
   auto client_dc = CDC::FromHandle(hdc);
   CPen pen;
-  pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+  pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
   auto empty_brush = CBrush::FromHandle(static_cast<HBRUSH>(GetStockObject(NULL_BRUSH)));
   client_dc->SelectObject(pen);
   auto previous_brush = client_dc->SelectObject(empty_brush);
@@ -413,8 +413,8 @@ void TestSuiteGUIDialog::InitControlAnchorsBaseInfo() {
       auto temp = child_control_rect.TopLeft();
       ScreenToClient(&temp);
       display_area_left_corner_ = temp;
-	    control_width_ = origin_window_width;
-		  control_height_ = origin_window_height;
+	    control_width_ = child_control_rect.Width();
+		  control_height_ = child_control_rect.Height();
     }
     ScreenToClient(child_control_rect);
     auto anchor_base_info = std::make_shared<AnchorBaseInfo>();
@@ -441,15 +441,16 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 		target_rect.top = static_cast<long>(origin_rect->top * height);
 		target_rect.right = static_cast<long>(origin_rect->right * width);
 		target_rect.bottom = static_cast<long>(origin_rect->bottom* height);
-		if (child_control_id == IDC_STATIC_MAIN) {
-			CRect temp_rect;
-			GetDlgItem(child_control_id)->GetClientRect(&temp_rect);
-			display_area_left_corner_ = temp_rect.TopLeft();
-      control_width_ = target_rect.right - target_rect.left;
-      control_height_ = target_rect.bottom - target_rect.top;
-		}
 		GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
 		GetDlgItem(child_control_id)->Invalidate();
+		if (child_control_id == IDC_STATIC_MAIN) {
+			CRect temp_rect;
+			GetDlgItem(child_control_id)->GetWindowRect(&temp_rect);
+			ScreenToClient(&temp_rect);
+			display_area_left_corner_ = temp_rect.TopLeft();
+			control_width_ = temp_rect.Width();
+			control_height_ = temp_rect.Height();
+		}
 		sub_control_handler = ::GetWindow(sub_control_handler, GW_HWNDNEXT);
 	}
   if (video_output_media_source_ != nullptr) {
@@ -479,20 +480,15 @@ void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
     }
   }
   if (is_click_mouse_) {
-	  CPoint  temp;
-	  temp.x = point.x - display_area_left_corner_.x;
-	  temp.y = point.y - display_area_left_corner_.y;
-	  current_point_ = temp;
+	  point -= display_area_left_corner_;
+	  current_point_ = point;
   }
 }
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
 	CDialogEx::OnLButtonUp(nFlags, point);
   if (is_click_mouse_) {
-	  CPoint  temp;
-	  temp.x = point.x - display_area_left_corner_.x;
-	  temp.y = point.y - display_area_left_corner_.y;
-	  current_point_ = temp;
+	  current_point_ = point - display_area_left_corner_;
 	  is_click_mouse_ = false;
   }
 }
@@ -500,13 +496,6 @@ void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonDown(nFlags, point);
   is_click_mouse_ = true;
-  CPoint  temp;
-  temp.x = point.x - display_area_left_corner_.x;
-  temp.y = point.y - display_area_left_corner_.y;
-  start_point_ = temp;
-  current_point_ = temp;
-  start_point_ratio_.x = static_cast<double>(temp.x) / static_cast<double>(control_width_);
-  start_point_ratio_.y = static_cast<double>(temp.y) / static_cast<double>(control_height_);
-
-  TRACE("(%d, %d)", temp.x, temp.y);
+  point -= display_area_left_corner_;
+  start_point_ = current_point_ = point;
 }
