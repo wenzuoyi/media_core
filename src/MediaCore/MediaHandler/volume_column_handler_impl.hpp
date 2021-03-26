@@ -21,15 +21,9 @@ namespace handler {
       async_handler_.InputBinaryPackage(audio_sample);
     }
 
-    void SetVolumeColumnHandlerEvent(VolumeColumnHandlerEvent* sink) override {
-      if (volume_column_handler_event_ != sink) {
-        volume_column_handler_event_ = sink;
-      }
-    }
-
-    void SetBaseAudioHandlerEvent(BaseAudioHandlerEvent* sink) override {
-      if (base_audio_handler_event_ != sink) {
-        base_audio_handler_event_ = sink;
+    void SetEvent(void* event) override {
+      if (volume_column_handler_event_ != event) {
+        volume_column_handler_event_ = static_cast<VolumeColumnHandlerEvent*>(event);
       }
     }
 
@@ -46,8 +40,8 @@ namespace handler {
       }
       async_handler_.Start([this](MediaBinaryPackagePtr media_binary_package) {
         CalculateAudioSample(media_binary_package);
-        if (base_audio_handler_event_ != nullptr) {
-          base_audio_handler_event_->OnTransmitAudioSample(AudioHandlerType::kAudioColumn, media_binary_package);
+        if (volume_column_handler_event_ != nullptr) {
+			      volume_column_handler_event_->OnTransmitAudioSample(AudioHandlerType::kAudioColumn, media_binary_package);
         }
       });
     }
@@ -97,7 +91,6 @@ namespace handler {
     }
 
     VolumeColumnHandlerEvent* volume_column_handler_event_ {nullptr};
-    BaseAudioHandlerEvent* base_audio_handler_event_{nullptr};
 	  ChannelSamplesCollectionPtr channel_samples_collection_;
 	  AsyncHandler async_handler_;
 	  int channel_{ 2 };

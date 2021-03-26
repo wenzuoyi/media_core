@@ -16,7 +16,6 @@ namespace handler {
     virtual ~VolumeColumnHandler() = default;
 	  static AudioHandlerPtr CreateInstance(unsigned per_sample_bits);
 	  virtual void SetAudioSampleChannel(int channel) = 0;
-	  virtual void SetVolumeColumnHandlerEvent(VolumeColumnHandlerEvent* event) = 0;
   };
 }
 

@@ -16,15 +16,15 @@
     <Filter Include="volume_column">
       <UniqueIdentifier>{abb83172-1097-4ef9-9f21-d4e26624a15a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mosaic">
+      <UniqueIdentifier>{39275cd7-4c82-45a6-832e-9d1634aee159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{ca8c710b-94c1-40d1-93ae-726776f8af3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_handler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_handler_datatype.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\base_audio_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="async_handler.h">
@@ -36,6 +36,24 @@
     <ClInclude Include="volume_column_handler_impl.hpp">
       <Filter>volume_column</Filter>
     </ClInclude>
+    <ClInclude Include="include\mosaic_handler.h">
+      <Filter>mosaic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_audio_handler.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_video_handler.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\audio_handler_datatype.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\video_handler_datatype.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="mosaic_handler_impl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp">
@@ -43,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="volume_column_handler.cpp">
       <Filter>volume_column</Filter>
+    </ClCompile>
+    <ClCompile Include="mosaic_handler.cpp">
+      <Filter>mosaic</Filter>
+    </ClCompile>
+    <ClCompile Include="mosaic_handler_impl.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
