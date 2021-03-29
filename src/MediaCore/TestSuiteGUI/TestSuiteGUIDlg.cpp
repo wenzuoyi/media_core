@@ -40,14 +40,6 @@ int TestSuiteGUIDialog::GetYUVFrameSize() {
 	return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;
 }
 
-int TestSuiteGUIDialog::MinValue(int left, int right) {
-	return left < right ? left : right;
-}
-
-int TestSuiteGUIDialog::MaxValue(int left, int right) {
-  return left > right ? left : right;
-}
-
 TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
   cross_style_cursor_ = LoadCursor(NULL, IDC_CROSS);
@@ -79,37 +71,41 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_169, &TestSuiteGUIDialog::OnRenderImageratio169)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnRenderImageratioROI)
 	ON_WM_LBUTTONDBLCLK()
+	ON_COMMAND(ID_HANDLER_MOSAIC, &TestSuiteGUIDialog::OnHandlerMosaic)
 END_MESSAGE_MAP()
 
 void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 }
 
 void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
-	//::SetBkMode(hdc, TRANSPARENT);
-	//::TextOut(hdc, 100, 100, L"Hello", 5);
-  if (!is_click_mouse_) {
-	  return;
+  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
+    auto client_dc = CDC::FromHandle(hdc);
+    CPen pen;
+    pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    auto empty_brush = CBrush::FromHandle(static_cast<HBRUSH>(GetStockObject(NULL_BRUSH)));
+    client_dc->SelectObject(pen);
+    auto previous_brush = client_dc->SelectObject(empty_brush);
+    auto previous_mode = client_dc->SetROP2(R2_NOTXORPEN);
+    CRect rect;
+    mouse_locator_.Transform([this, &rect](const CPoint& left_top, const CPoint& right_bottom) {
+      rect.left = (left_top.x * VIDEO_WIDTH / control_width_);
+      rect.top = (left_top.y * VIDEO_HEIGHT / control_height_);
+      rect.right = (right_bottom.x * VIDEO_WIDTH / control_width_);
+      rect.bottom = (right_bottom.y * VIDEO_HEIGHT / control_height_);
+    });
+    client_dc->Rectangle(&rect);
+    client_dc->SelectObject(previous_brush);
+    client_dc->SetROP2(previous_mode);
   }
-  auto client_dc = CDC::FromHandle(hdc);
-  CPen pen;
-  pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-  auto empty_brush = CBrush::FromHandle(static_cast<HBRUSH>(GetStockObject(NULL_BRUSH)));
-  client_dc->SelectObject(pen);
-  auto previous_brush = client_dc->SelectObject(empty_brush);
-  auto previous_mode = client_dc->SetROP2(R2_NOTXORPEN);
-  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
-  left_top_corner.x = (left_top_corner.x * VIDEO_WIDTH / control_width_);
-  left_top_corner.y = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
-  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
-  right_bottom_corner.x = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
-  right_bottom_corner.y = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);
-  CRect current_rect(left_top_corner, right_bottom_corner);
-  client_dc->Rectangle(&current_rect);
-  client_dc->SelectObject(previous_brush);
-  client_dc->SetROP2(previous_mode);
 }
 
 void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
+}
+
+void TestSuiteGUIDialog::OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type, handler::VideoFramePtr video_frame) {
+	if (video_handler_type == handler::VideoHandlerType::kMosaic && video_output_media_source_ != nullptr) {
+	  video_output_media_source_->InputVideoFrame(video_frame);
+	}
 }
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
@@ -137,6 +133,10 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
 	  video_param->render_wnd = display_area_.m_hWnd;
 	  video_output_media_source_->SetVideoOutputMediaParam(video_param);
   }
+  if (mosaic_handler_ != nullptr) {
+	  mosaic_handler_->Start();	  
+  }
+
   EnableRenderMenuItem({
     {ID_RENDER_OPEN, true}, {ID_RENDER_PLAY, false}, {ID_RENDER_STOP, false}, {ID_RENDER_CLOSE, false}
   });
@@ -237,8 +237,8 @@ void TestSuiteGUIDialog::PostVideoFrame(const std::vector<char>& buffer) const {
   video_frame->line_size[1] = u_stride;
   video_frame->data[2] = v_data;
   video_frame->line_size[2] = v_stride;
-  if (video_output_media_source_ != nullptr) {
-    video_output_media_source_->InputVideoFrame(video_frame);
+  if (mosaic_handler_ != nullptr) {
+	  mosaic_handler_->InputVideoFrame(video_frame);
   }
 }
 
@@ -250,6 +250,11 @@ int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     return -1;
   }
   video_output_media_source_->SetEvent(this);
+  mosaic_handler_ = handler::MosaicHandler::CreateInstance();
+  if (mosaic_handler_ == nullptr) {
+	  return -1;
+  }
+  mosaic_handler_->SetEvent(this);
   return 0;
 }
 
@@ -260,6 +265,10 @@ void TestSuiteGUIDialog::OnDestroy() {
     }
     video_output_media_source_->Fini();
     video_output_media_source_ = nullptr;
+  }
+  if (mosaic_handler_ != nullptr) {
+	  mosaic_handler_->Stop();
+	  mosaic_handler_ = nullptr;
   }
   CDialogEx::OnDestroy();
 }
@@ -459,58 +468,70 @@ void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
 }
 
 void TestSuiteGUIDialog::OnRenderImageratioROI() {
-	roi_check_status_ = !roi_check_status_;
-	auto menu = GetMenu();
-	menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, roi_check_status_ ? MF_CHECKED : MF_UNCHECKED);
-  if (video_output_media_source_ != nullptr) {
-	  video_output_media_source_->EnableROI(roi_check_status_);
-	  is_roi_playing_ = false;
+  if (video_output_media_source_ == nullptr) {
+    return;
   }
+  const auto status = video_output_media_source_->IsROIEnable();
+  auto menu = GetMenu();
+  menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, !status ? MF_CHECKED : MF_UNCHECKED);
+  mouse_locator_.Enable(!status);
+  video_output_media_source_->EnableROI(!status);
 }
 
 void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
   CDialogEx::OnMouseMove(nFlags, point);
-  if (roi_check_status_ && !is_roi_playing_) {
+  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
     POINT current_pos{point.x, point.y};
     if (video_output_media_source_ != nullptr && video_output_media_source_->IsValidRendingArea(current_pos)) {
+      point -= display_area_left_corner_;
+      mouse_locator_.Update(point);
       SetCursor(cross_style_cursor_);
     } else {
       SetCursor(arrow_style_cursor_);
     }
   }
-  if (is_click_mouse_) {
-	  point -= display_area_left_corner_;
-	  current_point_ = point;
-  }
 }
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
-	CDialogEx::OnLButtonUp(nFlags, point);
-  if (is_click_mouse_ && !is_roi_playing_) {
+  CDialogEx::OnLButtonUp(nFlags, point);
+  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
 	  current_point_ = point - display_area_left_corner_;
-	  is_click_mouse_ = false;
-	  CPoint left_top_corner(MinValue(start_point_.x, current_point_.x), MinValue(start_point_.y, current_point_.y));
-	  CPoint right_bottom_corner(MaxValue(start_point_.x, current_point_.x), MaxValue(start_point_.y, current_point_.y));
-	  RECT rect;
-    rect.left = (left_top_corner.x * VIDEO_WIDTH / control_width_);
-	  rect.top = (left_top_corner.y * VIDEO_HEIGHT / control_height_);
-	  rect.right = (right_bottom_corner.x *VIDEO_WIDTH / control_width_);
-	  rect.bottom = (right_bottom_corner.y *VIDEO_HEIGHT / control_height_);     
-	  video_output_media_source_->UpdateROI(rect);
-	  is_roi_playing_ = true;
+	  mouse_locator_.Update(point);
+	  mouse_locator_.Visible(false);
+    RECT rect;
+    mouse_locator_.Transform([this, &rect](const CPoint& left_top, const CPoint& right_bottom) {
+      rect.left = (left_top.x * VIDEO_WIDTH / control_width_);
+      rect.top = (left_top.y * VIDEO_HEIGHT / control_height_);
+      rect.right = (right_bottom.x * VIDEO_WIDTH / control_width_);
+      rect.bottom = (right_bottom.y * VIDEO_HEIGHT / control_height_);
+    });
+    if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
+		  video_output_media_source_->UpdateROI(rect);
+    }
   }
 }
 
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonDown(nFlags, point);
-  if (!is_roi_playing_) {
-	  is_click_mouse_ = true;
-	  point -= display_area_left_corner_;
-	  start_point_ = current_point_ = point;
+  if (mouse_locator_.IsEnable() && !mouse_locator_.IsVisible()) {
+    point -= display_area_left_corner_;
+    mouse_locator_.Start(point);
+    mouse_locator_.Visible(true);
   }
 }
 
 void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 	OnRenderImageratioROI();
+}
+
+
+void TestSuiteGUIDialog::OnHandlerMosaic() {
+	//mosaic_check_status_ = !mosaic_check_status_;
+	//auto menu = GetMenu();
+	//menu->CheckMenuItem(ID_HANDLER_MOSAIC, roi_check_status_ ? MF_CHECKED : MF_UNCHECKED);
+	//if (mosaic_handler_ != nullptr) {
+	//	mosaic_handler_->EnableMosaic(mosaic_check_status_);
+	//	is_mosaic_playing_ = true;
+	//}
 }

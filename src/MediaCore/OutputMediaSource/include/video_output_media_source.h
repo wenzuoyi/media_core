@@ -28,6 +28,7 @@ namespace output {
     virtual void SetVideoOutputMediaParam(VideoOutputParamPtr video_output_param) = 0;
     virtual bool Play() = 0;
     virtual void Stop() = 0;
+	  virtual bool IsROIEnable() const = 0;
     virtual void EnableROI(bool enable) = 0;
     virtual void UpdateROI(const RECT& roi) = 0;
     virtual void SetOSD(OSDParamListPtr osd_param_list) = 0;

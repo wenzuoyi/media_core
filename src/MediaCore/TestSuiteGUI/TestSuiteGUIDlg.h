@@ -7,6 +7,8 @@
 #include "afxwin.h"
 #include "osd_config_dialog.h"
 #include "video_output_media_source.h"
+#include "mosaic_handler.h"
+#include "mouse_locator.h"
 
 struct AnchorBaseInfo {
   double top;
@@ -17,7 +19,7 @@ struct AnchorBaseInfo {
 using AnchorBaseInfoPtr = std::shared_ptr<AnchorBaseInfo>;
 using AnchorBaseMap = std::map<unsigned long, AnchorBaseInfoPtr>;
 
-class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent {
+class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent, public handler::MosaicHandlerEvent {
 public:
   TestSuiteGUIDialog(CWnd* pParent = nullptr); // 标准构造函数
   #ifdef AFX_DESIGN_TIME
@@ -28,6 +30,7 @@ protected:
   void OnVideoOutputMediaExceptionEvent(unsigned error_code) override;
   void OnCustomPainting(HDC hdc) override;
   void OnTransmitDataEvent(output::VideoFramePtr video_frame) override;
+  void OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type, handler::VideoFramePtr video_frame) override;
   void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV 支持
   BOOL OnInitDialog() override;
   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -48,10 +51,9 @@ protected:
   afx_msg void OnMouseMove(UINT nFlags, CPoint point);
   afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
   afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+  afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 DECLARE_MESSAGE_MAP()
 private:
-	inline int MinValue(int left, int right);
-	inline int MaxValue(int left, int right);
 	inline int GetYUVFrameSize();
   void InitControlAnchorsBaseInfo();
   void UpdateControlAnchorsInfo();
@@ -63,9 +65,6 @@ private:
   bool is_playing_{false};
   std::ifstream ifs_;
   bool exit_{false};
-  bool roi_check_status_{false};
-  bool is_click_mouse_{ false };
-  bool is_roi_playing_{ false };
   std::future<void> read_file_task_;
   CStatic display_area_;
   CPoint start_point_, current_point_, display_area_left_corner_;
@@ -74,10 +73,12 @@ private:
   OSDConfigDialog osd_config_dialog_;
   OSDConfigResultListPtr osd_config_result_list_;
   AnchorBaseMap anchor_base_map_;
-  output::VideoOutputMediaSourcePtr video_output_media_source_;  
+  MouseLocator mouse_locator_;
+  output::VideoOutputMediaSourcePtr video_output_media_source_;
+  handler::MosaicHandlerPtr mosaic_handler_;
   static const int VIDEO_WIDTH;
   static const int VIDEO_HEIGHT;
 public:
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnHandlerMosaic();
 };
 #endif // TEST_SUITE_GUI_DLG_H_

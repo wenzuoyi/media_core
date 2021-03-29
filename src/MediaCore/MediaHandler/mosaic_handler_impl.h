@@ -9,7 +9,7 @@ namespace handler {
     MosaicHandlerImpl();
     virtual ~MosaicHandlerImpl();
   protected:
-    void SetEvent(void* event) override;
+    void SetEvent(MosaicHandlerEvent* event) override;
     void Start() override;
     void Stop() override;
     void InputVideoFrame(VideoFramePtr video_frame) override;
@@ -25,8 +25,6 @@ namespace handler {
 	  MosaicParamPtr mosaic_param_;
 	  std::vector<MatrixItem> matrix_a_;
 	  std::vector<MatrixItem> matrix_b_;
-    unsigned block_width_{ 0 };
-	  unsigned block_height_{ 0 };
   };
 }
 #endif // MOSAIC_HANDLER_IMPL_H_

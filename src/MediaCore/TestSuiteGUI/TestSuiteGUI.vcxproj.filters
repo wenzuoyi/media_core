@@ -39,6 +39,9 @@
     <ClInclude Include="osd_config_datatype.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mouse_locator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestSuiteGUI.cpp">
@@ -51,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="osd_config_dialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse_locator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

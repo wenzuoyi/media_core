@@ -14,7 +14,8 @@ namespace handler {
 	public:
 		MosaicHandler();
 		virtual ~MosaicHandler();
-		static MosaicHandlerPtr CreateInstance();    
+		static MosaicHandlerPtr CreateInstance();
+		virtual void SetEvent(MosaicHandlerEvent* event) = 0;
 		virtual void EnableMosaic(bool enable) = 0;
 		virtual bool SetParam(MosaicParamPtr param) = 0;
 		virtual bool Clear() = 0;

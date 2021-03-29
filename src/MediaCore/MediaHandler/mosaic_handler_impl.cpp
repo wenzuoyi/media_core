@@ -5,9 +5,9 @@ namespace handler {
 
 	MosaicHandlerImpl::~MosaicHandlerImpl() = default;
 
-  void MosaicHandlerImpl::SetEvent(void* event) {
+  void MosaicHandlerImpl::SetEvent(MosaicHandlerEvent* event) {
     if (event != event_) {
-      event_ = static_cast<MosaicHandlerEvent*>(event);
+      event_ = event;
     }
   }
 
@@ -22,11 +22,12 @@ namespace handler {
   }
 
   void MosaicHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    if (video_frame != nullptr) {
+    if (enable_ && video_frame != nullptr) {
         for (auto i = 0U;  i < matrix_a_.size(); ++i) {
           SwapYUVBlock(i, video_frame);
         }
     }
+    event_->OnTransmitVideoFrame(VideoHandlerType::kMosaic, video_frame);
   }
 
   void MosaicHandlerImpl::EnableMosaic(bool enable) {
@@ -40,12 +41,11 @@ namespace handler {
       return false;
     }
     mosaic_param_ = param;
-    block_width_ = mosaic_param_->width / mosaic_param_->block_count;
-    block_height_ = mosaic_param_->height / mosaic_param_->block_count;
-    const auto half_block_count = static_cast<unsigned>(mosaic_param_->block_count * mosaic_param_->block_count / 2);
-    for (auto u = 0; u < mosaic_param_->block_count; ++u) {
-      for (auto v = 0; v < mosaic_param_->block_count; ++v) {
-        if (matrix_a_.size() < half_block_count) {
+	  const auto horizontal_count = mosaic_param_->width / mosaic_param_->per_block_pixel;
+	  const auto vertical_count = mosaic_param_->height / mosaic_param_->per_block_pixel;
+	  for (auto u = 0; u < horizontal_count; ++u) {
+      for (auto v = 0; v < vertical_count; ++v) {
+        if (matrix_a_.size() < (horizontal_count * vertical_count / 2)) {
           matrix_a_.emplace_back(std::make_pair(u, v));
         } else {
           matrix_b_.emplace_back(std::make_pair(u, v));
@@ -63,18 +63,25 @@ namespace handler {
   }
 
   void MosaicHandlerImpl::SwapYUVBlock(int index, VideoFramePtr video_frame) {
+    if (matrix_a_.empty() || matrix_b_.empty()) {
+      return;
+    }
 	  auto source_offset = GetBufferOffset(matrix_a_[index]);
 	  auto target_offset = GetBufferOffset(matrix_b_[index]);
-    for (auto i = 0U; i < block_height_; ++i) {
-      source_offset += (video_frame->line_size[0] * block_height_);
-      target_offset += (video_frame->line_size[0] * block_height_);
-		  std::swap_ranges(video_frame->data[0]->begin() + source_offset, video_frame->data[0]->begin() + source_offset + block_width_, video_frame->data[0]->begin() + target_offset);
+    for (auto i = 0U; i < mosaic_param_->per_block_pixel; ++i) {
+      source_offset += (video_frame->line_size[0] * i);
+      target_offset += (video_frame->line_size[0] * i);
+		  std::swap_ranges(video_frame->data[0]->begin() + source_offset, video_frame->data[0]->begin() + source_offset + mosaic_param_->per_block_pixel, video_frame->data[0]->begin() + target_offset);
+		  source_offset /= 4;
+		  target_offset /= 4;
+		  std::swap_ranges(video_frame->data[1]->begin() + source_offset, video_frame->data[1]->begin() + source_offset + mosaic_param_->per_block_pixel / 4, video_frame->data[1]->begin() + target_offset);
+		  std::swap_ranges(video_frame->data[2]->begin() + source_offset, video_frame->data[2]->begin() + source_offset + mosaic_param_->per_block_pixel / 4, video_frame->data[2]->begin() + target_offset);
     }      
   }
 
   inline unsigned MosaicHandlerImpl::GetBufferOffset(const std::pair<int, int>& item) const {
-	  const auto source_item_x = mosaic_param_->x + item.first * block_width_;
-	  const auto source_item_y = mosaic_param_->y + item.second * block_height_;
+	  const auto source_item_x = mosaic_param_->x + item.first * mosaic_param_->per_block_pixel;
+	  const auto source_item_y = mosaic_param_->y + item.second * mosaic_param_->per_block_pixel;
 	  return source_item_x * source_item_y;
   }
 }

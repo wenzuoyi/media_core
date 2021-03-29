@@ -11,8 +11,7 @@ namespace handler {
 	class MEDIA_HANDLER_API_HEADER BaseVideoHandler {
 	public:
 		BaseVideoHandler() = default;
-		virtual ~BaseVideoHandler() = default;
-		virtual void SetEvent(void* event) = 0;
+		virtual ~BaseVideoHandler() = default;		
 		virtual void Start() = 0;
 		virtual void Stop() = 0;
 		virtual void InputVideoFrame(VideoFramePtr video_frame) = 0;

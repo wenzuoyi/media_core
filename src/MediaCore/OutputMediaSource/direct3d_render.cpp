@@ -232,6 +232,10 @@ namespace output {
     }
   }
 
+  bool Direct3DRender::IsROIEnable() const {
+	  return enable_roi_;
+  }
+
   void Direct3DRender::EnableROI(bool enable) {
     if (enable == enable_roi_) {
       return;
