@@ -5,21 +5,14 @@
 #include <map>
 #include <memory>
 #include "afxwin.h"
+#include "base_auto_layout_dialog.h"
 #include "osd_config_dialog.h"
 #include "video_output_media_source.h"
 #include "mosaic_handler.h"
 #include "mouse_locator.h"
 
-struct AnchorBaseInfo {
-  double top;
-  double left;
-  double right;
-  double bottom;
-};
-using AnchorBaseInfoPtr = std::shared_ptr<AnchorBaseInfo>;
-using AnchorBaseMap = std::map<unsigned long, AnchorBaseInfoPtr>;
 
-class TestSuiteGUIDialog : public CDialogEx, public output::VideoOutputMediaSourceEvent, public handler::MosaicHandlerEvent {
+class TestSuiteGUIDialog : public BaseAutoLayoutDialog, public output::VideoOutputMediaSourceEvent, public handler::MosaicHandlerEvent {
 public:
   TestSuiteGUIDialog(CWnd* pParent = nullptr); // 标准构造函数
   #ifdef AFX_DESIGN_TIME
@@ -55,8 +48,6 @@ protected:
 DECLARE_MESSAGE_MAP()
 private:
 	inline int GetYUVFrameSize();
-  void InitControlAnchorsBaseInfo();
-  void UpdateControlAnchorsInfo();
   void StartReadMediaFile();
   void StopReadFile();
   void PostVideoFrame(const std::vector<char>& buffer) const;
@@ -67,12 +58,9 @@ private:
   bool exit_{false};
   std::future<void> read_file_task_;
   CStatic display_area_;
-  CPoint start_point_, current_point_, display_area_left_corner_;
-  int control_width_, control_height_;
-  HCURSOR arrow_style_cursor_, cross_style_cursor_;
+  CRect screen_rect_;
   OSDConfigDialog osd_config_dialog_;
-  OSDConfigResultListPtr osd_config_result_list_;
-  AnchorBaseMap anchor_base_map_;
+  OSDConfigResultListPtr osd_config_result_list_;  
   MouseLocator mouse_locator_;
   output::VideoOutputMediaSourcePtr video_output_media_source_;
   handler::MosaicHandlerPtr mosaic_handler_;

@@ -40,10 +40,8 @@ int TestSuiteGUIDialog::GetYUVFrameSize() {
 	return VIDEO_WIDTH * VIDEO_HEIGHT * 3 / 2;
 }
 
-TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : CDialogEx(IDD_TESTSUITEGUI_DIALOG, pParent) {
+TestSuiteGUIDialog::TestSuiteGUIDialog(CWnd* pParent /*=NULL*/) : BaseAutoLayoutDialog(IDD_TESTSUITEGUI_DIALOG, pParent) {
   m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-  cross_style_cursor_ = LoadCursor(NULL, IDC_CROSS);
-  arrow_style_cursor_ = LoadCursor(NULL, IDC_ARROW);
 }
 
 void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
@@ -78,25 +76,14 @@ void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
 }
 
 void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
-  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
-    auto client_dc = CDC::FromHandle(hdc);
-    CPen pen;
-    pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    auto empty_brush = CBrush::FromHandle(static_cast<HBRUSH>(GetStockObject(NULL_BRUSH)));
-    client_dc->SelectObject(pen);
-    auto previous_brush = client_dc->SelectObject(empty_brush);
-    auto previous_mode = client_dc->SetROP2(R2_NOTXORPEN);
-    CRect rect;
-    mouse_locator_.Transform([this, &rect](const CPoint& left_top, const CPoint& right_bottom) {
-      rect.left = (left_top.x * VIDEO_WIDTH / control_width_);
-      rect.top = (left_top.y * VIDEO_HEIGHT / control_height_);
-      rect.right = (right_bottom.x * VIDEO_WIDTH / control_width_);
-      rect.bottom = (right_bottom.y * VIDEO_HEIGHT / control_height_);
-    });
-    client_dc->Rectangle(&rect);
-    client_dc->SelectObject(previous_brush);
-    client_dc->SetROP2(previous_mode);
-  }
+  mouse_locator_.Draw(hdc, [this](const CPoint& left_top, const CPoint& right_bottom) {
+    CRect rect(left_top, right_bottom);
+    rect.left = (left_top.x * VIDEO_WIDTH / screen_rect_.Width());
+    rect.top = (left_top.y * VIDEO_HEIGHT / screen_rect_.Height());
+    rect.right = (right_bottom.x * VIDEO_WIDTH / screen_rect_.Width());
+    rect.bottom = (right_bottom.y * VIDEO_HEIGHT / screen_rect_.Height());
+    return rect;
+  });
 }
 
 void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
@@ -109,7 +96,7 @@ void TestSuiteGUIDialog::OnTransmitVideoFrame(handler::VideoHandlerType video_ha
 }
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
-  CDialogEx::OnInitDialog();
+	BaseAutoLayoutDialog::OnInitDialog();
   ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
   ASSERT(IDM_ABOUTBOX < 0xF000);
   CMenu* pSysMenu = GetSystemMenu(FALSE);
@@ -125,6 +112,7 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
   }
   SetIcon(m_hIcon, TRUE); // 设置大图标
   SetIcon(m_hIcon, FALSE); // 设置小图标
+  GetControlLayoutInfo(IDC_STATIC_MAIN, &screen_rect_);
   if (video_output_media_source_ != nullptr) {
 	  video_output_media_source_->Init();
 	  auto video_param = std::make_shared<output::VideoOutputParam>();
@@ -143,8 +131,7 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
   EnableRenderMenuItem({
     {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false}, { ID_RENDER_IMAGERATIO_43, false},
     {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false}
-  });
-  InitControlAnchorsBaseInfo();
+  });  
   return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -158,7 +145,11 @@ void TestSuiteGUIDialog::OnSysCommand(UINT nID, LPARAM lParam) {
     }
     CDialogEx::OnSysCommand(nID, lParam);
     if (nID == SC_MAXIMIZE || nID == SC_RESTORE) {
-		  UpdateControlAnchorsInfo();
+      Resize();
+	    GetControlLayoutInfo(IDC_STATIC_MAIN, &screen_rect_);
+      if (video_output_media_source_ != nullptr) {
+        video_output_media_source_->ResizeWindow();
+      }
     }
 	  TRACE("command:0x%x", nID);
   }
@@ -404,67 +395,11 @@ void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {
 }
 
 void TestSuiteGUIDialog::OnSizing(UINT fwSide, LPRECT pRect) {
-	CDialogEx::OnSizing(fwSide, pRect);
-	UpdateControlAnchorsInfo();
-}
-
-void TestSuiteGUIDialog::InitControlAnchorsBaseInfo() {
-  CRect origin_window_size;
-  GetClientRect(&origin_window_size);
-  const auto origin_window_width = origin_window_size.Width();
-  const auto origin_window_height = origin_window_size.Height();
-  auto sub_window_handler = ::GetWindow(m_hWnd, GW_CHILD);
-  while (sub_window_handler != nullptr) {
-    CRect child_control_rect;
-    const auto child_control_id = ::GetDlgCtrlID(sub_window_handler);
-    GetDlgItem(child_control_id)->GetWindowRect(child_control_rect);
-    if (child_control_id == IDC_STATIC_MAIN) {
-      auto temp = child_control_rect.TopLeft();
-      ScreenToClient(&temp);
-      display_area_left_corner_ = temp;
-	    control_width_ = child_control_rect.Width();
-		  control_height_ = child_control_rect.Height();
-    }
-    ScreenToClient(child_control_rect);
-    auto anchor_base_info = std::make_shared<AnchorBaseInfo>();
-    anchor_base_map_.insert(std::make_pair(child_control_id, anchor_base_info));
-    anchor_base_info->left = static_cast<double>(child_control_rect.left) / static_cast<double>(origin_window_width);
-    anchor_base_info->top = static_cast<double>(child_control_rect.top) / static_cast<double>(origin_window_height);
-    anchor_base_info->right = static_cast<double>(child_control_rect.right) / static_cast<double>(origin_window_width);
-    anchor_base_info->bottom = static_cast<double>(child_control_rect.bottom) / static_cast<double>(origin_window_height);
-    sub_window_handler = ::GetWindow(sub_window_handler, GW_HWNDNEXT);
-  }
-}
-
-void TestSuiteGUIDialog::UpdateControlAnchorsInfo() {
-	CRect current_layout;
-	GetClientRect(&current_layout);
-	const auto width = static_cast<double>(current_layout.Width());
-	const auto height = static_cast<double>(current_layout.Height());
-  auto sub_control_handler = ::GetWindow(m_hWnd, GW_CHILD);
-	while (sub_control_handler != nullptr) {
-		auto child_control_id = ::GetDlgCtrlID(sub_control_handler);
-		auto origin_rect = anchor_base_map_[child_control_id];
-		CRect  target_rect;
-		target_rect.left = static_cast<long>(origin_rect->left * width);
-		target_rect.top = static_cast<long>(origin_rect->top * height);
-		target_rect.right = static_cast<long>(origin_rect->right * width);
-		target_rect.bottom = static_cast<long>(origin_rect->bottom* height);
-		GetDlgItem(child_control_id)->MoveWindow(target_rect, TRUE);
-		GetDlgItem(child_control_id)->Invalidate();
-		if (child_control_id == IDC_STATIC_MAIN) {
-			CRect temp_rect;
-			GetDlgItem(child_control_id)->GetWindowRect(&temp_rect);
-			ScreenToClient(&temp_rect);
-			display_area_left_corner_ = temp_rect.TopLeft();
-			control_width_ = temp_rect.Width();
-			control_height_ = temp_rect.Height();
-		}
-		sub_control_handler = ::GetWindow(sub_control_handler, GW_HWNDNEXT);
+	BaseAutoLayoutDialog::OnSizing(fwSide, pRect);
+	GetControlLayoutInfo(IDC_STATIC_MAIN, &screen_rect_);
+	if (video_output_media_source_ != nullptr) {
+		video_output_media_source_->ResizeWindow();
 	}
-  if (video_output_media_source_ != nullptr) {
-	  video_output_media_source_->ResizeWindow();
-  }
 }
 
 void TestSuiteGUIDialog::OnRenderImageratioROI() {
@@ -480,49 +415,46 @@ void TestSuiteGUIDialog::OnRenderImageratioROI() {
 
 void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
   CDialogEx::OnMouseMove(nFlags, point);
-  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
-    POINT current_pos{point.x, point.y};
-    if (video_output_media_source_ != nullptr && video_output_media_source_->IsValidRendingArea(current_pos)) {
-      point -= display_area_left_corner_;
-      mouse_locator_.Update(point);
-      SetCursor(cross_style_cursor_);
-    } else {
-      SetCursor(arrow_style_cursor_);
+  const auto temp =point -  screen_rect_.TopLeft();
+  mouse_locator_.Update(temp, [this, point]() {
+    if (video_output_media_source_ == nullptr) {
+      return false;
     }
-  }
+    POINT current_pos{point.x, point.y};
+    return video_output_media_source_->IsValidRendingArea(current_pos);
+  });
 }
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonUp(nFlags, point);
-  if (mouse_locator_.IsEnable() && mouse_locator_.IsVisible()) {
-	  current_point_ = point - display_area_left_corner_;
-	  mouse_locator_.Update(point);
-	  mouse_locator_.Visible(false);
-    RECT rect;
-    mouse_locator_.Transform([this, &rect](const CPoint& left_top, const CPoint& right_bottom) {
-      rect.left = (left_top.x * VIDEO_WIDTH / control_width_);
-      rect.top = (left_top.y * VIDEO_HEIGHT / control_height_);
-      rect.right = (right_bottom.x * VIDEO_WIDTH / control_width_);
-      rect.bottom = (right_bottom.y * VIDEO_HEIGHT / control_height_);
-    });
-    if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
-		  video_output_media_source_->UpdateROI(rect);
+  point  -= screen_rect_.TopLeft();
+  mouse_locator_.Stop(point);
+  mouse_locator_.Transform([this](const CPoint& left_top, const CPoint& right_bottom) {
+    if (left_top == right_bottom) {
+		  return;
     }
-  }
+	  RECT rect;
+	  rect.left = (left_top.x * VIDEO_WIDTH / screen_rect_.Width());
+	  rect.top = (left_top.y * VIDEO_HEIGHT / screen_rect_.Height());
+	  rect.right = (right_bottom.x * VIDEO_WIDTH / screen_rect_.Width());
+	  rect.bottom = (right_bottom.y * VIDEO_HEIGHT / screen_rect_.Height());
+	  if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
+		  video_output_media_source_->UpdateROI(rect);
+	  }
+  });
 }
 
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonDown(nFlags, point);
-  if (mouse_locator_.IsEnable() && !mouse_locator_.IsVisible()) {
-    point -= display_area_left_corner_;
-    mouse_locator_.Start(point);
-    mouse_locator_.Visible(true);
-  }
+  point -= screen_rect_.TopLeft();
+  mouse_locator_.Start(point);  
 }
 
 void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
-	CDialogEx::OnLButtonDblClk(nFlags, point);
-	OnRenderImageratioROI();
+  CDialogEx::OnLButtonDblClk(nFlags, point);
+  if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
+    OnRenderImageratioROI();
+  }
 }
 
 
