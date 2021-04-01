@@ -2,6 +2,7 @@ obj/
 bin/
 pdb/
 lib/
+.svn/
 src/MediaCore/ipch/
 *.vcxproj.user
 *.sln.DotSettings.user

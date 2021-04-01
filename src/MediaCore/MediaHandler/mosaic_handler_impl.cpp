@@ -45,7 +45,7 @@ namespace handler {
 	  const auto vertical_count = mosaic_param_->height / mosaic_param_->per_block_pixel;
 	  for (auto u = 0; u < horizontal_count; ++u) {
       for (auto v = 0; v < vertical_count; ++v) {
-        if (matrix_a_.size() < (horizontal_count * vertical_count / 2)) {
+        if (matrix_a_.size() < static_cast<unsigned>(horizontal_count * vertical_count / 2)) {
           matrix_a_.emplace_back(std::make_pair(u, v));
         } else {
           matrix_b_.emplace_back(std::make_pair(u, v));
@@ -68,7 +68,7 @@ namespace handler {
     }
 	  auto source_offset = GetBufferOffset(matrix_a_[index]);
 	  auto target_offset = GetBufferOffset(matrix_b_[index]);
-    for (auto i = 0U; i < mosaic_param_->per_block_pixel; ++i) {
+    for (auto i = 0; i < mosaic_param_->per_block_pixel; ++i) {
       source_offset += (video_frame->line_size[0] * i);
       target_offset += (video_frame->line_size[0] * i);
 		  std::swap_ranges(video_frame->data[0]->begin() + source_offset, video_frame->data[0]->begin() + source_offset + mosaic_param_->per_block_pixel, video_frame->data[0]->begin() + target_offset);

@@ -50,7 +50,7 @@ BOOL OSDConfigDialog::OnInitDialog() {
       auto temp_ids = woss.str();
       osd_ids_.AddString(temp_ids.c_str());
     }
-    if (current_select_osd_index_ < osd_config_result_list_->size()) {
+    if (static_cast<unsigned>(current_select_osd_index_) < osd_config_result_list_->size()) {
       osd_ids_.SetCurSel(current_select_osd_index_);
       auto item = osd_config_result_list_->at(current_select_osd_index_);
       x_pos_ = item->x_pos;
@@ -107,7 +107,7 @@ void OSDConfigDialog::OnBnClickedCancel() {
 
 void OSDConfigDialog::OnCbnSelchangeOsdIdsCombox() {
 	auto current_select = osd_ids_.GetCurSel();
-  if (current_select < osd_config_result_list_->size()) {
+  if (static_cast<unsigned>(current_select) < osd_config_result_list_->size()) {
 	  auto item = osd_config_result_list_->at(current_select);
 	  osd_enable_ = item->enable;
 	  x_pos_ = item->x_pos;
@@ -123,7 +123,7 @@ void OSDConfigDialog::OnCbnSelchangeOsdIdsCombox() {
 void OSDConfigDialog::OnBnClickedOsdEnableCheck() {
 	UpdateData();
 	auto current_select = osd_ids_.GetCurSel();
-  if (!osd_enable_ && current_select < osd_config_result_list_->size()) {
+  if (!osd_enable_ && static_cast<unsigned>(current_select) < osd_config_result_list_->size()) {
 	  auto item = osd_config_result_list_->at(current_select);
 	  osd_enable_ = item->enable = false;
 	  x_pos_ = item->x_pos = 0;
