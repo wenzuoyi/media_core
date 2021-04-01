@@ -10,7 +10,7 @@ int main(int argc, const char* argv) {
 	int ctrl;
 	std::cin >> ctrl;
 	output_media_source_test_suite.Fini();
-
+	//int data;
 	//utils::BoundedBuffer<int> bounded_buffer(5);
 	//std::mutex mutex;
  // for(auto i = 0; i < 5; i++) {

@@ -188,7 +188,7 @@ void TestSuiteGUIDialog::StartReadMediaFile() {
         return;
       }
       if (ifs_.gcount() != buffer.size()) {
-        buffer.resize(ifs_.gcount());
+        buffer.resize(static_cast<unsigned>(ifs_.gcount()));
       }
       left_read_bytes -= buffer.size();
       PostVideoFrame(buffer);
