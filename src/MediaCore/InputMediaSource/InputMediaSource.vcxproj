@@ -168,12 +168,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="audio_input_media_source.cpp" />
+    <ClInclude Include="base_input_media_source_datatype.h" />
+    <ClInclude Include="binary_file_reader.h" />
+    <ClInclude Include="include\base_input_media_source.h" />
+    <ClInclude Include="include\device_media_source.h" />
+    <ClInclude Include="include\file_media_source.h" />
+    <ClInclude Include="include\global_input_media_source.h" />
+    <ClInclude Include="include\network_media_source.h" />
+    <ClInclude Include="include\render_file_reader.h" />
+    <ClInclude Include="render_file_reader_impl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\audio_input_media_source.h" />
-    <ClInclude Include="include\audio_input_media_source_datatype.h" />
-    <ClInclude Include="include\global_input_media_source.h" />
+    <ClCompile Include="base_input_media_source.cpp" />
+    <ClCompile Include="binary_file_reader.cpp" />
+    <ClCompile Include="device_media_source.cpp" />
+    <ClCompile Include="file_media_source.cpp" />
+    <ClCompile Include="network_media_source.cpp" />
+    <ClCompile Include="render_file_reader.cpp" />
+    <ClCompile Include="render_file_reader_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
