@@ -17,6 +17,7 @@ namespace input {
 	public:
 		RenderFileReader();
 		virtual ~RenderFileReader();
+		virtual void SetEvent(RenderFileReaderEvent* event) = 0;
 		virtual void SetFormat(RenderFormat format) = 0;
 		virtual void SetResolution(const std::string& resolution) = 0;
 		static RenderFileReaderPtr CreateInstance();

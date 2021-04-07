@@ -22,6 +22,9 @@
     <Filter Include="ruler">
       <UniqueIdentifier>{001b5d9a-d655-4876-9a9e-9020aa06b2b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{2d84e053-0b18-4684-a57b-ce7ee76414a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\character_set_convertor.h">
@@ -42,6 +45,15 @@
     <ClInclude Include="window_ruler_impl.h">
       <Filter>ruler</Filter>
     </ClInclude>
+    <ClInclude Include="include\event.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="auto_event.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="manual_event.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character_set_convertor.cpp">
@@ -55,6 +67,15 @@
     </ClCompile>
     <ClCompile Include="window_ruler_impl.cpp">
       <Filter>ruler</Filter>
+    </ClCompile>
+    <ClCompile Include="event.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="auto_event.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="manual_event.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

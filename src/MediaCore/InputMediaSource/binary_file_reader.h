@@ -25,10 +25,10 @@ namespace input {
 	  void Stop();
 	  void EnableLoopPlayback(bool enable);
 	  void EnableReversePlayback(bool enable);
+	  void Speed(double speed);
   private:
 	  bool PreReadFrame(uint64_t* read_bytes, uint64_t* frame_size);
 	  void PostReadFrame(uint64_t* read_bytes, const std::vector<char>& frame_data);
-
 	  BinaryFileReaderEvent* event_{ nullptr };
 	  std::ifstream ifs_;
 	  uint64_t file_size_{ 0ULL };
@@ -36,6 +36,7 @@ namespace input {
 	  std::future<void> read_file_task_;
 	  bool enable_loop_playback_{ false };
 	  bool enable_reverse_playback_{ false };
+	  int interval_{ 40 };
   };
 }
 #endif // BINARY_FILE_READER_H_

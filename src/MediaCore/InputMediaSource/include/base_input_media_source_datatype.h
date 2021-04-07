@@ -5,12 +5,14 @@
 namespace input {
 	enum class InputMediaType {
 		kMP4File,
-		kYUVFile
+		kRenderFile
 	};
 	enum class VideoPackageType {
 		kH264,
 		kH265,
-		kYUV420
+		kYUV420,
+		kYUV422,
+		kRGB
 	};
 	enum class AudioPackageType {
 		kACC,

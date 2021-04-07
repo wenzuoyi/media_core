@@ -174,16 +174,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="auto_event.h" />
     <ClInclude Include="character_set_convertor_impl.h" />
     <ClInclude Include="include\bound_circle_buffer.hpp" />
     <ClInclude Include="include\character_set_convertor.h" />
+    <ClInclude Include="include\event.h" />
     <ClInclude Include="include\global_media_utils_source.h" />
     <ClInclude Include="include\window_ruler.h" />
+    <ClInclude Include="manual_event.h" />
     <ClInclude Include="window_ruler_impl.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="auto_event.cpp" />
     <ClCompile Include="character_set_convertor.cpp" />
     <ClCompile Include="character_set_convertor_impl.cpp" />
+    <ClCompile Include="event.cpp" />
+    <ClCompile Include="manual_event.cpp" />
     <ClCompile Include="window_ruler.cpp" />
     <ClCompile Include="window_ruler_impl.cpp" />
   </ItemGroup>
