@@ -9,7 +9,7 @@ namespace output {
 	protected:
     bool Init() override;
     void Fini() override;
-    bool SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) override;
+    bool SetParam(AudioOutputParamPtr audio_output_param) override;
     void Play() override;
     void Stop() override;
     bool SetVolume(int volume) override;

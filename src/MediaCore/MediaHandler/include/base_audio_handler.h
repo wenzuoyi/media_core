@@ -3,8 +3,6 @@
 #include "global_media_handler.h"
 #include "audio_handler_datatype.h"
 namespace handler {
-	class BaseAudioHandler;
-	using AudioHandlerPtr = std::shared_ptr<BaseAudioHandler>;
   class MEDIA_HANDLER_API_HEADER BaseAudioHandlerEvent {
   public:
 	  BaseAudioHandlerEvent() = default;

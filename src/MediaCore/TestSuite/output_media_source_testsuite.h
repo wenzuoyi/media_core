@@ -10,9 +10,9 @@ namespace output {
 		void Fini();
 		void TestPlayAudioFile();
 	protected:
-		void OnAudioOutputMediaExceptionEvent(unsigned error_code) override;
-		void OnTransmitDataEvent(AudioSamplePtr audio_sample) override;
-		void OnSampleFrequency(unsigned long frequency) override;
+		void OnAudioOutputException(unsigned error_code) override;
+		void OnAudioTransmitSample(AudioSamplePtr audio_sample) override;
+		void OnAudioSampleFrequency(unsigned long frequency) override;
 	private:
 		AudioOutputMediaSourcePtr audio_output_media_source_;
 		static std::wstring CONSOLE_TITLE_NAME;

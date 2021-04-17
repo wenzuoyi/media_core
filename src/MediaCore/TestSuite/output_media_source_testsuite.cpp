@@ -8,7 +8,7 @@ namespace output {
   void OutputMediaSourceTestSuite::Init() {
     audio_output_media_source_ = AudioOutputMediaSource::CreateInstance(PlayingMode::kDirectSound);
     if (audio_output_media_source_ != nullptr) {
-      audio_output_media_source_->SetAudioOutputMediaSourceEvent(this);
+      audio_output_media_source_->SetEvent(this);
       if (!audio_output_media_source_->Init()) {
 		    std::cout << "error:open!" << std::endl;
       }
@@ -33,7 +33,7 @@ namespace output {
 	  config->sample_rate = 44100;
 	  config->channels = 2;
 	  config->player_wnd = FindWindow(nullptr, CONSOLE_TITLE_NAME.c_str());
-	  if (!audio_output_media_source_->SetAudioOutputMediaParam(config)) {
+	  if (!audio_output_media_source_->SetParam(config)) {
 		  std::cout << "error: create buffer" << std::endl;
 	  }
 	  audio_output_media_source_->Play();
@@ -62,15 +62,15 @@ namespace output {
     }
   }
   
-  void OutputMediaSourceTestSuite::OnAudioOutputMediaExceptionEvent(unsigned error_code) {
+  void OutputMediaSourceTestSuite::OnAudioOutputException(unsigned error_code) {
     
   }
 
-  void OutputMediaSourceTestSuite::OnTransmitDataEvent(AudioSamplePtr audio_sample) {
+  void OutputMediaSourceTestSuite::OnAudioTransmitSample(AudioSamplePtr audio_sample) {
     
   }
 
-  void OutputMediaSourceTestSuite::OnSampleFrequency(unsigned long frequency) {
+  void OutputMediaSourceTestSuite::OnAudioSampleFrequency(unsigned long frequency) {
 	  std::cout << "frequency:" << frequency << std::endl;
   }
 

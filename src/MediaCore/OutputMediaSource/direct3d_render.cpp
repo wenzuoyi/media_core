@@ -96,7 +96,7 @@ namespace output {
 	  HDC hdc;
 	  DXRETURNVOID(customize_surface_->GetDC(&hdc));
 	  if (sink_ != nullptr) {
-		  sink_->OnCustomPainting(hdc);
+		  sink_->OnVideoCustomPainting(hdc);
 	  }
 	  DXRETURNVOID(customize_surface_->ReleaseDC(hdc));
 	  DXRETURNVOID(device_->BeginScene());
@@ -214,12 +214,12 @@ namespace output {
     }
   }
 
-  void Direct3DRender::SetDisplayRatio(DisplayRatio display_ratio) {
-    if (display_ratio == DisplayRatio::kAdapter) {
+  void Direct3DRender::SetDisplayRatio(AspectRatio display_ratio) {
+    if (display_ratio == AspectRatio::kAdapter) {
       window_ruler_->EnableAutoAdaptFrom(true);
-    } else if (display_ratio == DisplayRatio::kRatio43) {
+    } else if (display_ratio == AspectRatio::kRatio43) {
       window_ruler_->SetAspectRatio(std::make_pair(4, 3));
-    } else if (display_ratio == DisplayRatio::kRatio169) {
+    } else if (display_ratio == AspectRatio::kRatio169) {
       window_ruler_->SetAspectRatio(std::make_pair(16, 9));
     }
     TransformCoordinateSystem();
@@ -228,7 +228,7 @@ namespace output {
   void Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
     video_frames_list_.PushFront(video_frame);
     if (sink_ != nullptr) {
-      sink_->OnTransmitDataEvent(video_frame);
+      sink_->OnVideoTransmitFrame(video_frame);
     }
   }
 

@@ -13,16 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="base">
+    <Filter Include="player">
+      <UniqueIdentifier>{084496f7-530c-47d9-b6e5-4d0dca887a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="player\base">
       <UniqueIdentifier>{4f45fced-ac42-4d53-9b11-9a316e966382}</UniqueIdentifier>
     </Filter>
-    <Filter Include="file">
-      <UniqueIdentifier>{03fd3d15-1e7f-4b5b-b6e6-80d7c1d5d92b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="device">
+    <Filter Include="player\device">
       <UniqueIdentifier>{2b49aabf-e200-43c0-b995-4b6af0b9bb5f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="network">
+    <Filter Include="player\file">
+      <UniqueIdentifier>{03fd3d15-1e7f-4b5b-b6e6-80d7c1d5d92b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="player\network">
       <UniqueIdentifier>{f668b9e0-353a-45db-b640-7203ca09385f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -31,27 +34,48 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\base_player.h">
-      <Filter>base</Filter>
+      <Filter>player\base</Filter>
     </ClInclude>
     <ClInclude Include="include\file_player.h">
-      <Filter>file</Filter>
+      <Filter>player\file</Filter>
     </ClInclude>
     <ClInclude Include="include\render_file_player.h">
-      <Filter>file</Filter>
+      <Filter>player\file</Filter>
     </ClInclude>
     <ClInclude Include="include\base_player_datatype.h">
-      <Filter>base</Filter>
+      <Filter>player\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render_file_player_dataype.h">
+      <Filter>player\file</Filter>
+    </ClInclude>
+    <ClInclude Include="render_file_player_impl.h">
+      <Filter>player\file</Filter>
+    </ClInclude>
+    <ClInclude Include="abstract_player_object.h">
+      <Filter>player\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\media_core_erorcode.h">
+      <Filter>player\base</Filter>
+    </ClInclude>
+    <ClInclude Include="media_core_errormessage.h">
+      <Filter>player\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base_player.cpp">
-      <Filter>base</Filter>
+      <Filter>player\base</Filter>
     </ClCompile>
     <ClCompile Include="render_file_player.cpp">
-      <Filter>file</Filter>
+      <Filter>player\file</Filter>
     </ClCompile>
     <ClCompile Include="file_player.cpp">
-      <Filter>file</Filter>
+      <Filter>player\file</Filter>
+    </ClCompile>
+    <ClCompile Include="render_file_player_impl.cpp">
+      <Filter>player\file</Filter>
+    </ClCompile>
+    <ClCompile Include="abstract_player_object.cpp">
+      <Filter>player\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -74,22 +74,30 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)MediaHandler\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)MediaHandler\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)MediaHandler\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)InputMediaSource\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)MediaHandler\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,7 +113,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;InputMediaSource.lib;MediaHandler.lib;OutputMediaSource.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)InputMediaSource\include\base_input_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)InputMediaSource\include\render_file_reader_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\audio_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\video_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -121,7 +137,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;InputMediaSource.lib;MediaHandler.lib;OutputMediaSource.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)InputMediaSource\include\base_input_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)InputMediaSource\include\render_file_reader_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\audio_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\video_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,7 +165,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;InputMediaSource.lib;MediaHandler.lib;OutputMediaSource.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)InputMediaSource\include\base_input_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)InputMediaSource\include\render_file_reader_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\audio_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\video_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -161,19 +193,34 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;InputMediaSource.lib;MediaHandler.lib;OutputMediaSource.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)InputMediaSource\include\base_input_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)InputMediaSource\include\render_file_reader_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\audio_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(SolutionDir)OutputMediaSource\include\video_output_media_source_datatype.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="abstract_player_object.h" />
     <ClInclude Include="include\base_player.h" />
     <ClInclude Include="include\base_player_datatype.h" />
     <ClInclude Include="include\file_player.h" />
     <ClInclude Include="include\global_media_core.h" />
+    <ClInclude Include="include\media_core_erorcode.h" />
     <ClInclude Include="include\render_file_player.h" />
+    <ClInclude Include="include\render_file_player_dataype.h" />
+    <ClInclude Include="media_core_errormessage.h" />
+    <ClInclude Include="render_file_player_impl.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="abstract_player_object.cpp" />
     <ClCompile Include="base_player.cpp" />
     <ClCompile Include="file_player.cpp" />
     <ClCompile Include="render_file_player.cpp" />
+    <ClCompile Include="render_file_player_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

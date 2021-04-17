@@ -8,4 +8,8 @@ namespace core {
   RenderFilePlayer::RenderFilePlayer() = default;
 
 	RenderFilePlayer::~RenderFilePlayer() = default;
+
+  RenderFilePlayerPtr RenderFilePlayer::CreateInstance() {
+	  return nullptr;
+  }
 }

@@ -10,8 +10,8 @@ namespace output {
 		BaseAudioPlayer() = default;
 		virtual ~BaseAudioPlayer() = default;
 	protected:
-    void SetAudioOutputMediaSourceEvent(AudioOutputMediaSourceEvent* sink) override;
-    bool SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) override;
+    void SetEvent(AudioOutputMediaSourceEvent* sink) override;
+    bool SetParam(AudioOutputParamPtr audio_output_param) override;
     void Mute() override;
     bool IsMute() const override;
     bool InputAudioSample(AudioSamplePtr audio_sample) override;

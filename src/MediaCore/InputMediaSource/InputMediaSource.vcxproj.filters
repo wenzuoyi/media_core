@@ -30,9 +30,6 @@
     <ClInclude Include="include\base_input_media_source.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="base_input_media_source_datatype.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="include\global_input_media_source.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -52,6 +49,12 @@
       <Filter>file</Filter>
     </ClInclude>
     <ClInclude Include="binary_file_reader.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_input_media_source_datatype.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render_file_reader_datatype.h">
       <Filter>file</Filter>
     </ClInclude>
   </ItemGroup>

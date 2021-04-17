@@ -1,13 +1,11 @@
 #ifndef RENDER_FILE_READER_H_
 #define RENDER_FILE_READER_H_
 #include "file_media_source.h"
+#include "render_file_reader_datatype.h"
 namespace input {
 	class RenderFileReader;
 	using RenderFileReaderPtr = std::shared_ptr<RenderFileReader>;
-  enum class RenderFormat {
-    kYUV420 = 0,
-    kYUV422
-  };
+
   class INPUT_MEDIA_API_HEADER RenderFileReaderEvent : public FileMediaSourceEvent {
   public:
 	  RenderFileReaderEvent();

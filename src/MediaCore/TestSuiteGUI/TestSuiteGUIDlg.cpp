@@ -72,10 +72,10 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_HANDLER_MOSAIC, &TestSuiteGUIDialog::OnHandlerMosaic)
 END_MESSAGE_MAP()
 
-void TestSuiteGUIDialog::OnVideoOutputMediaExceptionEvent(unsigned error_code) {
+void TestSuiteGUIDialog::OnVideoOutputException(unsigned error_code) {
 }
 
-void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
+void TestSuiteGUIDialog::OnVideoCustomPainting(HDC hdc) {
   mouse_locator_.Draw(hdc, [this](const CPoint& left_top, const CPoint& right_bottom) {
     CRect rect(left_top, right_bottom);
     rect.left = (left_top.x * VIDEO_WIDTH / screen_rect_.Width());
@@ -86,7 +86,7 @@ void TestSuiteGUIDialog::OnCustomPainting(HDC hdc) {
   });
 }
 
-void TestSuiteGUIDialog::OnTransmitDataEvent(output::VideoFramePtr video_frame) {
+void TestSuiteGUIDialog::OnVideoTransmitFrame(output::VideoFramePtr video_frame) {
 }
 
 void TestSuiteGUIDialog::OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type, handler::VideoFramePtr video_frame) {
@@ -371,19 +371,19 @@ void TestSuiteGUIDialog::OnRenderOSDConfig() {
 
 void TestSuiteGUIDialog::OnRenderImageratioAdpater() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_ADPATER);
-	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kAdapter);
+	video_output_media_source_->SetDisplayRatio(output::AspectRatio::kAdapter);
 }
 
 
 void TestSuiteGUIDialog::OnRenderImageratio43() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_43);
-	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kRatio43);
+	video_output_media_source_->SetDisplayRatio(output::AspectRatio::kRatio43);
 }
 
 
 void TestSuiteGUIDialog::OnRenderImageratio169() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_169);
-	video_output_media_source_->SetDisplayRatio(output::DisplayRatio::kRatio169);
+	video_output_media_source_->SetDisplayRatio(output::AspectRatio::kRatio169);
 }
 
 void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {

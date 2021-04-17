@@ -11,8 +11,8 @@ namespace output {
     ::SDL_Quit();
   }
   
-  bool SDLSoundPlayer::SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) {
-	  BaseAudioPlayer::SetAudioOutputMediaParam(audio_output_param);
+  bool SDLSoundPlayer::SetParam(AudioOutputParamPtr audio_output_param) {
+	  BaseAudioPlayer::SetParam(audio_output_param);
     SDL_AudioSpec wanted_spec;
 	  wanted_spec.freq = static_cast<int>(audio_output_param->sample_rate);
     if (audio_output_param->bits_per_sample == 16) {

@@ -20,9 +20,9 @@ public:
   #endif
 protected:
   HICON m_hIcon;
-  void OnVideoOutputMediaExceptionEvent(unsigned error_code) override;
-  void OnCustomPainting(HDC hdc) override;
-  void OnTransmitDataEvent(output::VideoFramePtr video_frame) override;
+  void OnVideoOutputException(unsigned error_code) override;
+  void OnVideoCustomPainting(HDC hdc) override;
+  void OnVideoTransmitFrame(output::VideoFramePtr video_frame) override;
   void OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type, handler::VideoFramePtr video_frame) override;
   void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV Ö§³Ö
   BOOL OnInitDialog() override;

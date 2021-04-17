@@ -26,7 +26,7 @@ namespace input {
     void RPlay(bool enable) override;
     void PreviousFrame() override;
     void SetFormat(RenderFormat format) override;
-    void SetResolution(const std::string& resolution);
+    void SetResolution(const std::string& resolution) override;
   private:
 	  inline void GetFrameSize();
 	  RenderFormat format_{ RenderFormat::kYUV420 };
