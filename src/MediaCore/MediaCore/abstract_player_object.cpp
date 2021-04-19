@@ -40,6 +40,7 @@ namespace core {
       return false;
     }
     video_output_ = output::VideoOutputMediaSource::CreateInstance(basic_player_info->video_render_mode);
+    video_output_->Init();
     video_output_->SetEvent(this);
     auto param = std::make_shared<output::VideoOutputParam>();
     param->width = video_base_info->width;
@@ -60,6 +61,7 @@ namespace core {
     if (type == MediaModelType::kAll || type == MediaModelType::kVideo) {
       if (video_output_ != nullptr) {
         video_output_->Stop();
+        video_output_->Fini();
         video_output_ = nullptr;
       }
       if (mosaic_handler_ != nullptr) {

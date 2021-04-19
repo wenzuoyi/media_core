@@ -39,11 +39,11 @@ namespace input {
 	  uint64_t time_stamp{ 0 };
 	};
 	struct VideoPackage : public Package {
-		VideoBaseInfo base_info;
+		VideoBaseInfoPtr base_info;
 	};
 	using VideoPackagePtr = std::shared_ptr<VideoPackage>;
 	struct AudioPackage : public Package {
-		AudioBaseInfo base_info;
+		AudioBaseInfoPtr base_info;
 	};
 	using AudioPackagePtr = std::shared_ptr<AudioPackage>;
 }

@@ -5,7 +5,9 @@
 namespace core {
   RenderFilePlayerImpl::RenderFilePlayerImpl() = default;
 
-  RenderFilePlayerImpl::~RenderFilePlayerImpl() = default;
+  RenderFilePlayerImpl::~RenderFilePlayerImpl() {
+    
+  }
 
   bool RenderFilePlayerImpl::Init(BasicPlayerParamPtr param) {
 	  basic_player_param_ = param;
@@ -14,18 +16,24 @@ namespace core {
       return false;
     }
     render_file_reader_->SetEvent(this);
+    player_status_ = PlayerStatus::kClose;
     return true;
   }
 
   void RenderFilePlayerImpl::Fini() {
 	  render_file_reader_ = nullptr;
+	  AbstractPlayerObject::UnInitialize(MediaModelType::kVideo);
   }
 
   bool RenderFilePlayerImpl::Open(const std::string& uri) {
     if (uri.empty() || render_file_reader_ == nullptr) {
       return false;
     }
-    return render_file_reader_->Open(uri);
+    const auto retvalue = render_file_reader_->Open(uri);
+    if (retvalue) {
+      player_status_ = PlayerStatus::kStop;
+    }
+    return retvalue;
   }
 
   void RenderFilePlayerImpl::Close() {
@@ -33,13 +41,18 @@ namespace core {
       return;
     }
     render_file_reader_->Close();
+    player_status_ = PlayerStatus::kClose;
   }
 
   bool RenderFilePlayerImpl::Play() {
     if (render_file_reader_ == nullptr) {
       return false;
     }
-    return render_file_reader_->Play();
+    const auto retvalue = render_file_reader_->Play();
+    if (retvalue) {
+      player_status_ = PlayerStatus::kRun;
+    }
+    return retvalue;
   }
 
   void RenderFilePlayerImpl::Stop() {
@@ -47,6 +60,7 @@ namespace core {
       return;
     }
     render_file_reader_->Stop();
+    player_status_ = PlayerStatus::kStop;
   }
 
   void RenderFilePlayerImpl::Pause() {
@@ -54,6 +68,7 @@ namespace core {
       return;
     }
     render_file_reader_->Pause();
+    player_status_ = PlayerStatus::kPause;
   }
 
   void RenderFilePlayerImpl::Resume() {
@@ -61,6 +76,7 @@ namespace core {
       return;
     }
     render_file_reader_->Resume();
+    player_status_ = PlayerStatus::kRun;
   }
 
   bool RenderFilePlayerImpl::Seek(int64_t time_stamp) {
@@ -74,7 +90,11 @@ namespace core {
 	  if (render_file_reader_ == nullptr) {
 		  return false;
 	  }
-	  return render_file_reader_->NextFrame();
+    const auto retvalue = render_file_reader_->NextFrame();
+    if (retvalue) {
+      player_status_ = PlayerStatus::kSingleFrameForward;
+    }
+    return retvalue;
   }
 
   void RenderFilePlayerImpl::Speed(double speed) {
@@ -108,6 +128,13 @@ namespace core {
 		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
 	  }
 	  return false;
+  }
+
+  bool RenderFilePlayerImpl::IsZoom() const {
+    if (video_output_ == nullptr) {
+      return false;
+    }
+    return video_output_->IsROIEnable();
   }
 
   void RenderFilePlayerImpl::Zoom(RegionPtr region) {
@@ -184,6 +211,14 @@ namespace core {
       return;
     }
     render_file_reader_->PreviousFrame();
+    player_status_ = PlayerStatus::kSingleFrameBackward;
+  }
+
+  void RenderFilePlayerImpl::EnableLoopPlayback(bool enable) {
+	  if (render_file_reader_ == nullptr) {
+		  return;
+	  }
+	  render_file_reader_->EnableLoopPlayback(enable);
   }
 
   void RenderFilePlayerImpl::SetEvent(RenderFilePlayerEvent* event) {
@@ -204,6 +239,25 @@ namespace core {
     }
   }
 
+  int RenderFilePlayerImpl::Width() const {
+	  return video_base_info_->width;
+  }
+
+  int RenderFilePlayerImpl::Height() const {
+	  return video_base_info_->height;
+  }
+
+  bool RenderFilePlayerImpl::IsValidRegion(const POINT& point) const {
+    if (video_output_ == nullptr) {
+      return false;
+    }
+    return video_output_->IsValidRendingArea(point);
+  }
+
+  BasePlayer::PlayerStatus RenderFilePlayerImpl::Status() const {
+	  return player_status_;
+  }
+
   void RenderFilePlayerImpl::OnDemuxException(int error_code, const std::string& error_message) {
     if (event_ != nullptr) {
       event_->OnPlayerException(error_code, error_message);
@@ -217,6 +271,19 @@ namespace core {
   }
 
   void RenderFilePlayerImpl::OnDemuxVideoPackage(input::InputMediaType type, VideoPackagePtr package) {
+    if (type != input::InputMediaType::kRenderFile) {
+      return;
+    }
+    if (package == nullptr || package->base_info == nullptr || package->data == nullptr) {
+      return;
+    }
+    if (mosaic_handler_ == nullptr) {
+      return;
+    }
+    auto object = CreateYUVObject(package);
+    if (object != nullptr) {
+      mosaic_handler_->InputVideoFrame(object);
+    }
   }
 
   void RenderFilePlayerImpl::OnVideoBaseInfoChanged(input::InputMediaType type, VideoBaseInfoPtr previous_format, VideoBaseInfoPtr current_format) {
@@ -226,9 +293,9 @@ namespace core {
   }
 
   void RenderFilePlayerImpl::OnAudioBaseInfoChanged(input::InputMediaType type, input::AudioBaseInfoPtr previous_format, input::AudioBaseInfoPtr current_format) {
-	  audio_base_info_ = current_format;
-	  AbstractPlayerObject::UnInitialize(MediaModelType::kAudio);
-	  AbstractPlayerObject::Initialize(basic_player_param_, audio_base_info_);
+	  if (event_ != nullptr) {
+		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
+	  }
   }
 
   void RenderFilePlayerImpl::OnEOF(input::InputMediaType type) {
@@ -241,5 +308,46 @@ namespace core {
     if (event_ != nullptr) {
       event_->OnBOF();
     }
+  }
+
+  void RenderFilePlayerImpl::OnVideoCustomPainting(HDC hdc) {
+    if (event_ != nullptr) {
+      event_->OnExtraDisplay(hdc);
+    }
+  }
+
+  VideoFramePtr RenderFilePlayerImpl::CreateYUVObject(VideoPackagePtr package) {
+	  auto offset = 0;
+	  const auto y_stride = package->base_info->width;
+	  const auto y_size = y_stride * package->base_info->height;
+	  auto y_data = std::make_shared<output::Buffer>(package->data->begin() + offset, package->data->begin() + offset + y_size);
+	  offset += y_size;
+	  const auto u_stride = y_stride / 2;
+	  int u_size = 0;
+    if (package->base_info->type == input::VideoPackageType::kYUV420) {
+	  	u_size = u_stride * (package->base_info->height / 2);
+    } else if (package->base_info->type == input::VideoPackageType::kYUV422)  {
+      u_size = u_stride * (package->base_info->height);
+    }    
+	  auto u_data = std::make_shared<output::Buffer>(package->data->begin() + offset, package->data->begin() + offset + u_size);
+	  offset += u_size;
+	  const auto v_stride = y_stride / 2;
+    int v_size = 0;
+    if (package->base_info->type == input::VideoPackageType::kYUV420) {
+      v_size = v_stride * (package->base_info->height / 2);
+    } else if (package->base_info->type == input::VideoPackageType::kYUV422) {
+      v_size = v_stride * package->base_info->height;
+    }
+	  auto v_data = std::make_shared<output::Buffer>(package->data->begin() + offset, package->data->begin() + offset + v_size);
+	  auto video_frame = std::make_shared<output::VideoFrame>();
+	  video_frame->width = package->base_info->width;
+	  video_frame->height = package->base_info->height;
+	  video_frame->data[0] = y_data;
+	  video_frame->line_size[0] = y_stride;
+	  video_frame->data[1] = u_data;
+	  video_frame->line_size[1] = u_stride;
+	  video_frame->data[2] = v_data;
+	  video_frame->line_size[2] = v_stride;
+	  return video_frame;
   }
 }

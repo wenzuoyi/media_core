@@ -1,5 +1,5 @@
 #include "./include/render_file_player.h"
-
+#include "render_file_player_impl.h"
 namespace core {
   RenderFilePlayerEvent::RenderFilePlayerEvent() = default;
 
@@ -10,6 +10,6 @@ namespace core {
 	RenderFilePlayer::~RenderFilePlayer() = default;
 
   RenderFilePlayerPtr RenderFilePlayer::CreateInstance() {
-	  return nullptr;
+	  return std::make_shared<RenderFilePlayerImpl>();
   }
 }

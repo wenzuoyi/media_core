@@ -16,6 +16,7 @@ namespace core {
     virtual ~FilePlayer();
     virtual void RPlay(bool enable) = 0;
     virtual void PreviousFrame() = 0;
+    virtual void EnableLoopPlayback(bool enable) = 0;
   };
 }
 #endif // FILE_PLAYER_H_

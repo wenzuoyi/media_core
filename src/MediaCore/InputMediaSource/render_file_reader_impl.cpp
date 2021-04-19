@@ -7,9 +7,11 @@ namespace input {
 	  player_pause_control_ = utils::Event::CreateInstance(true);
 	  player_pause_control_->NotifyAll();
 	  player_singleframe_control_ = utils::Event::CreateInstance(false);
+	  current_video_base_info_ = std::make_shared<VideoBaseInfo>();
   }
 
   RenderFileReaderImpl::~RenderFileReaderImpl() {
+	  current_video_base_info_ = nullptr;
   }
 
   void RenderFileReaderImpl::OnRequestFrameSize(uint64_t* frame_size) {
@@ -23,15 +25,9 @@ namespace input {
   }
 
   void RenderFileReaderImpl::OnPostBinaryData(const std::vector<char>& buffer, uint64_t offset) {
-    if (event_ != nullptr) {
+    if (event_ != nullptr && current_video_base_info_ != nullptr) {
       auto package = std::make_shared<VideoPackage>();
-      package->base_info.width = with_;
-      package->base_info.height = height_;
-      if (format_ == RenderFormat::kYUV420) {
-        package->base_info.type = VideoPackageType::kYUV420;
-      } else if (format_ == RenderFormat::kYUV422) {
-        package->base_info.type = VideoPackageType::kYUV422;
-      }
+      package->base_info = current_video_base_info_;
       package->data = std::make_shared<Data>(buffer.begin(), buffer.end());
       package->time_stamp = 0;
       event_->OnDemuxVideoPackage(InputMediaType::kRenderFile, package);
@@ -115,9 +111,24 @@ namespace input {
 	  NextFrame();
   }
 
+  void RenderFileReaderImpl::EnableLoopPlayback(bool enable) {
+	  binary_file_reader_.EnableLoopPlayback(enable);
+  }
+
   void RenderFileReaderImpl::SetFormat(RenderFormat format) {
-    if (format != format_) {
-      format_ = format;
+    auto package_type{VideoPackageType::kYUV420};
+    if (format == RenderFormat::kYUV422) {
+      package_type = VideoPackageType::kYUV422;
+    } else if (format == RenderFormat::kYUV420) {
+      package_type = VideoPackageType::kYUV420;
+    }
+    if (package_type != current_video_base_info_->type) {
+      auto video_base_info = CloneVideoBaseInfo(current_video_base_info_);
+      video_base_info->type = package_type;
+      if (event_ != nullptr) {
+        event_->OnVideoBaseInfoChanged(InputMediaType::kRenderFile, current_video_base_info_, video_base_info);
+      }
+      current_video_base_info_ = video_base_info;
     }
     GetFrameSize();
   }
@@ -126,19 +137,39 @@ namespace input {
     std::regex regex{R"(([0-9]+)[xX]([0-9]+))"};
     std::smatch matches;
     if (std::regex_match(resolution, matches, regex)) {
-      if (matches.size() == 2) {
-        with_ = std::stoi(matches[0].str());
-        height_ = std::stoi(matches[1].str());
+      if (matches.size() ==3) {
+        const auto width = std::stoi(matches[1].str());
+        const auto height = std::stoi(matches[2].str());
+        if (current_video_base_info_->width != width || current_video_base_info_->height != height) {
+          auto video_base_info = CloneVideoBaseInfo(current_video_base_info_);
+          video_base_info->width = width;
+          video_base_info->height = height;
+          if (event_ != nullptr) {
+            event_->OnVideoBaseInfoChanged(InputMediaType::kRenderFile, current_video_base_info_, video_base_info);
+          }
+          current_video_base_info_ = video_base_info;
+        }
       }
     }
     GetFrameSize();
   }
 
   void RenderFileReaderImpl::GetFrameSize() {
-    if (format_ == RenderFormat::kYUV420) {
-      frame_size_ = with_ * height_ * 3 / 2;
-    } else if (format_ == RenderFormat::kYUV422) {
-      frame_size_ = with_ * height_ * 2;
+    if (current_video_base_info_->type == VideoPackageType::kYUV420) {
+      frame_size_ = current_video_base_info_->width * current_video_base_info_->height * 3 / 2;
+    } else if (current_video_base_info_->type == VideoPackageType::kYUV422) {
+      frame_size_ = current_video_base_info_->width * current_video_base_info_->height * 2;
     }
+  }
+
+  VideoBaseInfoPtr RenderFileReaderImpl::CloneVideoBaseInfo(VideoBaseInfoPtr video_base_info) {
+	  auto temp = std::make_shared<VideoBaseInfo>();
+    if (video_base_info == nullptr) {
+      return temp;
+    }
+    temp->width = video_base_info->width;
+    temp->height = video_base_info->height;
+    temp->type = video_base_info->type;
+    return temp;
   }
 }

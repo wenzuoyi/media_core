@@ -23,6 +23,14 @@ namespace core {
 
   class MEDIA_CORE_API_HEADER BasePlayer {
   public:
+	  enum class PlayerStatus {
+		  kClose = 0,
+		  kStop = 1,
+		  kRun = 2,
+		  kPause = 3,
+      kSingleFrameForward = 4,
+      kSingleFrameBackward = 5
+    };
     BasePlayer();
     virtual ~BasePlayer();
     virtual bool Init(BasicPlayerParamPtr param) = 0;
@@ -40,6 +48,7 @@ namespace core {
     virtual void SetVolume(int volume) = 0;
     virtual int GetVolume() = 0;
     virtual bool Snapshot(const std::string& url) = 0;
+    virtual bool IsZoom() const = 0;
     virtual void Zoom(RegionPtr region) = 0;
     virtual void Mosaic(RegionPtr region) = 0;
     virtual void Flip() = 0;
@@ -48,6 +57,10 @@ namespace core {
 	  virtual bool SwitchStream(StreamType type) = 0;
 	  virtual void ImageScale(AspectRatio ratio) = 0;
 	  virtual void OSD(OSDParamListPtr param) = 0;
+	  virtual int Width() const = 0;
+	  virtual int Height() const = 0;
+	  virtual bool IsValidRegion(const POINT& point) const = 0;
+	  virtual PlayerStatus Status() const = 0;
   };
 }
 #endif // BASE_PLAYER_H_

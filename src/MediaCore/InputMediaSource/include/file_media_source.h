@@ -16,6 +16,7 @@ namespace input {
     virtual ~FileMediaSource();
     virtual void RPlay(bool enable) = 0;
     virtual void PreviousFrame() = 0;
+    virtual void EnableLoopPlayback(bool enable) = 0;
   };
 }
 #endif // FILE_MEDIA_SOURCE_H_

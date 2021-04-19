@@ -25,19 +25,19 @@ namespace input {
     void Speed(double speed) override;
     void RPlay(bool enable) override;
     void PreviousFrame() override;
+    void EnableLoopPlayback(bool enable) override;
     void SetFormat(RenderFormat format) override;
     void SetResolution(const std::string& resolution) override;
   private:
 	  inline void GetFrameSize();
-	  RenderFormat format_{ RenderFormat::kYUV420 };
-	  int with_{ 0 };
-	  int height_{ 0 };
+	  static VideoBaseInfoPtr CloneVideoBaseInfo(VideoBaseInfoPtr video_base_info);
 	  BinaryFileReader binary_file_reader_;
 	  RenderFileReaderEvent* event_{ nullptr };
 	  utils::EventPtr player_pause_control_;
 	  utils::EventPtr player_singleframe_control_;
 	  uint64_t frame_size_{ 0 };
 	  std::atomic_bool single_frame_flag_{ false };
+	  VideoBaseInfoPtr current_video_base_info_{ nullptr };
   };
 }
 #endif // RENDER_FILE_READER_IMPL_H_

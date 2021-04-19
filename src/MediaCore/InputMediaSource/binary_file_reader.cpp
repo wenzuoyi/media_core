@@ -43,7 +43,7 @@ namespace input {
         std::vector<char> buffer(frame_size, 0);
         ifs_.read(&buffer[0], buffer.size());
         if (ifs_.fail()) {
-			    break;;
+			    break;
         }
         if (static_cast<unsigned>(ifs_.gcount()) != buffer.size()) {
           buffer.resize(ifs_.gcount());
@@ -60,6 +60,7 @@ namespace input {
   void BinaryFileReader::Stop() {
 	  exit_ = true;
 	  read_file_task_.wait();
+	  ifs_.seekg(0, std::ios_base::beg);
   }
 
   void BinaryFileReader::EnableLoopPlayback(bool enable) {

@@ -43,50 +43,6 @@ void TestSuiteGUIDialog::DoDataExchange(CDataExchange* pDX) {
   DDX_Control(pDX, IDC_STATIC_MAIN, display_area_);
 }
 
-void TestSuiteGUIDialog::OnPlayerException(int error_code, const std::string& error_message) {
-}
-
-void TestSuiteGUIDialog::OnVideoFrameInfo(core::VideoBaseInfoPtr frame_info) {
-}
-
-void TestSuiteGUIDialog::OnAudioFrameInfo(core::AudioBaseInfoPtr frame_info) {
-}
-
-void TestSuiteGUIDialog::OnPreDecodingPackage(core::VideoPackagePtr package) {
-}
-
-void TestSuiteGUIDialog::OnPreDecodingPackage(core::AudioPackagePtr package) {
-}
-
-void TestSuiteGUIDialog::OnPreRenderingFrame(core::VideoFramePtr video_frame) {
-}
-
-void TestSuiteGUIDialog::OnPreRenderingFrame(core::AudioSamplePtr audio_sample) {
-}
-
-void TestSuiteGUIDialog::OnPostRenderingFrame(core::VideoFramePtr video_frame) {
-}
-
-void TestSuiteGUIDialog::OnPostRenderingFrame(core::AudioSamplePtr audio_sample) {
-}
-
-void TestSuiteGUIDialog::OnExtraDisplay(HDC hdc) {
-	mouse_locator_.Draw(hdc, [this](const CPoint& left_top, const CPoint& right_bottom) {
-		CRect rect(left_top, right_bottom);
-		rect.left = (left_top.x * render_file_player_->Width() / screen_rect_.Width());
-		rect.top = (left_top.y * render_file_player_->Height() / screen_rect_.Height());
-		rect.right = (right_bottom.x * render_file_player_->Width() / screen_rect_.Width());
-		rect.bottom = (right_bottom.y * render_file_player_->Height() / screen_rect_.Height());
-		return rect;
-	});
-}
-
-void TestSuiteGUIDialog::OnEOF() {
-}
-
-void TestSuiteGUIDialog::OnBOF() {
-}
-
 BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
   ON_WM_SYSCOMMAND()
   ON_WM_PAINT()
@@ -108,7 +64,6 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_RENDER_IMAGERATIO_ROI, &TestSuiteGUIDialog::OnRenderImageratioROI)
 	ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_HANDLER_MOSAIC, &TestSuiteGUIDialog::OnHandlerMosaic)
-	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
@@ -137,7 +92,7 @@ BOOL TestSuiteGUIDialog::OnInitDialog() {
   });
   EnableRenderMenuItem({
     {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false}, { ID_RENDER_IMAGERATIO_43, false},
-    {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false},{ ID_HANDLER_MOSAIC , false }
+    {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false}
   });  
   return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -201,18 +156,6 @@ void TestSuiteGUIDialog::OnDestroy() {
   CDialogEx::OnDestroy();
 }
 
-void TestSuiteGUIDialog::OnClose() {
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kPause) {
-	  render_file_player_->Resume();
-  }
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kRun) {
-	  render_file_player_->Stop();
-  }
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kStop) {
-	  render_file_player_->Close();
-  }
-  CDialogEx::OnClose();
-}
 
 void TestSuiteGUIDialog::OnRenderOpenFile() {
   CFileDialog file_dialog(TRUE, _T("*.yuv"), nullptr, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
@@ -222,18 +165,18 @@ void TestSuiteGUIDialog::OnRenderOpenFile() {
     const auto open_file_path = file_dialog.GetPathName();
     auto open_file_path_string = std::wstring(static_cast<LPCTSTR>(open_file_path));
     auto uri = utils::CharacterSetConvertor::Instance()->UnicodeToGBK(open_file_path_string);
-    if (render_file_player_ != nullptr && render_file_player_->Open(uri)) {
+    if (render_file_player_ != nullptr) {
+      render_file_player_->Open(uri);
       //TODO: Add file-format dlg here
-      render_file_player_->SetResolution("320x180");
-      render_file_player_->SetFormat(core::RenderFormat::kYUV420);
-      render_file_player_->EnableLoopPlayback(true);
+      render_file_player_->SetResolution("320x240");
+      render_file_player_->SetFormat(input::RenderFormat::kYUV420);
     }
 	  EnableRenderMenuItem({
 		  { ID_RENDER_OPEN, false },{ ID_RENDER_PLAY, true },{ ID_RENDER_STOP, false },{ ID_RENDER_CLOSE, true }
 	  });
 	  EnableRenderMenuItem({
 		  { ID_RENDER_OSD, false },{ ID_RENDER_IMAGERATIO_ADPATER, false },{ ID_RENDER_IMAGERATIO_43, false },
-		  { ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false },{ ID_HANDLER_MOSAIC , false }
+		  { ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false }
 	  });
   }
 }
@@ -247,35 +190,49 @@ void TestSuiteGUIDialog::OnRenderCloseFile() {
 	});
 	EnableRenderMenuItem({
 		{ ID_RENDER_OSD, false },{ ID_RENDER_IMAGERATIO_ADPATER, false },{ ID_RENDER_IMAGERATIO_43, false },
-		{ ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false },{ ID_HANDLER_MOSAIC , false }
+		{ ID_RENDER_IMAGERATIO_169, false },{ ID_RENDER_IMAGERATIO_ROI, false }
 	});
 }
 
 void TestSuiteGUIDialog::OnRenderPlay() {
   if (render_file_player_ != nullptr) {
     render_file_player_->Play();
-	  EnableRenderMenuItem({
-	    {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, false}, {ID_RENDER_STOP, true}, {ID_RENDER_CLOSE, false}
-	  });
-	  EnableRenderMenuItem({
-	    {ID_RENDER_OSD, true}, {ID_RENDER_IMAGERATIO_ADPATER, true }, {ID_RENDER_IMAGERATIO_43, true },
-	    {ID_RENDER_IMAGERATIO_169, true }, {ID_RENDER_IMAGERATIO_ROI, true },{ ID_HANDLER_MOSAIC , true }
-	  });
   }
+
+	//if (video_output_media_source_ == nullptr) {
+	//  return;
+	//}
+	//if (!is_playing_) {
+	//  if (video_output_media_source_->Play()) {
+	//    StartReadMediaFile();
+	//    is_playing_ = true;
+ //     EnableRenderMenuItem({
+ //       {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, false}, {ID_RENDER_STOP, true}, {ID_RENDER_CLOSE, false}
+ //     });
+ //     EnableRenderMenuItem({
+ //       {ID_RENDER_OSD, true}, {ID_RENDER_IMAGERATIO_ADPATER, true }, {ID_RENDER_IMAGERATIO_43, true },
+ //       {ID_RENDER_IMAGERATIO_169, true }, {ID_RENDER_IMAGERATIO_ROI, true }
+ //     });
+	//  }
+	//}
 }
 
 void TestSuiteGUIDialog::OnRenderStop() {
-  if (render_file_player_ != nullptr) {
-	  render_file_player_->Stop();
-    EnableRenderMenuItem({
-      {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, true}, {ID_RENDER_STOP, false}, {ID_RENDER_CLOSE, true}
-    });
-    EnableRenderMenuItem({
-      {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false}, {ID_RENDER_IMAGERATIO_43, false},
-      {ID_RENDER_IMAGERATIO_169, false}, {ID_RENDER_IMAGERATIO_ROI, false},{ ID_HANDLER_MOSAIC , false }
-    });
-	  UpdateWindow();
-  }
+	//if (video_output_media_source_ == nullptr) {
+	//	return;
+	//}
+ // if (is_playing_) {
+ //   StopReadFile();
+ //   video_output_media_source_->Stop();
+ //   is_playing_ = false;
+ //   EnableRenderMenuItem({
+ //     {ID_RENDER_OPEN, false}, {ID_RENDER_PLAY, true}, {ID_RENDER_STOP, false}, {ID_RENDER_CLOSE, true}
+ //   });
+ //   EnableRenderMenuItem({
+ //     {ID_RENDER_OSD, false}, {ID_RENDER_IMAGERATIO_ADPATER, false }, {ID_RENDER_IMAGERATIO_43, false },
+ //     {ID_RENDER_IMAGERATIO_169, false }, {ID_RENDER_IMAGERATIO_ROI, false }
+ //   });
+ // }
 }
 
 void TestSuiteGUIDialog::EnableRenderMenuItem(std::map<unsigned, bool>&& menu_items_map) const {
@@ -295,39 +252,39 @@ void TestSuiteGUIDialog::OnRenderOSDConfig() {
 	  }
   }
   osd_config_dialog_.SetConfigResultList(osd_config_result_list_);
-  if (osd_config_dialog_.DoModal() == IDOK) {
-    auto result = osd_config_dialog_.GetConfigResultList();
-    auto osd_param = std::make_shared<output::OSDParamList>();
-    for (auto i = 0U; i < result->size(); ++i) {
-      auto item = (*result)[i];
-      auto& param_item = (*osd_param)[item->index];
-      param_item.height = item->height;
-      param_item.width = item->width;
-      param_item.x_pos = item->x_pos;
-      param_item.y_pos = item->y_pos;
-      param_item.enable = item->enable;
-	    param_item.content = utils::CharacterSetConvertor::Instance()->UnicodeToUTF8(item->content);
-    }
-    render_file_player_->OSD(osd_param);
-  }
+  //if (osd_config_dialog_.DoModal() == IDOK && video_output_media_source_ != nullptr) {
+  //  auto result = osd_config_dialog_.GetConfigResultList();
+  //  auto osd_param = std::make_shared<output::OSDParamList>();
+  //  for (auto i = 0U; i < result->size(); ++i) {
+  //    auto item = (*result)[i];
+  //    auto& param_item = (*osd_param)[item->index];
+  //    param_item.height = item->height;
+  //    param_item.width = item->width;
+  //    param_item.x_pos = item->x_pos;
+  //    param_item.y_pos = item->y_pos;
+  //    param_item.enable = item->enable;
+	 //   param_item.content = utils::CharacterSetConvertor::Instance()->UnicodeToUTF8(item->content);
+  //  }
+  //  video_output_media_source_->SetOSD(osd_param);
+  //}
 }
 
 
 void TestSuiteGUIDialog::OnRenderImageratioAdpater() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_ADPATER);
-	render_file_player_->ImageScale(output::AspectRatio::kAdapter);
+	//video_output_media_source_->SetDisplayRatio(output::AspectRatio::kAdapter);
 }
 
 
 void TestSuiteGUIDialog::OnRenderImageratio43() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_43);
-	render_file_player_->ImageScale(output::AspectRatio::kRatio43);
+	//video_output_media_source_->SetDisplayRatio(output::AspectRatio::kRatio43);
 }
 
 
 void TestSuiteGUIDialog::OnRenderImageratio169() {
 	MutexPictureImageRatioMenuItems(ID_RENDER_IMAGERATIO_169);
-	render_file_player_->ImageScale(output::AspectRatio::kRatio169);
+	//video_output_media_source_->SetDisplayRatio(output::AspectRatio::kRatio169);
 }
 
 void TestSuiteGUIDialog::MutexPictureImageRatioMenuItems(unsigned ui_id) {
@@ -347,39 +304,45 @@ void TestSuiteGUIDialog::OnSizing(UINT fwSide, LPRECT pRect) {
 }
 
 void TestSuiteGUIDialog::OnRenderImageratioROI() {
-  const auto status = render_file_player_->IsZoom();
-  auto menu = GetMenu();
-  menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, !status ? MF_CHECKED : MF_UNCHECKED);
-  mouse_locator_.Enable(!status);
-  if (status) {
-    render_file_player_->Zoom(nullptr);
-  }
+  //if (video_output_media_source_ == nullptr) {
+  //  return;
+  //}
+  //const auto status = video_output_media_source_->IsROIEnable();
+  //auto menu = GetMenu();
+  //menu->CheckMenuItem(ID_RENDER_IMAGERATIO_ROI, !status ? MF_CHECKED : MF_UNCHECKED);
+  //mouse_locator_.Enable(!status);
+  //video_output_media_source_->EnableROI(!status);
 }
 
 void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
   CDialogEx::OnMouseMove(nFlags, point);
-  const auto temp = point - screen_rect_.TopLeft();
-  mouse_locator_.Update(temp, [this, point]() {
-    POINT current_pos{point.x, point.y};
-    return render_file_player_->IsValidRegion(current_pos);
-  });
+  //const auto temp =point -  screen_rect_.TopLeft();
+  //mouse_locator_.Update(temp, [this, point]() {
+  //  if (video_output_media_source_ == nullptr) {
+  //    return false;
+  //  }
+  //  POINT current_pos{point.x, point.y};
+  //  return video_output_media_source_->IsValidRendingArea(current_pos);
+  //});
 }
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonUp(nFlags, point);
-  point  -= screen_rect_.TopLeft();
-  mouse_locator_.Stop(point);
-  mouse_locator_.Transform([this](const CPoint& left_top, const CPoint& right_bottom) {
-    if (left_top == right_bottom) {
-		  return;
-    }
-    auto rect = std::make_shared<RECT>();
-	  rect->left = (left_top.x * render_file_player_->Width() / screen_rect_.Width());
-	  rect->top = (left_top.y * render_file_player_->Height() / screen_rect_.Height());
-	  rect->right = (right_bottom.x * render_file_player_->Width() / screen_rect_.Width());
-	  rect->bottom = (right_bottom.y * render_file_player_->Height() / screen_rect_.Height());
-	  render_file_player_->Zoom(rect);
-  });
+  //point  -= screen_rect_.TopLeft();
+  //mouse_locator_.Stop(point);
+  //mouse_locator_.Transform([this](const CPoint& left_top, const CPoint& right_bottom) {
+  //  if (left_top == right_bottom) {
+		//  return;
+  //  }
+	 // RECT rect;
+	 // rect.left = (left_top.x * VIDEO_WIDTH / screen_rect_.Width());
+	 // rect.top = (left_top.y * VIDEO_HEIGHT / screen_rect_.Height());
+	 // rect.right = (right_bottom.x * VIDEO_WIDTH / screen_rect_.Width());
+	 // rect.bottom = (right_bottom.y * VIDEO_HEIGHT / screen_rect_.Height());
+	 // if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
+		//  video_output_media_source_->UpdateROI(rect);
+	 // }
+  //});
 }
 
 void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
@@ -390,9 +353,9 @@ void TestSuiteGUIDialog::OnLButtonDown(UINT nFlags, CPoint point) {
 
 void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonDblClk(nFlags, point);
-  if (render_file_player_->IsZoom()) {
-    OnRenderImageratioROI();
-  }
+  //if (video_output_media_source_ != nullptr && video_output_media_source_->IsROIEnable()) {
+  //  OnRenderImageratioROI();
+  //}
 }
 
 
