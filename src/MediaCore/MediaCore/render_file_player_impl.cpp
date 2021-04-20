@@ -147,17 +147,28 @@ namespace core {
     }
   }
 
+  bool RenderFilePlayerImpl::IsSettingMosaic() const {
+    if (mosaic_handler_ == nullptr) {
+      return false;
+    }
+    return mosaic_handler_->IsSettingMosaic();
+  }
+
   void RenderFilePlayerImpl::Mosaic(RegionPtr region) {
     if (mosaic_handler_ == nullptr) {
       return;
     }
     mosaic_handler_->EnableMosaic(region != nullptr);
-    auto mosaic = std::make_shared<handler::MosaicParam>();
-    mosaic->x = region->left;
-    mosaic->y = region->top;
-    mosaic->width = region->right - region->left;
-    mosaic->height = region->bottom - region->top;
-    mosaic_handler_->SetParam(mosaic);
+    if (region != nullptr) {
+      auto mosaic = std::make_shared<handler::MosaicParam>();
+      mosaic->x = region->left;
+      mosaic->y = region->top;
+      mosaic->width = region->right - region->left;
+      mosaic->height = region->bottom - region->top;
+      mosaic_handler_->SetParam(mosaic);
+    } else {
+      mosaic_handler_->Clear();
+    }
   }
 
   void RenderFilePlayerImpl::Flip() {

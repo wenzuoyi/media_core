@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_auto_layout_dialog.h" />
+    <ClInclude Include="mosaic_setting.h" />
     <ClInclude Include="mouse_locator.h" />
     <ClInclude Include="osd_config_datatype.h" />
     <ClInclude Include="osd_config_dialog.h" />
@@ -238,6 +239,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base_auto_layout_dialog.cpp" />
+    <ClCompile Include="mosaic_setting.cpp" />
     <ClCompile Include="mouse_locator.cpp" />
     <ClCompile Include="osd_config_dialog.cpp" />
     <ClCompile Include="render_file_baseinfo_setting.cpp" />

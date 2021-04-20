@@ -3,8 +3,9 @@
 #include "./include/mosaic_handler.h"
 #include <utility>
 #include <vector>
+#include <mutex>
 namespace handler {
-  class MosaicHandlerImpl : public MosaicHandler {
+  class MosaicHandlerImpl : public MosaicHandler , public  std::mutex {
   public:
     MosaicHandlerImpl();
     virtual ~MosaicHandlerImpl();
@@ -14,12 +15,13 @@ namespace handler {
     void Stop() override;
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void EnableMosaic(bool enable) override;
+    bool IsSettingMosaic() const override;
     bool SetParam(MosaicParamPtr param) override;
     bool Clear() override;
   private:
 	  using MatrixItem = std::pair<int, int>;
 	  void SwapYUVBlock(int index, VideoFramePtr video_frame);
-	  unsigned GetBufferOffset(const std::pair<int, int>& item) const;
+	  unsigned GetBufferOffset(const std::pair<int, int>& item, int stride) const;
 	  MosaicHandlerEvent* event_{ nullptr };
 	  bool enable_{ false };
 	  MosaicParamPtr mosaic_param_;

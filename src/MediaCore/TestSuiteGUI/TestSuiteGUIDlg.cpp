@@ -6,9 +6,9 @@
 #include "TestSuiteGUI.h"
 #include "TestSuiteGUIDlg.h"
 #include "character_set_convertor.h"
-#include "render_file_player_dataype.h"
 #include "afxdialogex.h"
 #include "render_file_baseinfo_setting.h"
+#include "mosaic_setting.h"
 using namespace std::chrono_literals;
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -407,11 +407,19 @@ void TestSuiteGUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point) {
 
 
 void TestSuiteGUIDialog::OnHandlerMosaic() {
-	//mosaic_check_status_ = !mosaic_check_status_;
-	//auto menu = GetMenu();
-	//menu->CheckMenuItem(ID_HANDLER_MOSAIC, roi_check_status_ ? MF_CHECKED : MF_UNCHECKED);
-	//if (mosaic_handler_ != nullptr) {
-	//	mosaic_handler_->EnableMosaic(mosaic_check_status_);
-	//	is_mosaic_playing_ = true;
-	//}
+  if (render_file_player_->IsSettingMosaic()) {    
+	  render_file_player_->Mosaic(nullptr);
+  } else {
+	  MosaicSetting dlg;
+    if (dlg.DoModal() == IDOK) {
+		  auto region = dlg.GetMosaicRegion();
+      if (render_file_player_->Width() < region->right || render_file_player_->Height() < region->bottom) {
+        AfxMessageBox(L"马赛克设置区域超过视频显示区域， 请重新设置!");
+        return;
+      }
+      render_file_player_->Mosaic(region);
+    } 
+  }
+  auto menu = GetMenu();
+  menu->CheckMenuItem(ID_HANDLER_MOSAIC, render_file_player_->IsSettingMosaic() ? MF_CHECKED : MF_UNCHECKED);
 }

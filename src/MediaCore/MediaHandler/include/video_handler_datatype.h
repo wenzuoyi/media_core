@@ -9,7 +9,7 @@ namespace handler {
   };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {
-	  int per_block_pixel{ 8 };
+	  int per_block_pixel{ 5 };
 	  int x;
 	  int y;
 	  int width;

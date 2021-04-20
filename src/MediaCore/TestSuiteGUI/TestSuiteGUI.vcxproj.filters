@@ -48,6 +48,9 @@
     <ClInclude Include="render_file_baseinfo_setting.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mosaic_setting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestSuiteGUI.cpp">
@@ -69,6 +72,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="render_file_baseinfo_setting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mosaic_setting.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

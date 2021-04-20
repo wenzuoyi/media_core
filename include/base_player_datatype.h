@@ -7,7 +7,8 @@
 #include "video_output_media_source_datatype.h"
 #include "audio_output_media_source_datatype.h"
 namespace core {
-  using RegionPtr = std::shared_ptr<RECT>;
+	using Region = RECT;
+  using RegionPtr = std::shared_ptr<Region>;
   using AudioOutputParam = output::AudioOutputParam;
   using AudioOutputParamPtr = output::AudioOutputParamPtr;
   using PlayingMode = output::PlayingMode;

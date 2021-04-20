@@ -50,6 +50,7 @@ namespace core {
     virtual bool Snapshot(const std::string& url) = 0;
     virtual bool IsZoom() const = 0;
     virtual void Zoom(RegionPtr region) = 0;
+    virtual bool IsSettingMosaic() const = 0;
     virtual void Mosaic(RegionPtr region) = 0;
     virtual void Flip() = 0;
     virtual void Mirror() = 0;

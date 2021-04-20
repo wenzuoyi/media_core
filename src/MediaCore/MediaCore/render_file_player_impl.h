@@ -27,6 +27,7 @@ namespace core {
     bool Snapshot(const std::string& url) override;
     bool IsZoom() const override;
     void Zoom(RegionPtr region) override;
+    bool IsSettingMosaic() const override;
     void Mosaic(RegionPtr region) override;
     void Flip() override;
     void Mirror() override;
