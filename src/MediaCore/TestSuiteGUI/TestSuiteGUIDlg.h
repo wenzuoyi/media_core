@@ -30,7 +30,6 @@ protected:
   void OnEOF() override;
   void OnBOF() override;
   BOOL OnInitDialog() override;
-
   void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV Ö§³Ö
   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
   afx_msg void OnDestroy();

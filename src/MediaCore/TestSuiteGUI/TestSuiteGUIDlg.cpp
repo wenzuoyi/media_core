@@ -8,6 +8,7 @@
 #include "character_set_convertor.h"
 #include "render_file_player_dataype.h"
 #include "afxdialogex.h"
+#include "render_file_baseinfo_setting.h"
 using namespace std::chrono_literals;
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -223,10 +224,15 @@ void TestSuiteGUIDialog::OnRenderOpenFile() {
     auto open_file_path_string = std::wstring(static_cast<LPCTSTR>(open_file_path));
     auto uri = utils::CharacterSetConvertor::Instance()->UnicodeToGBK(open_file_path_string);
     if (render_file_player_ != nullptr && render_file_player_->Open(uri)) {
-      //TODO: Add file-format dlg here
-      render_file_player_->SetResolution("320x180");
-      render_file_player_->SetFormat(core::RenderFormat::kYUV420);
-      render_file_player_->EnableLoopPlayback(true);
+		  RenderFileBaseInfoSetting dlg;
+      if (dlg.DoModal() == IDOK) {
+        render_file_player_->SetResolution(dlg.GetResolution());
+        render_file_player_->SetFormat(dlg.GetFormat());
+        render_file_player_->EnableLoopPlayback(dlg.EnableLoopPlayback());        
+      } else {
+        AfxMessageBox(L"未设置对应的渲染文件参数，打开文件失败!");
+        return;
+      }
     }
 	  EnableRenderMenuItem({
 		  { ID_RENDER_OPEN, false },{ ID_RENDER_PLAY, true },{ ID_RENDER_STOP, false },{ ID_RENDER_CLOSE, true }
@@ -367,6 +373,10 @@ void TestSuiteGUIDialog::OnMouseMove(UINT nFlags, CPoint point) {
 
 void TestSuiteGUIDialog::OnLButtonUp(UINT nFlags, CPoint point) {
   CDialogEx::OnLButtonUp(nFlags, point);
+  POINT current_pos{ point.x, point.y };
+  if (!render_file_player_->IsValidRegion(current_pos)) {
+	  return;
+  }
   point  -= screen_rect_.TopLeft();
   mouse_locator_.Stop(point);
   mouse_locator_.Transform([this](const CPoint& left_top, const CPoint& right_bottom) {
