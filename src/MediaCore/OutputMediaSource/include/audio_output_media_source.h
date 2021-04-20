@@ -10,9 +10,9 @@ namespace output {
   public:
 	  AudioOutputMediaSourceEvent() = default;
 	  virtual ~AudioOutputMediaSourceEvent() = default;
-	  virtual void OnAudioOutputMediaExceptionEvent(unsigned error_code) = 0;
-	  virtual void OnTransmitDataEvent(AudioSamplePtr audio_sample) = 0;
-	  virtual void OnSampleFrequency(unsigned long frequency) = 0;
+	  virtual void OnAudioOutputException(unsigned error_code) = 0;
+	  virtual void OnAudioTransmitSample(AudioSamplePtr audio_sample) = 0;
+	  virtual void OnAudioSampleFrequency(unsigned long frequency) = 0;
   };
 
 	class OUTPUT_MEDIA_API_HEADER AudioOutputMediaSource {
@@ -22,8 +22,8 @@ namespace output {
 		static AudioOutputMediaSourcePtr CreateInstance(PlayingMode playing_mode);
 		virtual bool Init() = 0;
 		virtual void Fini() = 0;
-		virtual void SetAudioOutputMediaSourceEvent(AudioOutputMediaSourceEvent* sink) = 0;
-		virtual bool SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) = 0;
+		virtual void SetEvent(AudioOutputMediaSourceEvent* sink) = 0;
+		virtual bool SetParam(AudioOutputParamPtr audio_output_param) = 0;
 		virtual void Play() = 0;
 		virtual void Stop() = 0;
 		virtual void Mute() = 0;

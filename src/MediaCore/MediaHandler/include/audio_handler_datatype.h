@@ -3,6 +3,9 @@
 #include <vector>
 #include <memory>
 namespace handler {
+	enum class AudioHandlerType {
+		kAudioColumn = 0
+	};
 	using AudioSample = std::vector<unsigned char>;
 	using AudioSamplePtr = std::shared_ptr<AudioSample>;
 }

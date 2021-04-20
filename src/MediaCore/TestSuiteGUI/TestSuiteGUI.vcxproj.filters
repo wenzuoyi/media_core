@@ -39,6 +39,18 @@
     <ClInclude Include="osd_config_datatype.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mouse_locator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="base_auto_layout_dialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="render_file_baseinfo_setting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mosaic_setting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestSuiteGUI.cpp">
@@ -51,6 +63,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="osd_config_dialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse_locator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="base_auto_layout_dialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="render_file_baseinfo_setting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mosaic_setting.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

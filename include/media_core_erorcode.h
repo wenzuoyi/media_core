@@ -1,0 +1,6 @@
+#ifndef MEDIA_CORE_ERORCODE_H_
+#define MEDIA_CORE_ERORCODE_H_
+namespace core {  
+#define ERROR_CODE_UNSUPPORTED_METHOD 0
+}
+#endif // MEDIA_CORE_ERORCODE_H_

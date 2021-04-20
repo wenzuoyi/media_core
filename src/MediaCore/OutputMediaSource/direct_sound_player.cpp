@@ -26,8 +26,8 @@ namespace output {
     }
   }
 
-  bool DirectSoundPlayer::SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) {
-	  BaseAudioPlayer::SetAudioOutputMediaParam(audio_output_param);
+  bool DirectSoundPlayer::SetParam(AudioOutputParamPtr audio_output_param) {
+	  BaseAudioPlayer::SetParam(audio_output_param);
     if (direct_sound8_ == nullptr || audio_output_param == nullptr) {
 		  return false;
     }	

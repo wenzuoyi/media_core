@@ -2,13 +2,13 @@
 namespace output {
 	const int BaseAudioPlayer::AUDIO_FREQUENCY_INTERVAL = 40;
 
-  void BaseAudioPlayer::SetAudioOutputMediaSourceEvent(AudioOutputMediaSourceEvent* sink) {
+  void BaseAudioPlayer::SetEvent(AudioOutputMediaSourceEvent* sink) {
 	  if (sink_ != sink) {
 		  sink_ = sink;
 	  }
   }
 
-  bool BaseAudioPlayer::SetAudioOutputMediaParam(AudioOutputParamPtr audio_output_param) {
+  bool BaseAudioPlayer::SetParam(AudioOutputParamPtr audio_output_param) {
     max_cache_buffer_size_ = audio_output_param->sample_rate * audio_output_param->channels * (audio_output_param->bits_per_sample / 8);
 	  return true;
   }
@@ -39,7 +39,7 @@ namespace output {
       audio_playing_buffer_.insert(audio_playing_buffer_.end(), audio_sample->begin(), audio_sample->end());
     }
     if (sink_ != nullptr) {
-      sink_->OnTransmitDataEvent(audio_sample);
+      sink_->OnAudioTransmitSample(audio_sample);
     }
     return true;
   }

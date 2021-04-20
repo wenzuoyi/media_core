@@ -19,9 +19,10 @@ namespace output {
     bool Play() override;
     void Stop() override;
     void SetOSD(OSDParamListPtr osd_param_list) override;
-    void SetDisplayRatio(DisplayRatio display_ratio) override;
+    void SetDisplayRatio(AspectRatio display_ratio) override;
     void InputVideoFrame(VideoFramePtr video_frame) override;
-    void EnableROI(bool enable) override;
+    bool IsROIEnable() const override;
+	  void EnableROI(bool enable) override;
     void UpdateROI(const RECT& roi) override;
     void ResizeWindow() override;
     bool IsValidRendingArea(const POINT& point) const override;

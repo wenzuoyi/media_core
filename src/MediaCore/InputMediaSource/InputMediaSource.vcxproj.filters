@@ -9,25 +9,76 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{5163c4dc-1e3a-4a66-8207-9fb45397a661}</UniqueIdentifier>
+    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{112309ff-73c2-433e-9f7f-9ea631ad1fa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="device">
+      <UniqueIdentifier>{d4ec4724-e116-45df-a10e-63bb1ccbc25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="file">
+      <UniqueIdentifier>{d571420a-3729-4fad-a1b5-beb69a8208f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio_input_media_source.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\audio_input_media_source.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\audio_input_media_source_datatype.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="include\base_input_media_source.h">
+      <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="include\global_input_media_source.h">
-      <Filter>头文件</Filter>
+      <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="include\file_media_source.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="include\network_media_source.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\device_media_source.h">
+      <Filter>device</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render_file_reader.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="render_file_reader_impl.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="binary_file_reader.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base_input_media_source_datatype.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render_file_reader_datatype.h">
+      <Filter>file</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="base_input_media_source.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="file_media_source.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="network_media_source.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="device_media_source.cpp">
+      <Filter>device</Filter>
+    </ClCompile>
+    <ClCompile Include="render_file_reader.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="render_file_reader_impl.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="binary_file_reader.cpp">
+      <Filter>file</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

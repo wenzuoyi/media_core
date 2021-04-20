@@ -75,33 +75,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)OutputMediaSource\include;$(SolutionDir)MediaCoreUtils\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)MediaCore\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)MediaHandler\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)OutputMediaSource\include;$(SolutionDir)MediaCoreUtils\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)MediaCore\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)MediaHandler\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)OutputMediaSource\include;$(SolutionDir)MediaCoreUtils\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)MediaCore\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)MediaHandler\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)OutputMediaSource\include;$(SolutionDir)MediaCoreUtils\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)MediaCore\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)InputMediaSource\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)MediaHandler\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,8 +113,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>OutputMediaSource.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCore.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -141,8 +141,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>OutputMediaSource.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCore.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -172,8 +172,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>OutputMediaSource.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCore.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -204,8 +204,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDatabaseFile>$(SolutionDir)pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>OutputMediaSource.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCore.lib;MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -225,8 +225,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base_auto_layout_dialog.h" />
+    <ClInclude Include="mosaic_setting.h" />
+    <ClInclude Include="mouse_locator.h" />
     <ClInclude Include="osd_config_datatype.h" />
     <ClInclude Include="osd_config_dialog.h" />
+    <ClInclude Include="render_file_baseinfo_setting.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -234,7 +238,11 @@
     <ClInclude Include="TestSuiteGUIDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="base_auto_layout_dialog.cpp" />
+    <ClCompile Include="mosaic_setting.cpp" />
+    <ClCompile Include="mouse_locator.cpp" />
     <ClCompile Include="osd_config_dialog.cpp" />
+    <ClCompile Include="render_file_baseinfo_setting.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
