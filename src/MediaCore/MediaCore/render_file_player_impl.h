@@ -29,7 +29,8 @@ namespace core {
     void Zoom(RegionPtr region) override;
     bool IsSettingMosaic() const override;
     void Mosaic(RegionPtr region) override;
-    void Flip() override;
+    uint16_t FlipState() const override;
+    void Flip(uint16_t orientation) override;
     void Mirror() override;
     void Rotate(RotationOptions options) override;
     bool SwitchStream(StreamType type) override;

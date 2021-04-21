@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="async_handler.h" />
+    <ClInclude Include="flip_handler_impl.h" />
     <ClInclude Include="include\base_audio_handler.h" />
     <ClInclude Include="include\audio_handler_datatype.h" />
     <ClInclude Include="include\base_video_handler.h" />
+    <ClInclude Include="include\flip_handler.h" />
     <ClInclude Include="include\global_media_handler.h" />
     <ClInclude Include="include\mosaic_handler.h" />
     <ClInclude Include="include\video_handler_datatype.h" />
@@ -32,6 +34,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp" />
+    <ClCompile Include="flip_handler.cpp" />
+    <ClCompile Include="flip_handler_impl.cpp" />
     <ClCompile Include="mosaic_handler.cpp" />
     <ClCompile Include="mosaic_handler_impl.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />

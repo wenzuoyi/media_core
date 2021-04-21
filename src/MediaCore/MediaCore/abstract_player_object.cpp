@@ -30,6 +30,12 @@ namespace core {
     if (basic_player_info == nullptr || video_base_info == nullptr) {
       return false;
     }
+    flip_handler_ = handler::FlipHandler::CreateInstance();
+    if (flip_handler_ == nullptr) {
+      return false;
+    }
+    flip_handler_->SetEvent(this);
+    flip_handler_->Start();
     mosaic_handler_ = handler::MosaicHandler::CreateInstance();
     if (mosaic_handler_ == nullptr) {
       return false;
@@ -68,11 +74,21 @@ namespace core {
         mosaic_handler_->Stop();
         mosaic_handler_ = nullptr;
       }
+      if (flip_handler_ != nullptr) {
+        flip_handler_->Stop();
+        flip_handler_ = nullptr;
+      }
     }
   }
 
   void AbstractPlayerObject::OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type,  VideoFramePtr video_frame) {
-    if (video_frame != nullptr && video_output_ != nullptr) {
+    if (video_frame == nullptr) {
+      return;
+    }
+    if (video_handler_type == handler::VideoHandlerType::kMosaic && flip_handler_ != nullptr) {
+		  flip_handler_->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kFlip && video_output_ != nullptr) {
       video_output_->InputVideoFrame(video_frame);
     }
   }

@@ -5,7 +5,10 @@
 #include "video_output_media_source_datatype.h"
 namespace handler {
   enum class VideoHandlerType {
-    kMosaic = 0
+    kMosaic = 0,
+    kFlip = 1,
+    kMirror = 2,
+    kRotate = 3
   };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {

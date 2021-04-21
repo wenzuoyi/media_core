@@ -171,10 +171,17 @@ namespace core {
     }
   }
 
-  void RenderFilePlayerImpl::Flip() {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
-	  }
+  uint16_t RenderFilePlayerImpl::FlipState() const {
+    if (flip_handler_ == 0) {
+      return 0;
+    }
+    return flip_handler_->State();
+  }
+
+  void RenderFilePlayerImpl::Flip(uint16_t orientation) {
+   if (flip_handler_ != nullptr) {
+	   flip_handler_->Flip(orientation);
+   }
   }
 
   void RenderFilePlayerImpl::Mirror() {

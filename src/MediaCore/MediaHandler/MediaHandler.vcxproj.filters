@@ -22,6 +22,9 @@
     <Filter Include="base">
       <UniqueIdentifier>{ca8c710b-94c1-40d1-93ae-726776f8af3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="flip&amp;mirror">
+      <UniqueIdentifier>{0a4e5874-50a7-4f1f-9b57-26e00796b884}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_handler.h">
@@ -52,7 +55,13 @@
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="mosaic_handler_impl.h">
-      <Filter>头文件</Filter>
+      <Filter>mosaic</Filter>
+    </ClInclude>
+    <ClInclude Include="flip_handler_impl.h">
+      <Filter>flip&amp;mirror</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flip_handler.h">
+      <Filter>flip&amp;mirror</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,8 +74,14 @@
     <ClCompile Include="mosaic_handler.cpp">
       <Filter>mosaic</Filter>
     </ClCompile>
+    <ClCompile Include="flip_handler.cpp">
+      <Filter>flip&amp;mirror</Filter>
+    </ClCompile>
     <ClCompile Include="mosaic_handler_impl.cpp">
-      <Filter>源文件</Filter>
+      <Filter>mosaic</Filter>
+    </ClCompile>
+    <ClCompile Include="flip_handler_impl.cpp">
+      <Filter>flip&amp;mirror</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
