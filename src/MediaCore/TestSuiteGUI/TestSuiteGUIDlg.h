@@ -52,6 +52,9 @@ protected:
   afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
   afx_msg void OnHandlerMosaic();
   afx_msg void OnClose();
+	afx_msg void OnHandlerFlipLeftToRight();
+	afx_msg void OnHandlerFlipUpToDown();
+	afx_msg void OnHandlerMirror();
 DECLARE_MESSAGE_MAP()
 private:
   void EnableRenderMenuItem(std::map<unsigned, bool>&& menu_items_map) const;
@@ -62,8 +65,5 @@ private:
   OSDConfigResultListPtr osd_config_result_list_;  
   MouseLocator mouse_locator_;
   core::RenderFilePlayerPtr render_file_player_{ nullptr };
-public:
-	afx_msg void OnHandlerFlipLeftToRight();
-	afx_msg void OnHandlerFlipUpToDown();
 };
 #endif // TEST_SUITE_GUI_DLG_H_

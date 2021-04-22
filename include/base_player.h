@@ -54,7 +54,8 @@ namespace core {
     virtual void Mosaic(RegionPtr region) = 0;
     virtual uint16_t FlipState() const = 0;
     virtual void Flip(uint16_t orientation) = 0;
-    virtual void Mirror() = 0;
+	  virtual bool IsMirror() const= 0;
+    virtual void Mirror(bool enable) = 0;
     virtual void Rotate(RotationOptions options) = 0;
 	  virtual bool SwitchStream(StreamType type) = 0;
 	  virtual void ImageScale(AspectRatio ratio) = 0;

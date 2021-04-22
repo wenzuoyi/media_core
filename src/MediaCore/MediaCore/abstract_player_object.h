@@ -3,11 +3,13 @@
 #include "audio_output_media_source.h"
 #include "mosaic_handler.h"
 #include "flip_handler.h"
+#include "mirror_handler.h"
 #include "video_output_media_source.h"
 #include "include/base_player_datatype.h"
 namespace core {
   class AbstractPlayerObject : public virtual  handler::MosaicHandlerEvent,
                                                 public virtual  handler::FlipHandlerEvent,
+	                                              public virtual  handler::MirrorHandlerEvent,
                                                 public output::AudioOutputMediaSourceEvent,
                                                 public output::VideoOutputMediaSourceEvent {
   public:
@@ -31,6 +33,7 @@ namespace core {
     void OnVideoTransmitFrame(VideoFramePtr video_frame) override;
 	  handler::MosaicHandlerPtr mosaic_handler_{ nullptr };
 	  handler::FlipHandlerPtr flip_handler_{ nullptr };
+	  handler::MirrorHandlerPtr mirror_handler_{ nullptr };
 	  output::AudioOutputMediaSourcePtr audio_output_{ nullptr };
 	  output::VideoOutputMediaSourcePtr video_output_{ nullptr };
   };

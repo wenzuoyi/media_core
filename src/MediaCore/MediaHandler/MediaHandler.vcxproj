@@ -26,9 +26,11 @@
     <ClInclude Include="include\base_video_handler.h" />
     <ClInclude Include="include\flip_handler.h" />
     <ClInclude Include="include\global_media_handler.h" />
+    <ClInclude Include="include\mirror_handler.h" />
     <ClInclude Include="include\mosaic_handler.h" />
     <ClInclude Include="include\video_handler_datatype.h" />
     <ClInclude Include="include\volume_column_handler.h" />
+    <ClInclude Include="mirror_handler_impl.h" />
     <ClInclude Include="mosaic_handler_impl.h" />
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
@@ -36,6 +38,8 @@
     <ClCompile Include="asnyc_handler.cpp" />
     <ClCompile Include="flip_handler.cpp" />
     <ClCompile Include="flip_handler_impl.cpp" />
+    <ClCompile Include="mirror_handler.cpp" />
+    <ClCompile Include="mirror_handler_impl.cpp" />
     <ClCompile Include="mosaic_handler.cpp" />
     <ClCompile Include="mosaic_handler_impl.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />

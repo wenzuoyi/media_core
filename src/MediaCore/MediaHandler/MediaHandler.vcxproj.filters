@@ -63,6 +63,12 @@
     <ClInclude Include="include\flip_handler.h">
       <Filter>flip&amp;mirror</Filter>
     </ClInclude>
+    <ClInclude Include="mirror_handler_impl.h">
+      <Filter>flip&amp;mirror</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mirror_handler.h">
+      <Filter>flip&amp;mirror</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp">
@@ -81,6 +87,12 @@
       <Filter>mosaic</Filter>
     </ClCompile>
     <ClCompile Include="flip_handler_impl.cpp">
+      <Filter>flip&amp;mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="mirror_handler.cpp">
+      <Filter>flip&amp;mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="mirror_handler_impl.cpp">
       <Filter>flip&amp;mirror</Filter>
     </ClCompile>
   </ItemGroup>

@@ -31,7 +31,8 @@ namespace core {
     void Mosaic(RegionPtr region) override;
     uint16_t FlipState() const override;
     void Flip(uint16_t orientation) override;
-    void Mirror() override;
+    bool IsMirror() const override;
+    void Mirror(bool enable) override;
     void Rotate(RotationOptions options) override;
     bool SwitchStream(StreamType type) override;
     void ImageScale(AspectRatio ratio) override;

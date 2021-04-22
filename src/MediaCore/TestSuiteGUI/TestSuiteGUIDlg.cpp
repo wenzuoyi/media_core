@@ -112,6 +112,7 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_HANDLER_FLIP_LEFTTORIGHT, &TestSuiteGUIDialog::OnHandlerFlipLeftToRight)
 	ON_COMMAND(ID_HANDLER_FLIP_UPTODOWN, &TestSuiteGUIDialog::OnHandlerFlipUpToDown)
+	ON_COMMAND(ID_HANDLER_MIRROR, &TestSuiteGUIDialog::OnHandlerMirror)
 END_MESSAGE_MAP()
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
@@ -456,4 +457,12 @@ void TestSuiteGUIDialog::OnHandlerFlipUpToDown() {
 	render_file_player_->Flip(state);
 	auto menu = GetMenu();
 	menu->CheckMenuItem(ID_HANDLER_FLIP_UPTODOWN, enable ? MF_CHECKED : MF_UNCHECKED);
+}
+
+
+void TestSuiteGUIDialog::OnHandlerMirror() {
+	const auto enable = render_file_player_->IsMirror();
+  render_file_player_->Mirror(!enable);
+  auto menu = GetMenu();
+  menu->CheckMenuItem(ID_HANDLER_MIRROR, !enable ? MF_CHECKED : MF_UNCHECKED);
 }

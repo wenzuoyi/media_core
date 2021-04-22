@@ -30,6 +30,12 @@ namespace core {
     if (basic_player_info == nullptr || video_base_info == nullptr) {
       return false;
     }
+    mirror_handler_ = handler::MirrorHandler::CreateInstance();
+    if (mirror_handler_ == nullptr) {
+      return false;
+    }
+    mirror_handler_->SetEvent(this);
+    mirror_handler_->Start();
     flip_handler_ = handler::FlipHandler::CreateInstance();
     if (flip_handler_ == nullptr) {
       return false;
@@ -78,6 +84,10 @@ namespace core {
         flip_handler_->Stop();
         flip_handler_ = nullptr;
       }
+      if (mirror_handler_ != nullptr) {
+        mirror_handler_->Stop();
+        mirror_handler_ = nullptr;
+      }
     }
   }
 
@@ -88,7 +98,10 @@ namespace core {
     if (video_handler_type == handler::VideoHandlerType::kMosaic && flip_handler_ != nullptr) {
 		  flip_handler_->InputVideoFrame(video_frame);
     }
-    if (video_handler_type == handler::VideoHandlerType::kFlip && video_output_ != nullptr) {
+    if (video_handler_type == handler::VideoHandlerType::kFlip && mirror_handler_ != nullptr) {
+		  mirror_handler_->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kMirror && video_output_ != nullptr) {
       video_output_->InputVideoFrame(video_frame);
     }
   }
