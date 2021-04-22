@@ -1,6 +1,7 @@
 #ifndef FLIP_HANDLER_IMPL_H_
 #define FLIP_HANDLER_IMPL_H_
 #include "./include/flip_handler.h"
+#include "shared_mutex.h"
 #include <mutex>
 namespace handler {
   class FlipHandlerImpl : public FlipHandler {
@@ -21,7 +22,7 @@ namespace handler {
     static void VerticalFlip(VideoFramePtr video_frame);
 	  uint16_t orientation_{ 0 };
 	  FlipHandlerEvent* event_{ nullptr };
-	  mutable  std::mutex mutex_;
+	  utils::SharedMutexPtr mutex_;
   };
 }
 #endif // FLIP_HANDLER_IMPL_H_

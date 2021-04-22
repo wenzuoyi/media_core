@@ -97,7 +97,7 @@
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
     <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -105,21 +105,21 @@
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
     <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -135,6 +135,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -152,6 +153,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -172,6 +174,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -194,6 +197,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
+      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

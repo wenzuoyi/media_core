@@ -1,11 +1,16 @@
 #include "flip_handler_impl.h"
 #include <algorithm>
 namespace handler {
-  FlipHandlerImpl::FlipHandlerImpl() = default;
+  FlipHandlerImpl::FlipHandlerImpl() {
+	  mutex_ = utils::SharedMutex::CreateInstance();
+  }
 
-  FlipHandlerImpl::~FlipHandlerImpl() = default;
+  FlipHandlerImpl::~FlipHandlerImpl() {
+	  mutex_ = nullptr;
+  }
 
   void FlipHandlerImpl::Start() {
+	  utils::WriteLock lock(mutex_);
 	  orientation_ = 0;
   }
 
@@ -34,16 +39,17 @@ namespace handler {
   }
 
   void FlipHandlerImpl::Flip(uint16_t orientation) {
-    std::lock_guard<std::mutex> lock(mutex_);
+	  utils::WriteLock lock(mutex_);
     orientation_ = orientation;
   }
 
   uint16_t FlipHandlerImpl::State() const {
+	  utils::ReadLock lock(mutex_);
 	  return orientation_;
   }
 
   inline bool FlipHandlerImpl::IsHorizontalFlip() const {
-	  std::lock_guard<std::mutex> lock(mutex_);
+	  utils::ReadLock lock(mutex_);
 	  return (orientation_ >> 8 & 0xff) != 0;
   }
 
@@ -65,7 +71,7 @@ namespace handler {
   }
 
   inline bool FlipHandlerImpl::IsVerticalFlip() const {
-	  std::lock_guard<std::mutex> lock(mutex_);
+	  utils::ReadLock lock(mutex_);
 	  return (orientation_ & 0xff) != 0;
   }
 
