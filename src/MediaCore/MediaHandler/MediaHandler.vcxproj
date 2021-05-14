@@ -21,10 +21,12 @@
   <ItemGroup>
     <ClInclude Include="async_handler.h" />
     <ClInclude Include="flip_handler_impl.h" />
+    <ClInclude Include="format_convertor_impl.h" />
     <ClInclude Include="include\base_audio_handler.h" />
     <ClInclude Include="include\audio_handler_datatype.h" />
     <ClInclude Include="include\base_video_handler.h" />
     <ClInclude Include="include\flip_handler.h" />
+    <ClInclude Include="include\format_convertor.h" />
     <ClInclude Include="include\global_media_handler.h" />
     <ClInclude Include="include\mirror_handler.h" />
     <ClInclude Include="include\mosaic_handler.h" />
@@ -38,6 +40,8 @@
     <ClCompile Include="asnyc_handler.cpp" />
     <ClCompile Include="flip_handler.cpp" />
     <ClCompile Include="flip_handler_impl.cpp" />
+    <ClCompile Include="format_convertor.cpp" />
+    <ClCompile Include="format_convertor_impl.cpp" />
     <ClCompile Include="mirror_handler.cpp" />
     <ClCompile Include="mirror_handler_impl.cpp" />
     <ClCompile Include="mosaic_handler.cpp" />
@@ -100,30 +104,30 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,8 +143,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -157,8 +164,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -178,8 +188,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -201,8 +214,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

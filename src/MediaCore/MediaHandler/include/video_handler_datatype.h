@@ -19,5 +19,14 @@ namespace handler {
 	  int height;   
   };
   using MosaicParamPtr = std::shared_ptr<MosaicParam>;
+  struct ConvertorBasicParam {
+	  int source_width;
+	  int source_height;
+	  output::ColorSpace source_format;
+	  int target_width;
+	  int target_height;
+	  output::ColorSpace target_format;
+  };
+  using ConvertorBasicParamPtr = std::shared_ptr<ConvertorBasicParam>;
 }
 #endif // VIDEO_HANDLER_DATATYPE_H_

@@ -25,6 +25,12 @@
     <Filter Include="flip&amp;mirror">
       <UniqueIdentifier>{0a4e5874-50a7-4f1f-9b57-26e00796b884}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rotation">
+      <UniqueIdentifier>{9b1fedfd-4823-4c66-9b29-2a51da81dbe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="convertor">
+      <UniqueIdentifier>{3839d557-a7eb-430e-9b5c-f571d8bd9e28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_handler.h">
@@ -38,9 +44,6 @@
     </ClInclude>
     <ClInclude Include="volume_column_handler_impl.hpp">
       <Filter>volume_column</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mosaic_handler.h">
-      <Filter>mosaic</Filter>
     </ClInclude>
     <ClInclude Include="include\base_audio_handler.h">
       <Filter>base</Filter>
@@ -69,6 +72,15 @@
     <ClInclude Include="include\mirror_handler.h">
       <Filter>flip&amp;mirror</Filter>
     </ClInclude>
+    <ClInclude Include="include\mosaic_handler.h">
+      <Filter>mosaic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\format_convertor.h">
+      <Filter>convertor</Filter>
+    </ClInclude>
+    <ClInclude Include="format_convertor_impl.h">
+      <Filter>convertor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp">
@@ -94,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="mirror_handler_impl.cpp">
       <Filter>flip&amp;mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="format_convertor.cpp">
+      <Filter>convertor</Filter>
+    </ClCompile>
+    <ClCompile Include="format_convertor_impl.cpp">
+      <Filter>convertor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
