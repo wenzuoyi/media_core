@@ -8,7 +8,8 @@ namespace handler {
     kMosaic = 0,
     kFlip = 1,
     kMirror = 2,
-    kRotate = 3
+    kRotate = 3,
+    kFormatConvert = 4
   };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {

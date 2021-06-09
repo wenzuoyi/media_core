@@ -137,13 +137,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;MEDIA_HANDLER_API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
@@ -158,13 +159,14 @@
       <PreprocessorDefinitions>MEDIA_HANDLER_API_EXPORT_FLAG;_DEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <OmitFramePointers>false</OmitFramePointers>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
@@ -180,6 +182,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;MEDIA_HANDLER_API_EXPORT_FLAG;NDEBUG;_WINDOWS;_USRDLL;MEDIAHANDLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -188,7 +191,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>
@@ -206,6 +210,7 @@
       <SDLCheck>true</SDLCheck>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -214,7 +219,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f</Command>

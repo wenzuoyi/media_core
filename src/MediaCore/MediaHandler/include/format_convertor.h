@@ -17,7 +17,7 @@ namespace handler {
   public:
     FormatConvertor();
     virtual ~FormatConvertor();
-    virtual void SetEvent(FormatConvertor* event) = 0;
+    virtual void SetEvent(FormatConvertorEvent* event) = 0;
     virtual void SetBasicFormatInfo(ConvertorBasicParamPtr param) = 0;
 	  static FormatConvertorPtr CreateInstance();
   };
