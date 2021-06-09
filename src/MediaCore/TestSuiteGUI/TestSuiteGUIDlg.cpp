@@ -113,6 +113,7 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_COMMAND(ID_HANDLER_FLIP_LEFTTORIGHT, &TestSuiteGUIDialog::OnHandlerFlipLeftToRight)
 	ON_COMMAND(ID_HANDLER_FLIP_UPTODOWN, &TestSuiteGUIDialog::OnHandlerFlipUpToDown)
 	ON_COMMAND(ID_HANDLER_MIRROR, &TestSuiteGUIDialog::OnHandlerMirror)
+	ON_COMMAND(ID_HANDLER_ROTATE, &TestSuiteGUIDialog::OnHandlerRotate)
 END_MESSAGE_MAP()
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
@@ -465,4 +466,9 @@ void TestSuiteGUIDialog::OnHandlerMirror() {
   render_file_player_->Mirror(!enable);
   auto menu = GetMenu();
   menu->CheckMenuItem(ID_HANDLER_MIRROR, !enable ? MF_CHECKED : MF_UNCHECKED);
+}
+
+
+void TestSuiteGUIDialog::OnHandlerRotate() {
+	// TODO: 在此添加命令处理程序代码
 }

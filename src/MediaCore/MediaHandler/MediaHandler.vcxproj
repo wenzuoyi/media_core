@@ -30,10 +30,12 @@
     <ClInclude Include="include\global_media_handler.h" />
     <ClInclude Include="include\mirror_handler.h" />
     <ClInclude Include="include\mosaic_handler.h" />
+    <ClInclude Include="include\rotation_handler.h" />
     <ClInclude Include="include\video_handler_datatype.h" />
     <ClInclude Include="include\volume_column_handler.h" />
     <ClInclude Include="mirror_handler_impl.h" />
     <ClInclude Include="mosaic_handler_impl.h" />
+    <ClInclude Include="rotation_handler_impl.h" />
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +48,8 @@
     <ClCompile Include="mirror_handler_impl.cpp" />
     <ClCompile Include="mosaic_handler.cpp" />
     <ClCompile Include="mosaic_handler_impl.cpp" />
+    <ClCompile Include="rotation_handler.cpp" />
+    <ClCompile Include="rotation_handler_impl.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

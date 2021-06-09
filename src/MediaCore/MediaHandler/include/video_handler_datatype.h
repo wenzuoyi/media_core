@@ -11,6 +11,12 @@ namespace handler {
     kRotate = 3,
     kFormatConvert = 4
   };
+  enum class RotationDegreeType {
+    kDegree0 = 0,
+    kDegree90 = 1,
+    kDegree180 = 2,
+    kDegree270 = 3
+  };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {
 	  int per_block_pixel{ 5 };

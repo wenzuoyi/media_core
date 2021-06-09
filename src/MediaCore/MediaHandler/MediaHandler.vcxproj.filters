@@ -81,6 +81,12 @@
     <ClInclude Include="format_convertor_impl.h">
       <Filter>convertor</Filter>
     </ClInclude>
+    <ClInclude Include="include\rotation_handler.h">
+      <Filter>rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="rotation_handler_impl.h">
+      <Filter>rotation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp">
@@ -112,6 +118,12 @@
     </ClCompile>
     <ClCompile Include="format_convertor_impl.cpp">
       <Filter>convertor</Filter>
+    </ClCompile>
+    <ClCompile Include="rotation_handler.cpp">
+      <Filter>rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="rotation_handler_impl.cpp">
+      <Filter>rotation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
