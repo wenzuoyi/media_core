@@ -33,7 +33,9 @@ namespace core {
     void Flip(uint16_t orientation) override;
     bool IsMirror() const override;
     void Mirror(bool enable) override;
+    void EnableRotation(bool enable) override;
     void Rotate(RotationOptions options) override;
+    void Rotate(int degree) override;
     bool SwitchStream(StreamType type) override;
     void ImageScale(AspectRatio ratio) override;
     void OSD(OSDParamListPtr param) override;

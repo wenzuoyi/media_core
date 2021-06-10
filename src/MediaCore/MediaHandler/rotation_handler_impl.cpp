@@ -1,6 +1,7 @@
 #include "rotation_handler_impl.h"
 #include <math.h>
 #include <algorithm>
+#include <sstream>
 namespace handler {
 	const double RotationHandlerImpl::PI = 3.1415926535;
 
@@ -14,27 +15,40 @@ namespace handler {
   void RotationHandlerImpl::Stop() {
   }
 
+  VideoFramePtr RotationHandlerImpl::RotateVideoFrame(VideoFramePtr video_frame) const {
+    VideoFramePtr frame{nullptr};
+    if (!use_integer_) {
+      if (rotation_degree_type_ == RotationDegreeType::kDegree90) {
+        frame = Rotate90(video_frame);
+      } else if (rotation_degree_type_ == RotationDegreeType::kDegree180) {
+        frame = Rotate180(video_frame);
+      } else if (rotation_degree_type_ == RotationDegreeType::kDegree270) {
+        frame = Rotate270(video_frame);
+      }
+    } else {
+      frame = RotateViaIntegerValue(video_frame);
+    }
+    return frame;
+  }
+
   void RotationHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
     if (video_frame == nullptr) {
       return;
     }
-    if (!enable_ || (use_integer_ && rotation_degree_ == 0) || (!use_integer_ && rotation_degree_type_ == RotationDegreeType::kDegree0)) {
-      return;
+    VideoFramePtr target{nullptr};
+    if (enable_) {
+      target = RotateVideoFrame(video_frame);
     }
-    if (!use_integer_) {
-      if (rotation_degree_type_ == RotationDegreeType::kDegree90) {
-        Rotate90(video_frame);
-      } else if (rotation_degree_type_ == RotationDegreeType::kDegree180) {
-        Rotate180(video_frame);
-      } else if (rotation_degree_type_ == RotationDegreeType::kDegree180) {
-		    Rotate270(video_frame);
-      }
-    } else {
-      RotateViaIntegerValue(video_frame);
+    if (target == nullptr) {
+      target = video_frame;
+    }
+    if (event_ != nullptr) {
+      event_->OnTransmitVideoFrame(VideoHandlerType::kRotate, target);
     }
   }
 
-  void RotationHandlerImpl::Rotate90(VideoFramePtr source) {
+  VideoFramePtr RotationHandlerImpl::Rotate90(VideoFramePtr source) {
+	  auto old = ::GetTickCount64();
 	  auto target = std::make_shared<output::VideoFrame>();
 	  target->width = source->height;
 	  target->height = source->width;
@@ -59,10 +73,15 @@ namespace handler {
         }
       }
 	  }
-	  source = target;
+	auto interval = ::GetTickCount64() - old;
+	std::ostringstream oss;
+	oss << "\r\n: interval = " << interval << "\r\n";
+	::OutputDebugStringA(oss.str().c_str());
+    
+    return target;
   }
 
-  void RotationHandlerImpl::Rotate180(VideoFramePtr source) {
+  VideoFramePtr RotationHandlerImpl::Rotate180(VideoFramePtr source) {
     for (auto i = 0; i < source->height / 2; ++i) {
       const auto y_source_offset = i * source->line_size[0];
       const auto y_target_offset = (source->height - i - 1) * source->line_size[0];
@@ -74,19 +93,21 @@ namespace handler {
 			  std::swap_ranges(source->data[2]->begin() + uv_source_offset, source->data[2]->begin() + uv_source_offset + source->line_size[2], source->data[2]->begin() + uv_target_offset);
       }
     }
+    return source;
   }
 
-  void RotationHandlerImpl::Rotate270(VideoFramePtr source) {
-	  Rotate90(source);
-	  for (auto i = 0; i < source->height; ++i) {
-		  const auto y_offset = i * source->line_size[0];
-		  std::reverse(source->data[0]->begin() + y_offset, source->data[0]->begin() + y_offset + source->line_size[0]);
-	    if (i < source->height / 2) {
-			  const auto uv_offset = i * source->line_size[1];
-			  std::reverse(source->data[1]->begin() + uv_offset, source->data[1]->begin() + uv_offset + source->line_size[1]);
-			  std::reverse(source->data[2]->begin() + uv_offset, source->data[2]->begin() + uv_offset + source->line_size[2]);
+  VideoFramePtr RotationHandlerImpl::Rotate270(VideoFramePtr source) {
+	  auto target = Rotate90(source);
+	  for (auto i = 0; i < target->height; ++i) {
+		  const auto y_offset = i * target->line_size[0];
+		  std::reverse(target->data[0]->begin() + y_offset, target->data[0]->begin() + y_offset + target->line_size[0]);
+	    if (i < target->height / 2) {
+			  const auto uv_offset = i * target->line_size[1];
+			  std::reverse(target->data[1]->begin() + uv_offset, target->data[1]->begin() + uv_offset + target->line_size[1]);
+			  std::reverse(target->data[2]->begin() + uv_offset, target->data[2]->begin() + uv_offset + target->line_size[2]);
 		  }
 	  }
+	  return target;
   }
 
   VideoFramePtr RotationHandlerImpl::Clone(VideoFramePtr source) {
@@ -100,7 +121,7 @@ namespace handler {
     return target;
   }
 
-  void RotationHandlerImpl::RotateViaIntegerValue(VideoFramePtr source) const {
+  VideoFramePtr RotationHandlerImpl::RotateViaIntegerValue(VideoFramePtr source) const {
 	  auto target = Clone(source);
 	  const auto center_x = target->width / 2;
 	  const auto center_y = target->height / 2;
@@ -135,7 +156,7 @@ namespace handler {
         *(target_v + (h / 2) * (target->width / 2) + w / 2) = *(source_v + static_cast<int>((oy / 2) * (source->width / 2) + ox / 2));
 		  }
 	  }
-	  source = target;
+	  return target;
   }
 
   void RotationHandlerImpl::SetEvent(RotationHandlerEvent* event) {
@@ -147,7 +168,7 @@ namespace handler {
   void RotationHandlerImpl::EnableRotation(bool enable) {
     if (enable != enable_) {
       enable_ = enable;
-      rotation_degree_type_ = RotationDegreeType::kDegree0;
+      rotation_degree_type_ = RotationDegreeType::kDegreeUnknown;
       rotation_degree_ = 0;
     }
   }
@@ -172,7 +193,7 @@ namespace handler {
   }
 
   inline void RotationHandlerImpl::ConvertEnumTypeToInteger(RotationDegreeType rotation_degree_type, int* degree) {
-	  if (rotation_degree_type == RotationDegreeType::kDegree0) {
+	  if (rotation_degree_type == RotationDegreeType::kDegreeUnknown) {
 		  *degree = 0;
 	  } else if (rotation_degree_type == RotationDegreeType::kDegree90) {
 		  *degree = 90;
@@ -187,7 +208,7 @@ namespace handler {
   inline void RotationHandlerImpl::ConvertIntegerToEnumType(int degree, RotationDegreeType* rotation_degree_type) {
 	  use_integer_ = false;
 	  if (degree == 0) {
-		  *rotation_degree_type = RotationDegreeType::kDegree0;
+		  *rotation_degree_type = RotationDegreeType::kDegreeUnknown;
 	  } else if (degree == 90) {
 		  *rotation_degree_type = RotationDegreeType::kDegree90;
 	  } else if (degree == 180) {

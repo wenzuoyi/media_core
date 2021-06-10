@@ -6,7 +6,6 @@ namespace core {
   RenderFilePlayerImpl::RenderFilePlayerImpl() = default;
 
   RenderFilePlayerImpl::~RenderFilePlayerImpl() {
-    
   }
 
   bool RenderFilePlayerImpl::Init(BasicPlayerParamPtr param) {
@@ -172,7 +171,7 @@ namespace core {
   }
 
   uint16_t RenderFilePlayerImpl::FlipState() const {
-    if (flip_handler_ == 0) {
+    if (flip_handler_ == nullptr) {
       return 0;
     }
     return flip_handler_->State();
@@ -197,10 +196,22 @@ namespace core {
     }
   }
 
+  void RenderFilePlayerImpl::EnableRotation(bool enable) {
+    if (rotation_handler_ != nullptr) {
+      rotation_handler_->EnableRotation(enable);
+    }
+  }
+
   void RenderFilePlayerImpl::Rotate(RotationOptions options) {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
+	  if (rotation_handler_ != nullptr) {
+		  rotation_handler_->Rotate(static_cast<handler::RotationDegreeType>(options));
 	  }
+  }
+
+  void RenderFilePlayerImpl::Rotate(int degree) {
+    if (rotation_handler_ != nullptr) {
+      rotation_handler_->Rotate(degree);
+    }
   }
 
   bool RenderFilePlayerImpl::SwitchStream(StreamType type) {

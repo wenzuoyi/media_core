@@ -26,6 +26,8 @@ namespace output {
     void UpdateROI(const RECT& roi) override;
     void ResizeWindow() override;
     bool IsValidRendingArea(const POINT& point) const override;
+    VideoOutputParamPtr GetVideoOutputMediaParam() override;
+    bool Renderable(VideoFramePtr video_frame) const override;
 	private:
     bool CreateD3dDevice();
 	  bool CreateD3dSurface();

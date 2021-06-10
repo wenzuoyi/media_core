@@ -16,15 +16,16 @@ namespace handler {
     void Rotate(RotationDegreeType rotation_degree) override;
     void Rotate(int degree) override;
   private:
+	  VideoFramePtr RotateVideoFrame(VideoFramePtr video_frame) const;
 	  void ConvertEnumTypeToInteger(RotationDegreeType rotation_degree_type, int* degree);
 	  void ConvertIntegerToEnumType(int degree, RotationDegreeType* rotation_degree_type);
-    static void Rotate90(VideoFramePtr source);
-    static void Rotate180(VideoFramePtr source);
-    static void Rotate270(VideoFramePtr source);
+    static VideoFramePtr Rotate90(VideoFramePtr source);
+    static VideoFramePtr Rotate180(VideoFramePtr source);
+    static VideoFramePtr Rotate270(VideoFramePtr source);
 	  static VideoFramePtr Clone(VideoFramePtr source);
-    void RotateViaIntegerValue(VideoFramePtr source) const;
+	  VideoFramePtr RotateViaIntegerValue(VideoFramePtr source) const;
     bool enable_{false};
-    RotationDegreeType rotation_degree_type_{RotationDegreeType::kDegree0};
+    RotationDegreeType rotation_degree_type_{RotationDegreeType::kDegreeUnknown };
     int rotation_degree_{0};
     bool use_integer_{false};
 	  RotationHandlerEvent* event_{ nullptr };

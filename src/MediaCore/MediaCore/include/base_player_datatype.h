@@ -22,7 +22,8 @@ namespace core {
   enum class RotationOptions {
 	  kDegree90 = 0,
 	  kDegree180 = 1,
-	  kDegree270 = 2
+	  kDegree270 = 2,
+    kDegreeUnknown = 3
   };
   enum  class StreamType {
     kMain = 0,

@@ -8,6 +8,7 @@
 #include "character_set_convertor.h"
 #include "afxdialogex.h"
 #include "render_file_baseinfo_setting.h"
+#include "rotation_setting_dialog.h"
 #include "mosaic_setting.h"
 using namespace std::chrono_literals;
 #ifdef _DEBUG
@@ -470,5 +471,21 @@ void TestSuiteGUIDialog::OnHandlerMirror() {
 
 
 void TestSuiteGUIDialog::OnHandlerRotate() {
-	// TODO: 在此添加命令处理程序代码
+	RotationSettingDialog dialog;
+  if (dialog.DoModal() == IDOK) {
+	  const auto enable = dialog.EnableRotation();
+    if (render_file_player_ == nullptr) {
+      return;
+    }
+    render_file_player_->EnableRotation(dialog.EnableRotation());
+    if (dialog.IsUseCostomizeDegree()) {
+      render_file_player_->Rotate(dialog.GetRotationDegree());
+    } else {
+      const auto rotate_type = dialog.GetRotationType();
+      if (rotate_type == RotationSettingDialog::RotationType::kDegreeUnknown) {
+        AfxMessageBox(L"未知的角度类型");
+      }
+      render_file_player_->Rotate(static_cast<core::RotationOptions>(rotate_type));
+    }
+  }
 }

@@ -51,6 +51,12 @@ namespace core {
     if (!mosaic_handler_->Clear()) {
       return false;
     }
+    rotation_handler_ = handler::RotationHandler::CreateInstance();
+    if (rotation_handler_ == nullptr) {
+      return false;
+    }
+	  rotation_handler_->SetEvent(this);
+	  rotation_handler_->Start();
     video_output_ = output::VideoOutputMediaSource::CreateInstance(basic_player_info->video_render_mode);
     video_output_->Init();
     video_output_->SetEvent(this);
@@ -88,6 +94,10 @@ namespace core {
         mirror_handler_->Stop();
         mirror_handler_ = nullptr;
       }
+      if (rotation_handler_ != nullptr) {
+		    rotation_handler_->Stop();
+        rotation_handler_ = nullptr;
+      }
     }
   }
 
@@ -101,7 +111,18 @@ namespace core {
     if (video_handler_type == handler::VideoHandlerType::kFlip && mirror_handler_ != nullptr) {
 		  mirror_handler_->InputVideoFrame(video_frame);
     }
-    if (video_handler_type == handler::VideoHandlerType::kMirror && video_output_ != nullptr) {
+    if (video_handler_type == handler::VideoHandlerType::kMirror && rotation_handler_ != nullptr) {
+      rotation_handler_->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kRotate && video_output_ != nullptr) {
+      if(!video_output_->Renderable(video_frame)) {
+        auto param = video_output_->GetVideoOutputMediaParam();
+        video_output_->Stop();
+        param->width = video_frame->width;
+        param->height = video_frame->height;
+        video_output_->SetVideoOutputMediaParam(param);
+        video_output_->Play();
+      }
       video_output_->InputVideoFrame(video_frame);
     }
   }
