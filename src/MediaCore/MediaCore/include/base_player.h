@@ -47,7 +47,6 @@ namespace core {
     virtual void Mute(bool enable) = 0;
     virtual void SetVolume(int volume) = 0;
     virtual int GetVolume() = 0;
-    virtual bool Snapshot(const std::string& url) = 0;
     virtual bool IsZoom() const = 0;
     virtual void Zoom(RegionPtr region) = 0;
     virtual bool IsSettingMosaic() const = 0;
@@ -57,6 +56,7 @@ namespace core {
     virtual void EnableRotation(bool enable) = 0;
     virtual void Rotate(RotationOptions options) = 0;
 	  virtual void Rotate(int degree) = 0;
+    virtual bool Snapshot(const std::string& url) = 0;
 	  virtual bool SwitchStream(StreamType type) = 0;
 	  virtual void ImageScale(AspectRatio ratio) = 0;
 	  virtual void OSD(OSDParamListPtr param) = 0;

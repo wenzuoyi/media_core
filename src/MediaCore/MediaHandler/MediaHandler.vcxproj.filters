@@ -84,10 +84,19 @@
     <ClInclude Include="rotation_handler_impl.h">
       <Filter>rotation</Filter>
     </ClInclude>
-    <ClInclude Include="include\snapshot.h">
+    <ClInclude Include="base_saver.h">
       <Filter>snapshot</Filter>
     </ClInclude>
-    <ClInclude Include="snapshot_impl.h">
+    <ClInclude Include="include\snapshot_handler.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="snapshot_handler_impl.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_saver.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="jpeg_saver.h">
       <Filter>snapshot</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,10 +131,16 @@
     <ClCompile Include="rotation_handler_impl.cpp">
       <Filter>rotation</Filter>
     </ClCompile>
-    <ClCompile Include="snapshot.cpp">
+    <ClCompile Include="snapshot_handler.cpp">
       <Filter>snapshot</Filter>
     </ClCompile>
-    <ClCompile Include="snapshot_impl.cpp">
+    <ClCompile Include="snapshot_handler_impl.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="bitmap_saver.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="jpeg_saver.cpp">
       <Filter>snapshot</Filter>
     </ClCompile>
   </ItemGroup>

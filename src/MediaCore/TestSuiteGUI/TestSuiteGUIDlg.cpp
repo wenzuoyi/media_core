@@ -113,6 +113,7 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_HANDLER_MIRROR, &TestSuiteGUIDialog::OnHandlerMirror)
 	ON_COMMAND(ID_HANDLER_ROTATE, &TestSuiteGUIDialog::OnHandlerRotate)
+	ON_COMMAND(ID_HANDLER_SNAPSHOT, &TestSuiteGUIDialog::OnHandlerSnapshot)
 END_MESSAGE_MAP()
 
 BOOL TestSuiteGUIDialog::OnInitDialog() {
@@ -451,6 +452,23 @@ void TestSuiteGUIDialog::OnHandlerRotate() {
         AfxMessageBox(L"未知的角度类型");
       }
       render_file_player_->Rotate(static_cast<core::RotationOptions>(rotate_type));
+    }
+  }
+}
+
+
+void TestSuiteGUIDialog::OnHandlerSnapshot() {
+  CString default_dir = LR"(E:\media)";
+  CString file_name = L"snapshot.bmp";
+  CString filter = L"图片文件 (*.bmp; *.jpg)|*.bmp;*.jpg||"; 
+  CFileDialog save_file_dialog(FALSE, default_dir, file_name, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, nullptr);
+  save_file_dialog.GetOFN().lpstrInitialDir = LR"(E:\media\snapshot.bmp)";
+  if (save_file_dialog.DoModal() == IDOK) {
+    auto filePath = default_dir + "\\" + file_name;
+    filePath = save_file_dialog.GetPathName();
+    if (render_file_player_ != nullptr) {
+    auto temp_path =  utils::CharacterSetConvertor::Instance()->UnicodeToGBK(filePath.GetString());
+		render_file_player_->Snapshot(temp_path);
     }
   }
 }

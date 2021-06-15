@@ -51,6 +51,12 @@ namespace core {
     }
 	  rotation_handler_->SetEvent(this);
 	  rotation_handler_->Start();
+	  snapshot_handler = handler::SnapshotHandler::CreateInstance();
+    if (snapshot_handler == nullptr) {
+      return false;
+    }
+    snapshot_handler->SetEvent(this);
+    snapshot_handler->Start();
     video_output_ = output::VideoOutputMediaSource::CreateInstance(basic_player_info->video_render_mode);
     video_output_->Init();
     video_output_->SetEvent(this);
@@ -88,6 +94,10 @@ namespace core {
 		    rotation_handler_->Stop();
         rotation_handler_ = nullptr;
       }
+      if (snapshot_handler != nullptr) {
+        snapshot_handler->Stop();
+        snapshot_handler = nullptr;
+      }
     }
   }
 
@@ -101,7 +111,10 @@ namespace core {
     if (video_handler_type == handler::VideoHandlerType::kMirror && rotation_handler_ != nullptr) {
       rotation_handler_->InputVideoFrame(video_frame);
     }
-    if (video_handler_type == handler::VideoHandlerType::kRotate && video_output_ != nullptr) {
+    if (video_handler_type == handler::VideoHandlerType::kRotate && snapshot_handler != nullptr) {
+      snapshot_handler->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kSnapshot && video_output_ != nullptr) {
       if(!video_output_->Renderable(video_frame)) {
         auto param = video_output_->GetVideoOutputMediaParam();
         video_output_->Stop();

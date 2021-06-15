@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="async_handler.h" />
+    <ClInclude Include="base_saver.h" />
+    <ClInclude Include="bitmap_saver.h" />
     <ClInclude Include="format_convertor_impl.h" />
     <ClInclude Include="include\base_audio_handler.h" />
     <ClInclude Include="include\audio_handler_datatype.h" />
@@ -29,27 +31,30 @@
     <ClInclude Include="include\mirror_handler.h" />
     <ClInclude Include="include\mosaic_handler.h" />
     <ClInclude Include="include\rotation_handler.h" />
-    <ClInclude Include="include\snapshot.h" />
+    <ClInclude Include="include\snapshot_handler.h" />
     <ClInclude Include="include\video_handler_datatype.h" />
     <ClInclude Include="include\volume_column_handler.h" />
+    <ClInclude Include="jpeg_saver.h" />
     <ClInclude Include="mirror_handler_impl.h" />
     <ClInclude Include="mosaic_handler_impl.h" />
     <ClInclude Include="rotation_handler_impl.h" />
-    <ClInclude Include="snapshot_impl.h" />
+    <ClInclude Include="snapshot_handler_impl.h" />
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp" />
+    <ClCompile Include="bitmap_saver.cpp" />
     <ClCompile Include="format_convertor.cpp" />
     <ClCompile Include="format_convertor_impl.cpp" />
+    <ClCompile Include="jpeg_saver.cpp" />
     <ClCompile Include="mirror_handler.cpp" />
     <ClCompile Include="mirror_handler_impl.cpp" />
     <ClCompile Include="mosaic_handler.cpp" />
     <ClCompile Include="mosaic_handler_impl.cpp" />
     <ClCompile Include="rotation_handler.cpp" />
     <ClCompile Include="rotation_handler_impl.cpp" />
-    <ClCompile Include="snapshot.cpp" />
-    <ClCompile Include="snapshot_impl.cpp" />
+    <ClCompile Include="snapshot_handler.cpp" />
+    <ClCompile Include="snapshot_handler_impl.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -148,7 +153,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f
@@ -172,7 +177,7 @@ xcopy "$(POCO)bin\PocoFoundationd.dll" "$(SolutionDir)..\..\bin\$(PlatformShortN
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f
@@ -199,7 +204,7 @@ xcopy "$(POCO)bin64\PocoFoundation64d.dll" "$(SolutionDir)..\..\bin\$(PlatformSh
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -229,7 +234,7 @@ xcopy "$(POCO)bin\PocoFoundation.dll" "$(SolutionDir)..\..\bin\$(PlatformShortNa
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>

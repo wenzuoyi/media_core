@@ -123,10 +123,10 @@ namespace core {
   }
 
   bool RenderFilePlayerImpl::Snapshot(const std::string& url) {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
-	  }
-	  return false;
+    if (snapshot_handler != nullptr) {
+      snapshot_handler->Save(url);
+    }
+    return false;
   }
 
   bool RenderFilePlayerImpl::IsZoom() const {
