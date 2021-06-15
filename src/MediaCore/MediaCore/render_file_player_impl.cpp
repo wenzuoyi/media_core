@@ -170,19 +170,6 @@ namespace core {
     }
   }
 
-  uint16_t RenderFilePlayerImpl::FlipState() const {
-    if (flip_handler_ == nullptr) {
-      return 0;
-    }
-    return flip_handler_->State();
-  }
-
-  void RenderFilePlayerImpl::Flip(uint16_t orientation) {
-    if (flip_handler_ != nullptr) {
-      flip_handler_->Flip(orientation);
-    }
-  }
-
   bool RenderFilePlayerImpl::IsMirror() const {
     if (mirror_handler_ == nullptr) {
       return false;

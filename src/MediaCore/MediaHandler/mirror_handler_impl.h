@@ -15,7 +15,7 @@ namespace handler {
     void EnableMirror(bool enable) override;
     bool IsEnableMirror() const override;
   private:
-	  static void HandleVideoFrame(VideoFramePtr video_frame);
+	  static VideoFramePtr HandleVideoFrame(VideoFramePtr source);
 	  bool enable_{ false };
 	  MirrorHandlerEvent* event_{ nullptr };
 	  utils::SharedMutexPtr mutex_{ nullptr };

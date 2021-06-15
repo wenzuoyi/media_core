@@ -29,8 +29,6 @@ namespace core {
     void Zoom(RegionPtr region) override;
     bool IsSettingMosaic() const override;
     void Mosaic(RegionPtr region) override;
-    uint16_t FlipState() const override;
-    void Flip(uint16_t orientation) override;
     bool IsMirror() const override;
     void Mirror(bool enable) override;
     void EnableRotation(bool enable) override;

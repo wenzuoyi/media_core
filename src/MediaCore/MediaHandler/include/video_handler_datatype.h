@@ -6,10 +6,10 @@
 namespace handler {
   enum class VideoHandlerType {
     kMosaic = 0,
-    kFlip = 1,
-    kMirror = 2,
-    kRotate = 3,
-    kFormatConvert = 4
+    kMirror = 1,
+    kRotate = 2,
+    kFormatConvert =3,
+    kSnapshot = 4
   };
   enum class RotationDegreeType {
     kDegree90 = 0,

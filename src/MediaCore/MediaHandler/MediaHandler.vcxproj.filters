@@ -22,14 +22,17 @@
     <Filter Include="base">
       <UniqueIdentifier>{ca8c710b-94c1-40d1-93ae-726776f8af3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="flip&amp;mirror">
-      <UniqueIdentifier>{0a4e5874-50a7-4f1f-9b57-26e00796b884}</UniqueIdentifier>
-    </Filter>
     <Filter Include="rotation">
       <UniqueIdentifier>{9b1fedfd-4823-4c66-9b29-2a51da81dbe6}</UniqueIdentifier>
     </Filter>
     <Filter Include="convertor">
       <UniqueIdentifier>{3839d557-a7eb-430e-9b5c-f571d8bd9e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mirror">
+      <UniqueIdentifier>{0a4e5874-50a7-4f1f-9b57-26e00796b884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snapshot">
+      <UniqueIdentifier>{8b7bb48b-f5b1-4223-983d-967d32c14e66}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,17 +63,11 @@
     <ClInclude Include="mosaic_handler_impl.h">
       <Filter>mosaic</Filter>
     </ClInclude>
-    <ClInclude Include="flip_handler_impl.h">
-      <Filter>flip&amp;mirror</Filter>
-    </ClInclude>
-    <ClInclude Include="include\flip_handler.h">
-      <Filter>flip&amp;mirror</Filter>
-    </ClInclude>
     <ClInclude Include="mirror_handler_impl.h">
-      <Filter>flip&amp;mirror</Filter>
+      <Filter>mirror</Filter>
     </ClInclude>
     <ClInclude Include="include\mirror_handler.h">
-      <Filter>flip&amp;mirror</Filter>
+      <Filter>mirror</Filter>
     </ClInclude>
     <ClInclude Include="include\mosaic_handler.h">
       <Filter>mosaic</Filter>
@@ -87,6 +84,12 @@
     <ClInclude Include="rotation_handler_impl.h">
       <Filter>rotation</Filter>
     </ClInclude>
+    <ClInclude Include="include\snapshot.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="snapshot_impl.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asnyc_handler.cpp">
@@ -98,20 +101,14 @@
     <ClCompile Include="mosaic_handler.cpp">
       <Filter>mosaic</Filter>
     </ClCompile>
-    <ClCompile Include="flip_handler.cpp">
-      <Filter>flip&amp;mirror</Filter>
-    </ClCompile>
     <ClCompile Include="mosaic_handler_impl.cpp">
       <Filter>mosaic</Filter>
     </ClCompile>
-    <ClCompile Include="flip_handler_impl.cpp">
-      <Filter>flip&amp;mirror</Filter>
-    </ClCompile>
     <ClCompile Include="mirror_handler.cpp">
-      <Filter>flip&amp;mirror</Filter>
+      <Filter>mirror</Filter>
     </ClCompile>
     <ClCompile Include="mirror_handler_impl.cpp">
-      <Filter>flip&amp;mirror</Filter>
+      <Filter>mirror</Filter>
     </ClCompile>
     <ClCompile Include="format_convertor.cpp">
       <Filter>convertor</Filter>
@@ -124,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="rotation_handler_impl.cpp">
       <Filter>rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="snapshot.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="snapshot_impl.cpp">
+      <Filter>snapshot</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

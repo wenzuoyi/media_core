@@ -111,8 +111,6 @@ BEGIN_MESSAGE_MAP(TestSuiteGUIDialog, CDialogEx)
 	ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_HANDLER_MOSAIC, &TestSuiteGUIDialog::OnHandlerMosaic)
 	ON_WM_CLOSE()
-	ON_COMMAND(ID_HANDLER_FLIP_LEFTTORIGHT, &TestSuiteGUIDialog::OnHandlerFlipLeftToRight)
-	ON_COMMAND(ID_HANDLER_FLIP_UPTODOWN, &TestSuiteGUIDialog::OnHandlerFlipUpToDown)
 	ON_COMMAND(ID_HANDLER_MIRROR, &TestSuiteGUIDialog::OnHandlerMirror)
 	ON_COMMAND(ID_HANDLER_ROTATE, &TestSuiteGUIDialog::OnHandlerRotate)
 END_MESSAGE_MAP()
@@ -428,39 +426,6 @@ void TestSuiteGUIDialog::OnHandlerMosaic() {
   auto menu = GetMenu();
   menu->CheckMenuItem(ID_HANDLER_MOSAIC, render_file_player_->IsSettingMosaic() ? MF_CHECKED : MF_UNCHECKED);
 }
-
-
-void TestSuiteGUIDialog::OnHandlerFlipLeftToRight() {
-	auto state = render_file_player_->FlipState();
-  auto enable{ true };
-  if (HIBYTE(state) != 0) {
-	  state &= 0xff;
-	  enable = false;
-  } else {
-	  state |= (0xff << 8);
-	  enable = true;
-  }
-  render_file_player_->Flip(state);
-  auto menu = GetMenu();
-  menu->CheckMenuItem(ID_HANDLER_FLIP_LEFTTORIGHT, enable? MF_CHECKED : MF_UNCHECKED);
-}
-
-
-void TestSuiteGUIDialog::OnHandlerFlipUpToDown() {
-	auto state = render_file_player_->FlipState();
-	auto enable{ true };
-	if (LOBYTE(state) != 0) {
-		state &= (0xff << 8);
-		enable = false;
-	} else {
-		state |= 0xff;
-		enable = true;
-	}
-	render_file_player_->Flip(state);
-	auto menu = GetMenu();
-	menu->CheckMenuItem(ID_HANDLER_FLIP_UPTODOWN, enable ? MF_CHECKED : MF_UNCHECKED);
-}
-
 
 void TestSuiteGUIDialog::OnHandlerMirror() {
 	const auto enable = render_file_player_->IsMirror();

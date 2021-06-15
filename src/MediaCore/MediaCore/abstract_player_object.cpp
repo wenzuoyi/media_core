@@ -36,12 +36,6 @@ namespace core {
     }
     mirror_handler_->SetEvent(this);
     mirror_handler_->Start();
-    flip_handler_ = handler::FlipHandler::CreateInstance();
-    if (flip_handler_ == nullptr) {
-      return false;
-    }
-    flip_handler_->SetEvent(this);
-    flip_handler_->Start();
     mosaic_handler_ = handler::MosaicHandler::CreateInstance();
     if (mosaic_handler_ == nullptr) {
       return false;
@@ -86,10 +80,6 @@ namespace core {
         mosaic_handler_->Stop();
         mosaic_handler_ = nullptr;
       }
-      if (flip_handler_ != nullptr) {
-        flip_handler_->Stop();
-        flip_handler_ = nullptr;
-      }
       if (mirror_handler_ != nullptr) {
         mirror_handler_->Stop();
         mirror_handler_ = nullptr;
@@ -105,10 +95,7 @@ namespace core {
     if (video_frame == nullptr) {
       return;
     }
-    if (video_handler_type == handler::VideoHandlerType::kMosaic && flip_handler_ != nullptr) {
-		  flip_handler_->InputVideoFrame(video_frame);
-    }
-    if (video_handler_type == handler::VideoHandlerType::kFlip && mirror_handler_ != nullptr) {
+    if (video_handler_type == handler::VideoHandlerType::kMosaic && mirror_handler_ != nullptr) {
 		  mirror_handler_->InputVideoFrame(video_frame);
     }
     if (video_handler_type == handler::VideoHandlerType::kMirror && rotation_handler_ != nullptr) {

@@ -1,5 +1,7 @@
 #ifndef ROTATION_HANDLER_IMPL_H_
 #define ROTATION_HANDLER_IMPL_H_
+#include <libyuv/rotate.h>
+
 #include "include/rotation_handler.h"
 
 namespace handler {
@@ -19,10 +21,8 @@ namespace handler {
 	  VideoFramePtr RotateVideoFrame(VideoFramePtr video_frame) const;
 	  void ConvertEnumTypeToInteger(RotationDegreeType rotation_degree_type, int* degree);
 	  void ConvertIntegerToEnumType(int degree, RotationDegreeType* rotation_degree_type);
-    static VideoFramePtr Rotate90(VideoFramePtr source);
-    static VideoFramePtr Rotate180(VideoFramePtr source);
-    static VideoFramePtr Rotate270(VideoFramePtr source);
-	  static VideoFramePtr Clone(VideoFramePtr source);
+    VideoFramePtr RotateViaLibYUV(VideoFramePtr source, bool flag, libyuv::RotationMode mode) const;	  
+    static VideoFramePtr Clone(VideoFramePtr source);
 	  VideoFramePtr RotateViaIntegerValue(VideoFramePtr source) const;
     bool enable_{false};
     RotationDegreeType rotation_degree_type_{RotationDegreeType::kDegreeUnknown };

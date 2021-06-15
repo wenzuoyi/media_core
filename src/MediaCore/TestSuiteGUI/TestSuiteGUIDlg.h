@@ -52,8 +52,6 @@ protected:
   afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
   afx_msg void OnHandlerMosaic();
   afx_msg void OnClose();
-	afx_msg void OnHandlerFlipLeftToRight();
-	afx_msg void OnHandlerFlipUpToDown();
 	afx_msg void OnHandlerMirror();
 	afx_msg void OnHandlerRotate();
 DECLARE_MESSAGE_MAP()
