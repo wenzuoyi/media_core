@@ -9,6 +9,7 @@ The libraries is base on C++11 on Windows. So you should choose the libraries wh
 4. ffmpeg
 5. POCO
 6. LIBYUV
+
 There are two ways to compile this source code. One of ways is just like this. Firstly, you may download all depends Library from this URL(https://wenzuoyi.synology.me:5001/d/f/625678763228708050). From
 this URL, you may download all you need libraries just for x86 and x64 windows platform. After you download all there libraries, you should uncompress them, and save them anywhere on your harddisk. After that operation, you should register environment variables for all libraries path. Here is the list of environment variables name.
 1. DIRECTX
@@ -17,12 +18,13 @@ this URL, you may download all you need libraries just for x86 and x64 windows p
 4. FFMPEG
 5. POCO
 6. LIBYUV
+
 note: where you register environment variables for all those libraries path, the value of environment variables shoud be ends with '\'.
 If you finish all these steps, you may compile all source code via VS2015 above IDE.
 Of course, It strongly recommand you download boost, poco, libyuv, ffmpeg source code by git, and compile it by yourself. If you don't know how to compile it, here is the document just for compiling.
 http://wenzuoyi.synology.me:8000/dokuwiki/doku.php。If you finish it, you should register environment variables for visual studio compiling. 
 ## Contact me ##
-If you have any questions during the use, please contact me through my email. My email is wenzuoyi@126.com. 
+If you have any questions during the use, please contact me through email. My email is wenzuoyi@126.com. 
 
 
 
