@@ -1,11 +1,6 @@
 #include "rotation_handler_impl.h"
 #include "libyuv.h"
-#include <math.h>
-#include <algorithm>
-#include <sstream>
-namespace handler {
-	const double RotationHandlerImpl::PI = 3.1415926535;
-
+namespace handler {    
 	RotationHandlerImpl::RotationHandlerImpl() = default;
 
 	RotationHandlerImpl::~RotationHandlerImpl() = default;
@@ -18,16 +13,14 @@ namespace handler {
 
   VideoFramePtr RotationHandlerImpl::RotateVideoFrame(VideoFramePtr video_frame) const {
     VideoFramePtr frame{nullptr};
-    if (!use_integer_) {
-      if (rotation_degree_type_ == RotationDegreeType::kDegree90) {
-		    frame = RotateViaLibYUV(video_frame, false, libyuv::kRotate90);
-      } else if (rotation_degree_type_ == RotationDegreeType::kDegree180) {
-        frame = RotateViaLibYUV(video_frame, true, libyuv::kRotate180);
-      } else if (rotation_degree_type_ == RotationDegreeType::kDegree270) {
-        frame = RotateViaLibYUV(video_frame, false, libyuv::kRotate270);
-      }
-    } else {
-      frame = RotateViaIntegerValue(video_frame);
+    if (rotation_degree_type_ == RotationDegreeType::kDegree0) {
+      frame = RotateViaLibYUV(video_frame, true, libyuv::kRotate0);
+    } else if (rotation_degree_type_ == RotationDegreeType::kDegree90) {
+      frame = RotateViaLibYUV(video_frame, false, libyuv::kRotate90);
+    } else if (rotation_degree_type_ == RotationDegreeType::kDegree180) {
+      frame = RotateViaLibYUV(video_frame, true, libyuv::kRotate180);
+    } else if (rotation_degree_type_ == RotationDegreeType::kDegree270) {
+      frame = RotateViaLibYUV(video_frame, false, libyuv::kRotate270);
     }
     return frame;
   }
@@ -87,55 +80,6 @@ namespace handler {
     return target;
   }
 
-  VideoFramePtr RotationHandlerImpl::RotateViaIntegerValue(VideoFramePtr source) const {
-	  auto target = Clone(source);
-	  const auto center_x = target->width / 2;
-	  const auto center_y = target->height / 2;
-	  target->data[0]->assign(target->data[0]->size(), 0);
-	  target->data[1]->assign(target->data[1]->size(), 0x80);
-	  target->data[2]->assign(target->data[2]->size(), 0x80);
-	  auto* target_y = &((*(target->data[0]))[0]);
-	  //auto* target_u = &((*(target->data[1]))[0]);
-	  //auto* target_v = &((*(target->data[2]))[0]);
-	  auto* source_y = &((*(source->data[0]))[0]);
-	  ////auto* source_v = &((*(source->data[1]))[0]);
-	  ////auto* source_u = &((*(source->data[2]))[0]);
-	  //for (auto h = 0; h < source->height; ++h) {
-		 // for (auto w = 0; w < source->width; ++w) {
-			//  auto nx = w - center_x;
-			//  if (nx > source->height / 2 || nx < -1 * source->height / 2) {
-			//	  continue;
-			//  }
-   //     auto ny = center_y - h;
-			//  auto ox = nx * cos_alpha_ - ny * sin_alpha_;
-			//  auto oy = nx * sin_alpha_ + ny * cos_alpha_;
-			//  ox = ox + center_x;
-			//  oy = center_y - oy;
-			//  if (ox < 0 || oy < 0) {
-			//	  continue;
-			//  }
-			//  if (ox >= source->width || oy >= source->height) {
-			//	  continue;
-			//  }
-			//  *(target_y + h * target->width + w) = *(source_y + static_cast<int>(oy * source->width) + static_cast<int>(ox));
-   //     //*(target_u + (h / 2) * (target->width / 2) + w / 2) = *(source_u + static_cast<int>((oy / 2) * (source->width / 2) + ox / 2));
-   //     //*(target_v + (h / 2) * (target->width / 2) + w / 2) = *(source_v + static_cast<int>((oy / 2) * (source->width / 2) + ox / 2));
-		 // }
-	  //}
-    for (auto y = 0; y < source->height; ++y) {
-      for (auto x = 0; x < source->width; ++x) {
-        auto x1 = static_cast<int>(x * cos_alpha_ - y * sin_alpha_);
-			  auto y1 = static_cast<int>(x*sin_alpha_ + y * cos_alpha_);
-        if (x1 < 0 || y1 < 0 || x1 >= target->width || y1 >= target->height) {
-          continue;
-        }
-        *(target_y + y1 * target->width + x1) = *(source_y + y * source->height + x);
-      }
-    }
-
-	  return target;
-  }
-
   void RotationHandlerImpl::SetEvent(RotationHandlerEvent* event) {
     if (event != event_) {
       event_ = event;
@@ -146,55 +90,21 @@ namespace handler {
     if (enable != enable_) {
       enable_ = enable;
       rotation_degree_type_ = RotationDegreeType::kDegreeUnknown;
-      rotation_degree_ = 0;
     }
   }
 
   void RotationHandlerImpl::Rotate(RotationDegreeType rotation_degree_type) {
     if (rotation_degree_type != rotation_degree_type_) {
       rotation_degree_type_ = rotation_degree_type;
-      ConvertEnumTypeToInteger(rotation_degree_type_, &rotation_degree_);
     }
   }
 
-  void RotationHandlerImpl::Rotate(int degree) {
-    if (rotation_degree_ != degree) {
-      rotation_degree_ = degree;
-      ConvertIntegerToEnumType(degree, &rotation_degree_type_);
-    }
-    if (use_integer_) {
-      const auto alpha = (degree % 360) * PI / 180.0f;
-      sin_alpha_ = sin(alpha);
-      cos_alpha_ = cos(alpha);
-    }
+  bool RotationHandlerImpl::GetEnableRotation() const {
+	  return enable_;
   }
 
-  inline void RotationHandlerImpl::ConvertEnumTypeToInteger(RotationDegreeType rotation_degree_type, int* degree) {
-	  if (rotation_degree_type == RotationDegreeType::kDegreeUnknown) {
-		  *degree = 0;
-	  } else if (rotation_degree_type == RotationDegreeType::kDegree90) {
-		  *degree = 90;
-	  } else if (rotation_degree_type == RotationDegreeType::kDegree180) {
-		  *degree = 180;
-	  } else if (rotation_degree_type == RotationDegreeType::kDegree270) {
-		  *degree = 270;
-	  }
-	  use_integer_ = false;
-  }
-
-  inline void RotationHandlerImpl::ConvertIntegerToEnumType(int degree, RotationDegreeType* rotation_degree_type) {
-	  use_integer_ = false;
-	  if (degree == 0) {
-		  *rotation_degree_type = RotationDegreeType::kDegreeUnknown;
-	  } else if (degree == 90) {
-		  *rotation_degree_type = RotationDegreeType::kDegree90;
-	  } else if (degree == 180) {
-		  *rotation_degree_type = RotationDegreeType::kDegree180;
-	  } else if (degree == 270) {
-		  *rotation_degree_type = RotationDegreeType::kDegree270;
-	  } else {
-		  use_integer_ = true;
-	  }
+  RotationDegreeType RotationHandlerImpl::GetRotateType() {
+	  return rotation_degree_type_;
   }
 }
 

@@ -9,17 +9,18 @@ class RotationSettingDialog : public CDialogEx
 	DECLARE_DYNAMIC(RotationSettingDialog)
 public:
 	enum class RotationType {
-		kDegree90 = 0,
-		kDegree180 = 1,
-		kDegree270 = 2,
+    kDegree0 = 0,
+		kDegree90 = 1,
+		kDegree180 = 2,
+		kDegree270 = 3,
     kDegreeUnknown
 	};
 	RotationSettingDialog(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~RotationSettingDialog();
 	bool EnableRotation() const;
-	bool IsUseCostomizeDegree() const;
+	void SetEnableRotation(bool enable);
 	RotationType GetRotationType() const;
-	int GetRotationDegree() const;
+	void SetRotationType(RotationType rotation_type);
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ROTATION_DIALOG };
@@ -31,19 +32,17 @@ protected:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCheckRotationEnable();
+	afx_msg void OnBnClickedCheckDegree0();
 	afx_msg void OnBnClickedCheckDegree90();
 	afx_msg void OnBnClickedCheckDegree180();
 	afx_msg void OnBnClickedCheckDegree270();
-	afx_msg void OnBnClickedCheckCustomerdef();
 	DECLARE_MESSAGE_MAP()
 private:
 	void EnableControl(BOOL enable, const std::vector<int>& id_list);
-	void EnableCheckBox(BOOL enable, const std::vector<int>& id_list);
+	void EnableCheckBox(BOOL enable, const std::vector<int>& id_list, BOOL invalid = TRUE);
 	BOOL enable_{ FALSE };
+	BOOL degree0_ {FALSE};
 	BOOL degree90_{ FALSE };
 	BOOL degree180_{ FALSE };
 	BOOL degree270_{ FALSE };
-	mutable BOOL degree_customize_{ FALSE };
-	int customize_degree_{ 0 };
-	CSpinButtonCtrl rotation_spin_;
 };

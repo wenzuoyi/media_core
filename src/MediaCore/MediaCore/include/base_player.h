@@ -54,8 +54,9 @@ namespace core {
 	  virtual bool IsMirror() const= 0;
     virtual void Mirror(bool enable) = 0;
     virtual void EnableRotation(bool enable) = 0;
+    virtual bool IsEnableRotation() const = 0;
     virtual void Rotate(RotationOptions options) = 0;
-	  virtual void Rotate(int degree) = 0;
+    virtual RotationOptions GetRotateType() const = 0;
     virtual bool Snapshot(const std::string& url) = 0;
 	  virtual bool SwitchStream(StreamType type) = 0;
 	  virtual void ImageScale(AspectRatio ratio) = 0;

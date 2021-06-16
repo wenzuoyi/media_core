@@ -435,18 +435,22 @@ void TestSuiteGUIDialog::OnHandlerMirror() {
   menu->CheckMenuItem(ID_HANDLER_MIRROR, !enable ? MF_CHECKED : MF_UNCHECKED);
 }
 
-
 void TestSuiteGUIDialog::OnHandlerRotate() {
-	RotationSettingDialog dialog;
+  RotationSettingDialog dialog;
+  if (render_file_player_ != nullptr) {
+	  const auto enable = render_file_player_->IsEnableRotation();
+	  dialog.SetEnableRotation(enable);
+    const auto type = static_cast<RotationSettingDialog::RotationType>(render_file_player_->GetRotateType());
+	  dialog.SetRotationType(type);
+  }
+
   if (dialog.DoModal() == IDOK) {
-	  const auto enable = dialog.EnableRotation();
+    const auto enable = dialog.EnableRotation();
     if (render_file_player_ == nullptr) {
       return;
     }
     render_file_player_->EnableRotation(dialog.EnableRotation());
-    if (dialog.IsUseCostomizeDegree()) {
-      render_file_player_->Rotate(dialog.GetRotationDegree());
-    } else {
+    if (dialog.EnableRotation()) {
       const auto rotate_type = dialog.GetRotationType();
       if (rotate_type == RotationSettingDialog::RotationType::kDegreeUnknown) {
         AfxMessageBox(L"未知的角度类型");

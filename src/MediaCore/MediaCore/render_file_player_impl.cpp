@@ -189,16 +189,24 @@ namespace core {
     }
   }
 
+  bool RenderFilePlayerImpl::IsEnableRotation() const {
+    if (rotation_handler_ == nullptr) {
+      return false;
+    }
+    return rotation_handler_->GetEnableRotation();
+  }
+
   void RenderFilePlayerImpl::Rotate(RotationOptions options) {
 	  if (rotation_handler_ != nullptr) {
 		  rotation_handler_->Rotate(static_cast<handler::RotationDegreeType>(options));
 	  }
   }
 
-  void RenderFilePlayerImpl::Rotate(int degree) {
-    if (rotation_handler_ != nullptr) {
-      rotation_handler_->Rotate(degree);
+  RotationOptions RenderFilePlayerImpl::GetRotateType() const {
+    if (rotation_handler_ == nullptr) {
+      return RotationOptions::kDegreeUnknown;
     }
+    return static_cast<RotationOptions>(rotation_handler_->GetRotateType());
   }
 
   bool RenderFilePlayerImpl::SwitchStream(StreamType type) {

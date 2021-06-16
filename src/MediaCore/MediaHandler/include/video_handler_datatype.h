@@ -12,10 +12,11 @@ namespace handler {
     kSnapshot = 4
   };
   enum class RotationDegreeType {
-    kDegree90 = 0,
-    kDegree180 = 1,
-    kDegree270 = 2,
-    kDegreeUnknown = 3
+    kDegree0 = 0,
+    kDegree90 = 1,
+    kDegree180 = 2,
+    kDegree270 = 3,
+    kDegreeUnknown = 4
   };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {

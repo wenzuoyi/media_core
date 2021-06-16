@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(RotationSettingDialog, CDialogEx)
 
 RotationSettingDialog::RotationSettingDialog(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ROTATION_DIALOG, pParent), enable_(FALSE), degree90_(FALSE), degree180_(FALSE), degree270_(FALSE), customize_degree_(0), degree_customize_(FALSE) {
+	: CDialogEx(IDD_ROTATION_DIALOG, pParent), enable_(FALSE), degree90_(FALSE), degree180_(FALSE), degree270_(FALSE), degree0_(FALSE) {
 
 }
 
@@ -21,28 +21,18 @@ RotationSettingDialog::~RotationSettingDialog()
 }
 
 bool RotationSettingDialog::EnableRotation() const {
-  if (!enable_) {
-	  return false;
-  }
-  if (!degree90_ && !degree180_ && !degree270_ && !degree_customize_) {
-	  return false;
-  }
-  return true;
+  return enable_ == TRUE;
 }
 
-bool RotationSettingDialog::IsUseCostomizeDegree() const {
-  if (!enable_) {
-	  return false;
-  }
-  return degree_customize_ == TRUE;
+void RotationSettingDialog::SetEnableRotation(bool enable) {
+	enable_ = enable;
 }
 
 RotationSettingDialog::RotationType RotationSettingDialog::GetRotationType() const {
-  if (!enable_ || degree_customize_) {
-	  return RotationType::kDegreeUnknown;
-  }
   auto result = RotationType::kDegreeUnknown;
-  if (degree90_) {
+  if (degree0_) {
+	  result = RotationType::kDegree0;
+  } else if (degree90_) {
 	  result = RotationType::kDegree90;
   } else if (degree180_) {
 	  result = RotationType::kDegree180;
@@ -52,25 +42,32 @@ RotationSettingDialog::RotationType RotationSettingDialog::GetRotationType() con
   return  result;
 }
 
-int RotationSettingDialog::GetRotationDegree() const {
-	if (!enable_ || !degree_customize_) {
-		return 0;
-	}
-	return customize_degree_;
+void RotationSettingDialog::SetRotationType(RotationSettingDialog::RotationType rotation_type) {
+  if (RotationType::kDegree0 == rotation_type) {
+	  EnableCheckBox(TRUE, { IDC_CHECK_DEGREE0 }, FALSE);
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270 }, FALSE);
+  } else if (RotationType::kDegree90 == rotation_type) {
+	  EnableCheckBox(TRUE, { IDC_CHECK_DEGREE90 }, FALSE);
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270 }, FALSE);
+  } else if (RotationType::kDegree180 == rotation_type) {
+	  EnableCheckBox(TRUE, { IDC_CHECK_DEGREE180 }, FALSE);
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE270 }, FALSE);
+  } else if (RotationType::kDegree270 == rotation_type) {
+	  EnableCheckBox(TRUE, { IDC_CHECK_DEGREE270 }, FALSE);
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180 }, FALSE);
+  } else {
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180,IDC_CHECK_DEGREE270 }, FALSE);
+  }
 }
 
 void RotationSettingDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-
 	DDX_Check(pDX, IDC_CHECK_ROTATION_ENABLE, enable_);
+	DDX_Check(pDX, IDC_CHECK_DEGREE0, degree0_);
 	DDX_Check(pDX, IDC_CHECK_DEGREE90, degree90_);
 	DDX_Check(pDX, IDC_CHECK_DEGREE180, degree180_);
 	DDX_Check(pDX, IDC_CHECK_DEGREE270, degree270_);
-	DDX_Text(pDX, IDC_EDIT_DEGREE, customize_degree_);
-	DDV_MinMaxInt(pDX, customize_degree_, 0, 359);
-	DDX_Control(pDX, IDC_SPIN_ROTATION, rotation_spin_);
-	DDX_Check(pDX, IDC_CHECK_CUSTOMERDEF, degree_customize_);
 }
 
 
@@ -82,7 +79,7 @@ BEGIN_MESSAGE_MAP(RotationSettingDialog, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_DEGREE90, &RotationSettingDialog::OnBnClickedCheckDegree90)
 	ON_BN_CLICKED(IDC_CHECK_DEGREE180, &RotationSettingDialog::OnBnClickedCheckDegree180)
 	ON_BN_CLICKED(IDC_CHECK_DEGREE270, &RotationSettingDialog::OnBnClickedCheckDegree270)
-	ON_BN_CLICKED(IDC_CHECK_CUSTOMERDEF, &RotationSettingDialog::OnBnClickedCheckCustomerdef)
+	ON_BN_CLICKED(IDC_CHECK_DEGREE0, &RotationSettingDialog::OnBnClickedCheckDegree0)
 END_MESSAGE_MAP()
 
 void RotationSettingDialog::OnBnClickedCancel() {
@@ -97,9 +94,8 @@ void RotationSettingDialog::OnBnClickedOk() {
 
 
 BOOL RotationSettingDialog::OnInitDialog() {
-	CDialogEx::OnInitDialog();
-	rotation_spin_.SetRange(0, 359);
-	EnableControl(FALSE, { IDC_CHECK_CUSTOMERDEF, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270, IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
+	CDialogEx::OnInitDialog();	
+	EnableControl(enable_, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270 });
 	UpdateData(FALSE);
 	return TRUE;  
 }
@@ -112,7 +108,7 @@ void RotationSettingDialog::EnableControl(BOOL enable, const std::vector<int>& i
 	UpdateData(FALSE);
 }
 
-void RotationSettingDialog::EnableCheckBox(BOOL enable, const std::vector<int>& id_list) {
+void RotationSettingDialog::EnableCheckBox(BOOL enable, const std::vector<int>& id_list, BOOL invalid ) {
   for (const auto& id : id_list) {
     if (id == IDC_CHECK_DEGREE90) {
       degree90_ = enable;
@@ -120,22 +116,23 @@ void RotationSettingDialog::EnableCheckBox(BOOL enable, const std::vector<int>& 
       degree180_ = enable;
     } else if (id == IDC_CHECK_DEGREE270) {
       degree270_ = enable;
-    } else if (id == IDC_CHECK_CUSTOMERDEF) {
-      degree_customize_ = enable;
+    } else if (id == IDC_CHECK_DEGREE0) {
+      degree0_ = enable;
     }
   }
-  UpdateData(FALSE);
+  if (invalid) {
+    UpdateData(FALSE);    
+  }
 }
 
 void RotationSettingDialog::OnBnClickedCheckRotationEnable() {
 	UpdateData();
-	EnableControl(enable_, { IDC_CHECK_CUSTOMERDEF, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270, IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
+	EnableControl(enable_, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270});
 	SetDlgItemText(IDC_CHECK_ROTATION_ENABLE, enable_ != TRUE ? L"¿ªÆô" : L"¹Ø±Õ");
-  if (!enable_) {
-	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270, IDC_CHECK_CUSTOMERDEF });
-	  customize_degree_ = 0;
+  if (enable_) {
+	  EnableCheckBox(TRUE, { IDC_CHECK_DEGREE0 });
   } else {
-	  EnableControl(FALSE, {IDC_EDIT_DEGREE, IDC_SPIN_ROTATION});
+	  EnableCheckBox(FALSE, { IDC_CHECK_DEGREE0, IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270 });
   }
   UpdateData(FALSE);
 }
@@ -143,10 +140,8 @@ void RotationSettingDialog::OnBnClickedCheckRotationEnable() {
 
 void RotationSettingDialog::OnBnClickedCheckDegree90() {
 	UpdateData();
-  EnableControl(!degree90_, { IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
   if (degree90_) {
-    EnableCheckBox(FALSE, { IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270, IDC_CHECK_CUSTOMERDEF });
-	  customize_degree_ = 0;
+    EnableCheckBox(FALSE, { IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270, IDC_CHECK_DEGREE0 });
   }
   UpdateData(FALSE);
 }
@@ -154,10 +149,8 @@ void RotationSettingDialog::OnBnClickedCheckDegree90() {
 
 void RotationSettingDialog::OnBnClickedCheckDegree180() {
 	UpdateData();
-	EnableControl(!degree180_, { IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
 	if (degree180_) {
-		EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE270, IDC_CHECK_CUSTOMERDEF });
-		customize_degree_ = 0;
+		EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE270, IDC_CHECK_DEGREE0 });
 	}
 	UpdateData(FALSE);
 }
@@ -165,19 +158,15 @@ void RotationSettingDialog::OnBnClickedCheckDegree180() {
 
 void RotationSettingDialog::OnBnClickedCheckDegree270() {
 	UpdateData();
-	EnableControl(!degree270_, { IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
 	if (degree270_) {
-		EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_CUSTOMERDEF });
-		customize_degree_ = 0;
+		EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE0 });
 	}
 	UpdateData(FALSE);
 }
 
-
-void RotationSettingDialog::OnBnClickedCheckCustomerdef() {
+void RotationSettingDialog::OnBnClickedCheckDegree0() {
 	UpdateData();
-	EnableControl(degree_customize_, { IDC_EDIT_DEGREE, IDC_SPIN_ROTATION });
-	if (degree_customize_) {
+	if (degree0_) {
 		EnableCheckBox(FALSE, { IDC_CHECK_DEGREE90, IDC_CHECK_DEGREE180, IDC_CHECK_DEGREE270 });
 	}
 	UpdateData(FALSE);

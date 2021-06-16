@@ -17,8 +17,9 @@ namespace handler {
 		virtual ~RotationHandler();
 		virtual void SetEvent(RotationHandlerEvent* event) = 0;
 		virtual void EnableRotation(bool enable) = 0;
+		virtual bool GetEnableRotation() const = 0;
 		virtual void Rotate(RotationDegreeType rotation_degree) = 0;
-		virtual void Rotate(int degree) = 0;
+		virtual RotationDegreeType GetRotateType() = 0;
 		static RotationHandlerPtr CreateInstance();
 	};
 }
