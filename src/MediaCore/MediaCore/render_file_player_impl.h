@@ -29,9 +29,12 @@ namespace core {
     void Zoom(RegionPtr region) override;
     bool IsSettingMosaic() const override;
     void Mosaic(RegionPtr region) override;
-    void Flip() override;
-    void Mirror() override;
+    bool IsMirror() const override;
+    void Mirror(bool enable) override;
+    void EnableRotation(bool enable) override;
+    bool IsEnableRotation() const override;
     void Rotate(RotationOptions options) override;
+    RotationOptions GetRotateType() const override;
     bool SwitchStream(StreamType type) override;
     void ImageScale(AspectRatio ratio) override;
     void OSD(OSDParamListPtr param) override;

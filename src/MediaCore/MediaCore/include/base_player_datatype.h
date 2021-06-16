@@ -20,9 +20,11 @@ namespace core {
   };
   using BasicPlayerParamPtr = std::shared_ptr<BasicPlayerParam>;
   enum class RotationOptions {
-	  kDegree90 = 0,
-	  kDegree180 = 1,
-	  kDegree270 = 2
+	  kDegree0 = 0,
+	  kDegree90 = 1,
+	  kDegree180 = 2,
+	  kDegree270 = 3,
+    kDegreeUnknown = 4
   };
   enum  class StreamType {
     kMain = 0,

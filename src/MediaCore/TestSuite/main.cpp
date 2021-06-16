@@ -1,15 +1,40 @@
 #include <iostream>
 #include <future>
 #include <mutex>
+#include <condition_variable>
+#include <thread>
 #include "output_media_source_testsuite.h"
 #include "../MediaCoreUtils/include/bound_circle_buffer.hpp"
 int main(int argc, const char* argv) {
-	output::OutputMediaSourceTestSuite output_media_source_test_suite;
-	output_media_source_test_suite.Init();
-	output_media_source_test_suite.TestPlayAudioFile();
-	int ctrl;
-	std::cin >> ctrl;
-	output_media_source_test_suite.Fini();
+	//std::mutex mutex;
+	//std::condition_variable cv;
+ // auto flags{ false };
+ // std::thread thread1([&mutex, &cv, &flags]() {
+ //   {
+ //     std::unique_lock<std::mutex> lock(mutex);
+ //     cv.notify_all();
+ //     flags = true;
+ //   }
+ //   std::cout << "thread1 over" << std::endl;
+ // });
+ // std::thread thread2([&mutex, &cv, &flags]() {
+	//  std::this_thread::sleep_for(std::chrono::seconds(5));
+	//  std::unique_lock<std::mutex> lock(mutex);
+	//  cv.wait(lock, [&flags] {
+	//	  return flags;
+	//  });
+	//  std::cout << "thread2 over" << std::endl;
+ // });
+ // thread1.join();
+ // thread2.join();
+
+	 output::OutputMediaSourceTestSuite output_media_source_test_suite;
+	 output_media_source_test_suite.Init();
+	 output_media_source_test_suite.TestPlayAudioFile();
+	 int ctrl;
+	 std::cin >> ctrl;
+	 output_media_source_test_suite.Fini();
+
 	//int data;
 	//utils::BoundedBuffer<int> bounded_buffer(5);
 	//std::mutex mutex;

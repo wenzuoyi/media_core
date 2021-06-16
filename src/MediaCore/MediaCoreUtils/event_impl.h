@@ -1,13 +1,13 @@
-#ifndef AUTO_EVENT_H_
-#define AUTO_EVENT_H_
+#ifndef EVENT_IMPL_H_
+#define EVENT_IMPL_H_
 #include "./include/event.h"
 #include <mutex>
 #include <condition_variable>
 namespace utils {
-  class AutoEvent : public Event {
+  class EventImpl : public Event {
   public:
-    AutoEvent();
-    virtual ~AutoEvent();
+    explicit EventImpl(bool auto_reset_flag);
+    virtual ~EventImpl();
     void Reset() override;
     void Wait() override;
     bool WaitFor(uint64_t seconds, uint64_t milliseconds) override;
@@ -16,6 +16,8 @@ namespace utils {
   private:
 	  std::mutex mutex_;
 	  std::condition_variable condition_variable_;
+	  bool flag_{ false };
+	  bool auto_reset_flag_{ true };
   };
 }
-#endif // AUTO_EVENT_H_
+#endif // EVENT_IMPL_H_

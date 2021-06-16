@@ -291,5 +291,16 @@ namespace output {
     }
     return true;
   }
+
+  VideoOutputParamPtr Direct3DRender::GetVideoOutputMediaParam() {
+	  return param_;
+  }
+
+  bool Direct3DRender::Renderable(VideoFramePtr video_frame) const {
+    if (param_ == nullptr || video_frame == nullptr) {
+      return false;
+    }
+    return param_->width == video_frame->width && param_->height == video_frame->height;
+  }
 }
 

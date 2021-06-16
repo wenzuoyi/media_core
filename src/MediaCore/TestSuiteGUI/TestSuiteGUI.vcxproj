@@ -232,6 +232,7 @@
     <ClInclude Include="osd_config_dialog.h" />
     <ClInclude Include="render_file_baseinfo_setting.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="rotation_setting_dialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestSuiteGUI.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="mouse_locator.cpp" />
     <ClCompile Include="osd_config_dialog.cpp" />
     <ClCompile Include="render_file_baseinfo_setting.cpp" />
+    <ClCompile Include="rotation_setting_dialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

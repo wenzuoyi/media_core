@@ -5,7 +5,18 @@
 #include "video_output_media_source_datatype.h"
 namespace handler {
   enum class VideoHandlerType {
-    kMosaic = 0
+    kMosaic = 0,
+    kMirror = 1,
+    kRotate = 2,
+    kFormatConvert =3,
+    kSnapshot = 4
+  };
+  enum class RotationDegreeType {
+    kDegree0 = 0,
+    kDegree90 = 1,
+    kDegree180 = 2,
+    kDegree270 = 3,
+    kDegreeUnknown = 4
   };
 	using VideoFramePtr = output::VideoFramePtr;
   struct MosaicParam {
@@ -16,5 +27,14 @@ namespace handler {
 	  int height;   
   };
   using MosaicParamPtr = std::shared_ptr<MosaicParam>;
+  struct ConvertorBasicParam {
+	  int source_width;
+	  int source_height;
+	  output::ColorSpace source_format;
+	  int target_width;
+	  int target_height;
+	  output::ColorSpace target_format;
+  };
+  using ConvertorBasicParamPtr = std::shared_ptr<ConvertorBasicParam>;
 }
 #endif // VIDEO_HANDLER_DATATYPE_H_

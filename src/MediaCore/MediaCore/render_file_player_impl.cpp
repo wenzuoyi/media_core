@@ -6,7 +6,6 @@ namespace core {
   RenderFilePlayerImpl::RenderFilePlayerImpl() = default;
 
   RenderFilePlayerImpl::~RenderFilePlayerImpl() {
-    
   }
 
   bool RenderFilePlayerImpl::Init(BasicPlayerParamPtr param) {
@@ -124,10 +123,10 @@ namespace core {
   }
 
   bool RenderFilePlayerImpl::Snapshot(const std::string& url) {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
-	  }
-	  return false;
+    if (snapshot_handler != nullptr) {
+      snapshot_handler->Save(url);
+    }
+    return false;
   }
 
   bool RenderFilePlayerImpl::IsZoom() const {
@@ -171,22 +170,43 @@ namespace core {
     }
   }
 
-  void RenderFilePlayerImpl::Flip() {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
-	  }
+  bool RenderFilePlayerImpl::IsMirror() const {
+    if (mirror_handler_ == nullptr) {
+      return false;
+    }
+    return mirror_handler_->IsEnableMirror();
   }
 
-  void RenderFilePlayerImpl::Mirror() {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
-	  }
+  void RenderFilePlayerImpl::Mirror(bool enable) {
+    if (mirror_handler_ != nullptr) {
+      mirror_handler_->EnableMirror(enable);
+    }
+  }
+
+  void RenderFilePlayerImpl::EnableRotation(bool enable) {
+    if (rotation_handler_ != nullptr) {
+      rotation_handler_->EnableRotation(enable);
+    }
+  }
+
+  bool RenderFilePlayerImpl::IsEnableRotation() const {
+    if (rotation_handler_ == nullptr) {
+      return false;
+    }
+    return rotation_handler_->GetEnableRotation();
   }
 
   void RenderFilePlayerImpl::Rotate(RotationOptions options) {
-	  if (event_ != nullptr) {
-		  event_->OnPlayerException(ERROR_CODE_UNSUPPORTED_METHOD, std::string(error_message[ERROR_CODE_UNSUPPORTED_METHOD]));
+	  if (rotation_handler_ != nullptr) {
+		  rotation_handler_->Rotate(static_cast<handler::RotationDegreeType>(options));
 	  }
+  }
+
+  RotationOptions RenderFilePlayerImpl::GetRotateType() const {
+    if (rotation_handler_ == nullptr) {
+      return RotationOptions::kDegreeUnknown;
+    }
+    return static_cast<RotationOptions>(rotation_handler_->GetRotateType());
   }
 
   bool RenderFilePlayerImpl::SwitchStream(StreamType type) {

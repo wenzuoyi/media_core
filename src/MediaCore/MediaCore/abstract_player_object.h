@@ -2,10 +2,18 @@
 #define ABSTRACT_PLAYER_OBJECT_H_
 #include "audio_output_media_source.h"
 #include "mosaic_handler.h"
+#include "mirror_handler.h"
+#include "rotation_handler.h"
+#include "snapshot_handler.h"
 #include "video_output_media_source.h"
 #include "include/base_player_datatype.h"
 namespace core {
-  class AbstractPlayerObject : public handler::MosaicHandlerEvent , public output::AudioOutputMediaSourceEvent , public output::VideoOutputMediaSourceEvent {
+  class AbstractPlayerObject : public virtual  handler::MosaicHandlerEvent,
+	                                           public virtual  handler::MirrorHandlerEvent,
+	                                           public virtual  handler::RotationHandlerEvent,
+	                                            public virtual  handler::SnapshotHandlerEvent,
+                                             public output::AudioOutputMediaSourceEvent,
+                                             public output::VideoOutputMediaSourceEvent {
   public:
     AbstractPlayerObject();
     virtual ~AbstractPlayerObject();
@@ -26,6 +34,9 @@ namespace core {
     void OnVideoCustomPainting(HDC hdc) override;
     void OnVideoTransmitFrame(VideoFramePtr video_frame) override;
 	  handler::MosaicHandlerPtr mosaic_handler_{ nullptr };
+	  handler::MirrorHandlerPtr mirror_handler_{ nullptr };
+	  handler::RotationHandlerPtr rotation_handler_{ nullptr };
+	  handler::SnapshotHandlerPtr snapshot_handler{ nullptr };
 	  output::AudioOutputMediaSourcePtr audio_output_{ nullptr };
 	  output::VideoOutputMediaSourcePtr video_output_{ nullptr };
   };

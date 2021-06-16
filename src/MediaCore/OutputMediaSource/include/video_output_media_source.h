@@ -26,6 +26,8 @@ namespace output {
     virtual void Fini() = 0;
     virtual void SetEvent(VideoOutputMediaSourceEvent* sink) = 0;
     virtual void SetVideoOutputMediaParam(VideoOutputParamPtr video_output_param) = 0;
+    virtual VideoOutputParamPtr GetVideoOutputMediaParam() = 0;
+    virtual bool Renderable(VideoFramePtr video_frame) const = 0;
     virtual bool Play() = 0;
     virtual void Stop() = 0;
 	  virtual bool IsROIEnable() const = 0;

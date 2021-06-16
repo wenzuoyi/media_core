@@ -30,6 +30,12 @@ namespace core {
     if (basic_player_info == nullptr || video_base_info == nullptr) {
       return false;
     }
+    mirror_handler_ = handler::MirrorHandler::CreateInstance();
+    if (mirror_handler_ == nullptr) {
+      return false;
+    }
+    mirror_handler_->SetEvent(this);
+    mirror_handler_->Start();
     mosaic_handler_ = handler::MosaicHandler::CreateInstance();
     if (mosaic_handler_ == nullptr) {
       return false;
@@ -39,6 +45,18 @@ namespace core {
     if (!mosaic_handler_->Clear()) {
       return false;
     }
+    rotation_handler_ = handler::RotationHandler::CreateInstance();
+    if (rotation_handler_ == nullptr) {
+      return false;
+    }
+	  rotation_handler_->SetEvent(this);
+	  rotation_handler_->Start();
+	  snapshot_handler = handler::SnapshotHandler::CreateInstance();
+    if (snapshot_handler == nullptr) {
+      return false;
+    }
+    snapshot_handler->SetEvent(this);
+    snapshot_handler->Start();
     video_output_ = output::VideoOutputMediaSource::CreateInstance(basic_player_info->video_render_mode);
     video_output_->Init();
     video_output_->SetEvent(this);
@@ -68,11 +86,43 @@ namespace core {
         mosaic_handler_->Stop();
         mosaic_handler_ = nullptr;
       }
+      if (mirror_handler_ != nullptr) {
+        mirror_handler_->Stop();
+        mirror_handler_ = nullptr;
+      }
+      if (rotation_handler_ != nullptr) {
+		    rotation_handler_->Stop();
+        rotation_handler_ = nullptr;
+      }
+      if (snapshot_handler != nullptr) {
+        snapshot_handler->Stop();
+        snapshot_handler = nullptr;
+      }
     }
   }
 
   void AbstractPlayerObject::OnTransmitVideoFrame(handler::VideoHandlerType video_handler_type,  VideoFramePtr video_frame) {
-    if (video_frame != nullptr && video_output_ != nullptr) {
+    if (video_frame == nullptr) {
+      return;
+    }
+    if (video_handler_type == handler::VideoHandlerType::kMosaic && mirror_handler_ != nullptr) {
+		  mirror_handler_->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kMirror && rotation_handler_ != nullptr) {
+      rotation_handler_->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kRotate && snapshot_handler != nullptr) {
+      snapshot_handler->InputVideoFrame(video_frame);
+    }
+    if (video_handler_type == handler::VideoHandlerType::kSnapshot && video_output_ != nullptr) {
+      if(!video_output_->Renderable(video_frame)) {
+        auto param = video_output_->GetVideoOutputMediaParam();
+        video_output_->Stop();
+        param->width = video_frame->width;
+        param->height = video_frame->height;
+        video_output_->SetVideoOutputMediaParam(param);
+        video_output_->Play();
+      }
       video_output_->InputVideoFrame(video_frame);
     }
   }

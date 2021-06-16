@@ -48,10 +48,13 @@
     <ClInclude Include="include\event.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="auto_event.h">
+    <ClInclude Include="include\shared_mutex.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="manual_event.h">
+    <ClInclude Include="shared_mutex_impl.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="event_impl.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,10 +74,13 @@
     <ClCompile Include="event.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="auto_event.cpp">
+    <ClCompile Include="shared_mutex.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="manual_event.cpp">
+    <ClCompile Include="shared_mutex_impl.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="event_impl.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>

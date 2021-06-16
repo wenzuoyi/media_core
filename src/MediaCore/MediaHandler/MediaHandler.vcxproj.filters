@@ -22,6 +22,18 @@
     <Filter Include="base">
       <UniqueIdentifier>{ca8c710b-94c1-40d1-93ae-726776f8af3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rotation">
+      <UniqueIdentifier>{9b1fedfd-4823-4c66-9b29-2a51da81dbe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="convertor">
+      <UniqueIdentifier>{3839d557-a7eb-430e-9b5c-f571d8bd9e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mirror">
+      <UniqueIdentifier>{0a4e5874-50a7-4f1f-9b57-26e00796b884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snapshot">
+      <UniqueIdentifier>{8b7bb48b-f5b1-4223-983d-967d32c14e66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_handler.h">
@@ -36,9 +48,6 @@
     <ClInclude Include="volume_column_handler_impl.hpp">
       <Filter>volume_column</Filter>
     </ClInclude>
-    <ClInclude Include="include\mosaic_handler.h">
-      <Filter>mosaic</Filter>
-    </ClInclude>
     <ClInclude Include="include\base_audio_handler.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -52,7 +61,43 @@
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="mosaic_handler_impl.h">
-      <Filter>头文件</Filter>
+      <Filter>mosaic</Filter>
+    </ClInclude>
+    <ClInclude Include="mirror_handler_impl.h">
+      <Filter>mirror</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mirror_handler.h">
+      <Filter>mirror</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mosaic_handler.h">
+      <Filter>mosaic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\format_convertor.h">
+      <Filter>convertor</Filter>
+    </ClInclude>
+    <ClInclude Include="format_convertor_impl.h">
+      <Filter>convertor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rotation_handler.h">
+      <Filter>rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="rotation_handler_impl.h">
+      <Filter>rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="base_saver.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="include\snapshot_handler.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="snapshot_handler_impl.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_saver.h">
+      <Filter>snapshot</Filter>
+    </ClInclude>
+    <ClInclude Include="jpeg_saver.h">
+      <Filter>snapshot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +111,37 @@
       <Filter>mosaic</Filter>
     </ClCompile>
     <ClCompile Include="mosaic_handler_impl.cpp">
-      <Filter>源文件</Filter>
+      <Filter>mosaic</Filter>
+    </ClCompile>
+    <ClCompile Include="mirror_handler.cpp">
+      <Filter>mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="mirror_handler_impl.cpp">
+      <Filter>mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="format_convertor.cpp">
+      <Filter>convertor</Filter>
+    </ClCompile>
+    <ClCompile Include="format_convertor_impl.cpp">
+      <Filter>convertor</Filter>
+    </ClCompile>
+    <ClCompile Include="rotation_handler.cpp">
+      <Filter>rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="rotation_handler_impl.cpp">
+      <Filter>rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="snapshot_handler.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="snapshot_handler_impl.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="bitmap_saver.cpp">
+      <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="jpeg_saver.cpp">
+      <Filter>snapshot</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

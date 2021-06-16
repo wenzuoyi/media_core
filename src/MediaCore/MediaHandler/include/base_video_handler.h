@@ -1,4 +1,5 @@
-#ifndef BASE_VIDEO_HANDLER_H_
+#ifndef BASE_VIDEO_HANDLER_H
+#define BASE_VIDEO_HANDLER_H
 #include "global_media_handler.h"
 #include "video_handler_datatype.h"
 namespace handler {
@@ -17,4 +18,4 @@ namespace handler {
 		virtual void InputVideoFrame(VideoFramePtr video_frame) = 0;
 	};
 }
-#endif // BASE_VIDEO_HANDLER_H_
+#endif // BASE_VIDEO_HANDLER_H
