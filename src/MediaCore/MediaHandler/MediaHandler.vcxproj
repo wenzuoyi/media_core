@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="async_runnable.hpp" />
     <ClInclude Include="base_saver.h" />
     <ClInclude Include="bitmap_saver.h" />
     <ClInclude Include="format_convertor_impl.h" />

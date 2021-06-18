@@ -96,9 +96,6 @@
     <ClInclude Include="jpeg_saver.h">
       <Filter>snapshot</Filter>
     </ClInclude>
-    <ClInclude Include="async_runnable.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="volume_column_handler.cpp">

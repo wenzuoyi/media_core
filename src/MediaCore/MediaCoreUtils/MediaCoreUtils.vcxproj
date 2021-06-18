@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="event_impl.h" />
     <ClInclude Include="character_set_convertor_impl.h" />
+    <ClInclude Include="include\async_runnable.hpp" />
     <ClInclude Include="include\bound_circle_buffer.hpp" />
     <ClInclude Include="include\character_set_convertor.h" />
     <ClInclude Include="include\event.h" />

@@ -57,6 +57,9 @@
     <ClInclude Include="event_impl.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="include\async_runnable.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character_set_convertor.cpp">
