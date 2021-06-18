@@ -3,8 +3,9 @@
 #include "include/snapshot_handler.h"
 #include <atomic>
 #include "base_saver.h"
+#include "async_runnable.hpp"
 namespace handler {
-	class SnapshotHandlerImpl :	public SnapshotHandler {
+	class SnapshotHandlerImpl :	public SnapshotHandler , public AsyncRunnable<VideoFramePtr> {
 	public:
 		SnapshotHandlerImpl();
 		virtual ~SnapshotHandlerImpl();
@@ -14,6 +15,7 @@ namespace handler {
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void SetEvent(SnapshotHandlerEvent* event) override;
     bool Save(const std::string& path) override;
+    void AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) override;
 	private:
 		SnapshotHandlerEvent* event_{ nullptr };
 		std::atomic_bool flag_{ false };

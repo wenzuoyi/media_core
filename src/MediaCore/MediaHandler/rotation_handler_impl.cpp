@@ -6,9 +6,11 @@ namespace handler {
 	RotationHandlerImpl::~RotationHandlerImpl() = default;
 
   void RotationHandlerImpl::Start() {
+	  AsyncStart();
   }
 
   void RotationHandlerImpl::Stop() {
+	  AsyncStop();
   }
 
   VideoFramePtr RotationHandlerImpl::RotateVideoFrame(VideoFramePtr video_frame) const {
@@ -26,19 +28,7 @@ namespace handler {
   }
 
   void RotationHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    if (video_frame == nullptr) {
-      return;
-    }
-    VideoFramePtr target{nullptr};
-    if (enable_) {
-      target = RotateVideoFrame(video_frame);
-    }
-    if (target == nullptr) {
-      target = video_frame;
-    }
-    if (event_ != nullptr) {
-      event_->OnTransmitVideoFrame(VideoHandlerType::kRotate, target);
-    }
+	  Push(video_frame);
   }
   
   VideoFramePtr RotationHandlerImpl::RotateViaLibYUV(VideoFramePtr source, bool flag, libyuv::RotationMode mode) const {
@@ -105,6 +95,22 @@ namespace handler {
 
   RotationDegreeType RotationHandlerImpl::GetRotateType() {
 	  return rotation_degree_type_;
+  }
+
+  void RotationHandlerImpl::AsyncRun(VideoFramePtr video_frame) {
+    if (video_frame == nullptr) {
+      return;
+    }
+	  VideoFramePtr target{ nullptr };
+	  if (enable_) {
+		  target = RotateVideoFrame(video_frame);
+	  }
+	  if (target == nullptr) {
+		  target = video_frame;
+	  }
+	  if (event_ != nullptr) {
+		  event_->OnTransmitVideoFrame(VideoHandlerType::kRotate, target);
+	  }
   }
 }
 

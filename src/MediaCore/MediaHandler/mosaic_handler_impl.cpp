@@ -12,27 +12,23 @@ namespace handler {
   }
 
   void MosaicHandlerImpl::Start() {
-	  std::lock_guard<std::mutex> lock(*this);
-	  enable_ = false;
-	  mosaic_param_ = nullptr;
+    {
+      std::lock_guard<std::mutex> lock(*this);
+      enable_ = false;
+      mosaic_param_ = nullptr;
+    }
+	  AsyncStart();
   }
 
   void MosaicHandlerImpl::Stop() {
-	  Start();
+    AsyncStop();
+    std::lock_guard<std::mutex> lock(*this);
+    enable_ = false;
+    mosaic_param_ = nullptr;
   }
 
   void MosaicHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    {
-      std::lock_guard<std::mutex> lock(*this);
-      if (enable_ && video_frame != nullptr && mosaic_param_ != nullptr) {
-        if (mosaic_param_->x + mosaic_param_->width <= video_frame->width && mosaic_param_->y + mosaic_param_->height <=  video_frame->height) {
-          for (auto i = 0U; i < matrix_a_.size(); ++i) {
-            SwapYUVBlock(i, video_frame);
-          }
-        }
-      }
-    }    
-    event_->OnTransmitVideoFrame(VideoHandlerType::kMosaic, video_frame);
+	  Push(video_frame);
   }
 
   void MosaicHandlerImpl::EnableMosaic(bool enable) {
@@ -74,6 +70,20 @@ namespace handler {
 	  std::lock_guard<std::mutex> lock(*this);
     mosaic_param_ = nullptr;    
 	  return true;
+  }
+
+  void MosaicHandlerImpl::AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) {
+	  {
+		  std::lock_guard<std::mutex> lock(*this);
+		  if (enable_ && video_frame != nullptr && mosaic_param_ != nullptr) {
+			  if (mosaic_param_->x + mosaic_param_->width <= video_frame->width && mosaic_param_->y + mosaic_param_->height <= video_frame->height) {
+				  for (auto i = 0U; i < matrix_a_.size(); ++i) {
+					  SwapYUVBlock(i, video_frame);
+				  }
+			  }
+		  }
+	  }
+	  event_->OnTransmitVideoFrame(VideoHandlerType::kMosaic, video_frame);
   }
 
   void MosaicHandlerImpl::SwapYUVBlock(int index, VideoFramePtr video_frame) {

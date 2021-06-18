@@ -11,20 +11,15 @@ namespace handler {
 	SnapshotHandlerImpl::~SnapshotHandlerImpl() = default;
 
   void SnapshotHandlerImpl::Start() {
+	  AsyncStart();
   }
 
   void SnapshotHandlerImpl::Stop() {
+	  AsyncStop();
   }
 
   void SnapshotHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    if (flag_ && saver_ != nullptr) {
-		  saver_->InputVideoFrame(video_frame);
-		  saver_->Close();
-		  flag_ = false;
-    }
-    if (event_ != nullptr) {
-      event_->OnTransmitVideoFrame(VideoHandlerType::kSnapshot, video_frame);
-    }
+	  Push(video_frame);
   }
 
   void SnapshotHandlerImpl::SetEvent(SnapshotHandlerEvent* event) {
@@ -58,5 +53,16 @@ namespace handler {
       flag_ = true;
     }
     return true;
+  }
+
+  void SnapshotHandlerImpl::AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) {
+	  if (flag_ && saver_ != nullptr) {
+		  saver_->InputVideoFrame(video_frame);
+		  saver_->Close();
+		  flag_ = false;
+	  }
+	  if (event_ != nullptr) {
+		  event_->OnTransmitVideoFrame(VideoHandlerType::kSnapshot, video_frame);
+	  }
   }
 }

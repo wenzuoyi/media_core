@@ -9,7 +9,7 @@ namespace utils {
 
   void SharedMutexImpl::TryWriteLock() {
     std::unique_lock<std::mutex> lock(*this);
-    write_condition_.wait(lock, [this]() {
+    condition_.wait(lock, [this]() {
       return read_count_ == 0 && !write_flag_;
     });
     write_flag_ = true;
@@ -18,12 +18,12 @@ namespace utils {
   void SharedMutexImpl::WriteUnlock() {
 	  std::unique_lock<std::mutex> lock(*this);
 	  write_flag_ = false;
-	  write_condition_.notify_all();
+	  condition_.notify_all();
   }
 
   void SharedMutexImpl::TryReadLock() {
     std::unique_lock<std::mutex> lock(*this);
-    read_condition_.wait(lock, [this]() {
+    condition_.wait(lock, [this]() {
       return !write_flag_;
     });
     ++read_count_;
@@ -32,8 +32,9 @@ namespace utils {
   void SharedMutexImpl::ReadUnlock() {
     std::unique_lock<std::mutex> lock(*this);
     --read_count_;
+    condition_.notify_all();
     if (read_count_ == 0) {
-      write_condition_.notify_all();
+      condition_.notify_all();
     }
   }
 }

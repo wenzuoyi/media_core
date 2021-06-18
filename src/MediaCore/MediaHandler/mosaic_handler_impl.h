@@ -4,8 +4,9 @@
 #include <utility>
 #include <vector>
 #include <mutex>
+#include "async_runnable.hpp"
 namespace handler {
-  class MosaicHandlerImpl : public MosaicHandler , public  std::mutex {
+  class MosaicHandlerImpl : public MosaicHandler , public AsyncRunnable<VideoFramePtr>, public  std::mutex {
   public:
     MosaicHandlerImpl();
     virtual ~MosaicHandlerImpl();
@@ -18,6 +19,7 @@ namespace handler {
     bool IsSettingMosaic() const override;
     bool SetParam(MosaicParamPtr param) override;
     bool Clear() override;
+    void AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) override;
   private:
 	  using MatrixItem = std::pair<int, int>;
 	  void SwapYUVBlock(int index, VideoFramePtr video_frame);

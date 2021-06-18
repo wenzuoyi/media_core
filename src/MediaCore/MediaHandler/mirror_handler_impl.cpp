@@ -14,24 +14,21 @@ namespace handler {
   }
 
   void MirrorHandlerImpl::Start() {
+    {
+      utils::WriteLock lock(mutex_);
+      enable_ = false;
+    }
+    AsyncStart();
+  }
+
+  void MirrorHandlerImpl::Stop() {
+	  AsyncStop();
 	  utils::WriteLock lock(mutex_);
 	  enable_ = false;
   }
 
-  void MirrorHandlerImpl::Stop() {
-	  Start();
-  }
-
   void MirrorHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    {
-		  utils::ReadLock lock(mutex_);
-      if (video_frame != nullptr && enable_) {
-		    video_frame = HandleVideoFrame(video_frame);
-      }
-    }
-    if (event_ != nullptr) {
-      event_->OnTransmitVideoFrame(VideoHandlerType::kMirror, video_frame);
-    }
+	  Push(video_frame);
   }
 
   void MirrorHandlerImpl::SetEvent(MirrorHandlerEvent* event) {
@@ -50,6 +47,18 @@ namespace handler {
   bool MirrorHandlerImpl::IsEnableMirror() const {
 	  utils::ReadLock lock(mutex_);
 	  return enable_;
+  }
+
+  void MirrorHandlerImpl::AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) {
+	  {
+		  utils::ReadLock lock(mutex_);
+		  if (video_frame != nullptr && enable_) {
+			  video_frame = HandleVideoFrame(video_frame);
+		  }
+	  }
+	  if (event_ != nullptr) {
+		  event_->OnTransmitVideoFrame(VideoHandlerType::kMirror, video_frame);
+	  }
   }
 
   VideoFramePtr MirrorHandlerImpl::HandleVideoFrame(VideoFramePtr source) {

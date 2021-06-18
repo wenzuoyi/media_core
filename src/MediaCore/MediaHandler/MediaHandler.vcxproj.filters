@@ -39,9 +39,6 @@
     <ClInclude Include="include\global_media_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="async_handler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\volume_column_handler.h">
       <Filter>volume_column</Filter>
     </ClInclude>
@@ -99,11 +96,11 @@
     <ClInclude Include="jpeg_saver.h">
       <Filter>snapshot</Filter>
     </ClInclude>
+    <ClInclude Include="async_runnable.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="asnyc_handler.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="volume_column_handler.cpp">
       <Filter>volume_column</Filter>
     </ClCompile>

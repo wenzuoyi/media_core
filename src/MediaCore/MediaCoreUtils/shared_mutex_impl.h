@@ -14,8 +14,7 @@ namespace utils {
     void TryReadLock() override;
     void ReadUnlock() override;
   private:
-	  std::condition_variable read_condition_;
-	  std::condition_variable write_condition_;
+	  std::condition_variable condition_;
     bool write_flag_{false};
     int read_count_{0};
   };
