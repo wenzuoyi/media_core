@@ -60,6 +60,9 @@
     <ClInclude Include="include\async_runnable.hpp">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="async_executor.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character_set_convertor.cpp">

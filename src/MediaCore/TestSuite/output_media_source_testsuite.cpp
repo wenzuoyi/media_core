@@ -25,7 +25,7 @@ namespace output {
   void OutputMediaSourceTestSuite::TestPlayAudioFile() {
 	  FILE* audio_file{ nullptr };
 	  SetConsoleTitle(CONSOLE_TITLE_NAME.c_str());
-	  if ((audio_file = fopen(R"(D:\audio\sample.pcm)", "rb")) == NULL) {
+	  if ((audio_file = fopen(R"(D:\media\audio\sample.pcm)", "rb")) == NULL) {
 		  return;
 	  }
 	  auto config = std::make_shared<AudioOutputParam>();

@@ -7,7 +7,7 @@ struct AVFrame;
 struct SwsContext;
 
 namespace handler {
-  class FormatConvertorImpl : public FormatConvertor, public AsyncRunnable<VideoFramePtr>{
+  class FormatConvertorImpl : public FormatConvertor, public utils::AsyncRunnable<VideoFramePtr>{
   public:
     FormatConvertorImpl();
     virtual ~FormatConvertorImpl();

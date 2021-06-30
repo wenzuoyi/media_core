@@ -4,7 +4,7 @@
 #include "shared_mutex.h"
 #include "async_runnable.hpp"
 namespace handler {
-  class MirrorHandlerImpl : public MirrorHandler , public AsyncRunnable<VideoFramePtr>{
+  class MirrorHandlerImpl : public MirrorHandler , public utils::AsyncRunnable<VideoFramePtr>{
   public:
     MirrorHandlerImpl();
     virtual ~MirrorHandlerImpl();

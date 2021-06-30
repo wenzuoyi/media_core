@@ -6,7 +6,7 @@
 #include <mutex>
 #include "async_runnable.hpp"
 namespace handler {
-  class MosaicHandlerImpl : public MosaicHandler , public AsyncRunnable<VideoFramePtr>, public  std::mutex {
+  class MosaicHandlerImpl : public MosaicHandler , public utils::AsyncRunnable<VideoFramePtr>, public  std::mutex {
   public:
     MosaicHandlerImpl();
     virtual ~MosaicHandlerImpl();

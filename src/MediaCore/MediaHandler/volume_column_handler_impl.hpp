@@ -8,7 +8,7 @@
 
 namespace handler {
   template <class T>
-  class VolumeColumnHandlerImpl final : public VolumeColumnHandler , public AsyncRunnable<AudioSamplePtr>{
+  class VolumeColumnHandlerImpl final : public VolumeColumnHandler , public utils::AsyncRunnable<AudioSamplePtr>{
   public:
 	  using PerChannelSamples = std::vector<T>;
 	  using PerChannelSamplesPtr = std::shared_ptr<PerChannelSamples>;

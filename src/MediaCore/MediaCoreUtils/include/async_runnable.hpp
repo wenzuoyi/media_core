@@ -6,8 +6,7 @@
 #include <Poco/ThreadPool.h>
 #include <Poco/Runnable.h>
 #include "shared_mutex.h"
-namespace handler {
-
+namespace utils {
   template <class T>
   class AsyncRunnable : public Poco::Runnable {
   protected:

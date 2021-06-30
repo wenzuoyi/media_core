@@ -4,7 +4,7 @@
 #include "include/rotation_handler.h"
 #include "async_runnable.hpp"
 namespace handler {
-  class RotationHandlerImpl : public RotationHandler , public AsyncRunnable<VideoFramePtr>{
+  class RotationHandlerImpl : public RotationHandler , public utils::AsyncRunnable<VideoFramePtr>{
   public:
     RotationHandlerImpl();
     virtual ~RotationHandlerImpl();

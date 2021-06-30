@@ -5,7 +5,7 @@
 #include "base_saver.h"
 #include "async_runnable.hpp"
 namespace handler {
-	class SnapshotHandlerImpl :	public SnapshotHandler , public AsyncRunnable<VideoFramePtr> {
+	class SnapshotHandlerImpl :	public SnapshotHandler , public utils::AsyncRunnable<VideoFramePtr> {
 	public:
 		SnapshotHandlerImpl();
 		virtual ~SnapshotHandlerImpl();
