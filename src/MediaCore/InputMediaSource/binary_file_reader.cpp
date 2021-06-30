@@ -32,34 +32,13 @@ namespace input {
     if (ifs_.fail()) {
       return true;
     }
-    exit_ = false;
-    read_file_task_ = std::async(std::launch::async, [this]() {
-      auto read_bytes{0ULL};
-      while (!exit_) {
-		    uint64_t frame_size{ 0 };
-			  if (!PreReadFrame(&read_bytes, &frame_size)) {
-				  break;
-			  }
-        std::vector<char> buffer(frame_size, 0);
-        ifs_.read(&buffer[0], buffer.size());
-        if (ifs_.fail()) {
-			    break;
-        }
-        if (static_cast<unsigned>(ifs_.gcount()) != buffer.size()) {
-          buffer.resize(ifs_.gcount());
-        }
-        read_bytes += buffer.size();
-        std::chrono::milliseconds interval(interval_);
-        std::this_thread::sleep_for(interval);
-		    PostReadFrame(&read_bytes, buffer);
-      }
-    });
+	  read_bytes_ = 0;
+    AsyncStart();
     return true;
   }
 
   void BinaryFileReader::Stop() {
-	  exit_ = true;
-	  read_file_task_.wait();
+	  AsyncStop();
 	  ifs_.seekg(0, std::ios_base::beg);
   }
 
@@ -80,8 +59,29 @@ namespace input {
 	  interval_ = static_cast<int>(interval);
   }
 
-  bool BinaryFileReader::PreReadFrame(uint64_t* read_bytes, uint64_t* frame_size) {
-	  if (*read_bytes == 0) {
+  void BinaryFileReader::AsyncExecute() {
+	  uint64_t frame_size{ 0 };
+	  if (!PreReadFrame(&frame_size)) {
+		  Terminate();
+		  return;
+	  }
+	  std::vector<char> buffer(frame_size, 0);
+	  ifs_.read(&buffer[0], buffer.size());
+	  if (ifs_.fail()) {
+		  Terminate();        
+		  return;
+	  }
+	  if (static_cast<unsigned>(ifs_.gcount()) != buffer.size()) {
+		  buffer.resize(ifs_.gcount());
+	  }
+	  read_bytes_ += buffer.size();
+	  std::chrono::milliseconds interval(interval_);
+	  std::this_thread::sleep_for(interval);
+	  PostReadFrame(buffer);
+  }
+
+  bool BinaryFileReader::PreReadFrame(uint64_t* frame_size) {
+	  if (read_bytes_ == 0) {
 		  if (event_ != nullptr) {
 			  event_->OnBOF();
 		  }
@@ -89,7 +89,7 @@ namespace input {
         if (!enable_loop_playback_) {
           return false;
         }
-        *read_bytes = file_size_;
+		    read_bytes_ = file_size_;
         ifs_.seekg(0, std::ios_base::end);
       }
 	  }
@@ -100,31 +100,31 @@ namespace input {
       return true;
     }
 	  int64_t offset = -1 * (*frame_size);
-    if (*read_bytes < *frame_size) {
-      offset = -1 * (*read_bytes);
+    if (read_bytes_ < *frame_size) {
+      offset = -1 * read_bytes_;
     }
     ifs_.seekg(offset);
-    *read_bytes += offset;
+	  read_bytes_ += offset;
     return true;
   }
 
-  void BinaryFileReader::PostReadFrame(uint64_t* read_bytes, const std::vector<char>& frame_data) {
+  void BinaryFileReader::PostReadFrame(const std::vector<char>& frame_data) {
     if (event_ != nullptr) {
-      event_->OnPostBinaryData(frame_data, *read_bytes);
+      event_->OnPostBinaryData(frame_data, read_bytes_);
     }
-    if (*read_bytes >= file_size_) {
+    if (read_bytes_ >= file_size_) {
       if (event_ != nullptr) {
         event_->OnEOF();
       }
       if (enable_reverse_playback_) {
         const auto frame_size = frame_data.size();
         ifs_.seekg(-1 * frame_size);
-        read_bytes -= frame_size;
+        read_bytes_ -= frame_size;
       } else if (enable_loop_playback_) {
-        *read_bytes = 0;
-        ifs_.seekg(*read_bytes, std::ios_base::beg);
+        read_bytes_ = 0;
+        ifs_.seekg(read_bytes_, std::ios_base::beg);
       } else {
-        exit_ = true;
+        Terminate();
       }
     }
   }

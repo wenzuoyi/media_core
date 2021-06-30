@@ -4,11 +4,11 @@
 #include <limits>
 #include <algorithm>
 #include <numeric>
-#include "async_runnable.hpp"
+#include "async_queue.hpp"
 
 namespace handler {
   template <class T>
-  class VolumeColumnHandlerImpl final : public VolumeColumnHandler , public utils::AsyncRunnable<AudioSamplePtr>{
+  class VolumeColumnHandlerImpl final : public VolumeColumnHandler , public utils::AsyncQueue<AudioSamplePtr>{
   public:
 	  using PerChannelSamples = std::vector<T>;
 	  using PerChannelSamplesPtr = std::shared_ptr<PerChannelSamples>;

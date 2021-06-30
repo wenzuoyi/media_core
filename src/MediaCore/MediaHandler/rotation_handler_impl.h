@@ -2,9 +2,9 @@
 #define ROTATION_HANDLER_IMPL_H_
 #include <libyuv/rotate.h>
 #include "include/rotation_handler.h"
-#include "async_runnable.hpp"
+#include "async_queue.hpp"
 namespace handler {
-  class RotationHandlerImpl : public RotationHandler , public utils::AsyncRunnable<VideoFramePtr>{
+  class RotationHandlerImpl : public RotationHandler , public utils::AsyncQueue<VideoFramePtr>{
   public:
     RotationHandlerImpl();
     virtual ~RotationHandlerImpl();

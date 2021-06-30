@@ -57,10 +57,10 @@
     <ClInclude Include="event_impl.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\async_runnable.hpp">
+    <ClInclude Include="include\async_queue.hpp">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="async_executor.hpp">
+    <ClInclude Include="include\async_workflow.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -87,6 +87,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="event_impl.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="async_workflow.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>

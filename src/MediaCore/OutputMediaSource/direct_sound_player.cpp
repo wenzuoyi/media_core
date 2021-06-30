@@ -1,5 +1,6 @@
 #include "direct_sound_player.h"
 #include <cmath>
+#include <Windows.h>
 namespace output {
 	const int DirectSoundPlayer::MAX_AUDIO_BUF = 4;
 
@@ -66,7 +67,7 @@ namespace output {
     }
     for (auto i = 0; i < MAX_AUDIO_BUF; i++) {
       DSBPOSITIONNOTIFY item;
-      item.hEventNotify = ::CreateEvent(nullptr, false, false, nullptr);
+      item.hEventNotify = ::CreateEventA(nullptr, false, false, nullptr);
       item.dwOffset = i * (dsbufferdesc_.dwBufferBytes / 4);
       dsb_position_notify_list_.emplace_back(item);
       notify_event_list_.emplace_back(item.hEventNotify);
@@ -74,27 +75,6 @@ namespace output {
     direct_sound_notify->SetNotificationPositions(MAX_AUDIO_BUF, &dsb_position_notify_list_[0]);
     direct_sound_notify->Release();
     return true;
-  }
-
-  void DirectSoundPlayer::CreateAudioPlayedTask() {
-    play_audio_task_ = std::async(std::launch::async, [this]() {
-      auto result = WAIT_OBJECT_0;
-      LPVOID buffer = nullptr;
-      DWORD buffer_size = 0;
-      DWORD offset = 0;
-      direct_sound_buffer8_->SetCurrentPosition(0);
-      direct_sound_buffer8_->Play(0, 0, DSBPLAY_LOOPING);
-      while (!exit_) {
-        if ((result >= WAIT_OBJECT_0) && (result <= WAIT_OBJECT_0 + 3)) {
-          direct_sound_buffer8_->Lock(offset, (dsbufferdesc_.dwBufferBytes / 4), &buffer, &buffer_size, nullptr, nullptr, 0);
-          CopyBufferToHardwareBuffer(buffer, buffer_size);
-          direct_sound_buffer8_->Unlock(buffer, buffer_size, nullptr, 0);
-          offset += buffer_size;
-          offset %= (dsbufferdesc_.dwBufferBytes / 4 * MAX_AUDIO_BUF);
-        }
-        result = WaitForMultipleObjects(MAX_AUDIO_BUF, &notify_event_list_[0], FALSE, INFINITE);
-      }
-    });
   }
 
   void DirectSoundPlayer::CopyBufferToHardwareBuffer(void* buffer, unsigned long buffer_size) {
@@ -110,13 +90,15 @@ namespace output {
   }
 
   void DirectSoundPlayer::Play() {
-	  exit_ = false;
-	  CreateAudioPlayedTask();
+	  hardware_play_result_ = WAIT_OBJECT_0;
+	  offset_ = 0;
+	  direct_sound_buffer8_->SetCurrentPosition(0);
+	  direct_sound_buffer8_->Play(0, 0, DSBPLAY_LOOPING);
+	  AsyncStart();	  
   }
 
   void DirectSoundPlayer::Stop() {
-	  exit_ = true;
-	  play_audio_task_.wait();
+	  AsyncStop();
 	  direct_sound_buffer8_->Stop();
   }
 
@@ -144,5 +126,19 @@ namespace output {
     auto var = static_cast<double>(volume) / 200.0f;
     auto result = 100.0 * std::pow(10.0f, var);
 	  return static_cast<int>(result);
+  }
+
+  void DirectSoundPlayer::AsyncExecute() {
+    if ((hardware_play_result_ >= WAIT_OBJECT_0) && (hardware_play_result_ <= WAIT_OBJECT_0 + 3)) {
+      DWORD buffer_size{0};
+      LPVOID buffer{nullptr};
+      direct_sound_buffer8_->Lock(offset_, (dsbufferdesc_.dwBufferBytes / 4), &buffer, &buffer_size, nullptr, nullptr,0);
+      CopyBufferToHardwareBuffer(buffer, buffer_size);
+      direct_sound_buffer8_->Unlock(buffer, buffer_size, nullptr, 0);
+      offset_ += buffer_size;
+      offset_ %= (dsbufferdesc_.dwBufferBytes / 4 * MAX_AUDIO_BUF);
+    }
+    hardware_play_result_ = WaitForMultipleObjects(MAX_AUDIO_BUF, &notify_event_list_[0], FALSE, INFINITE);
+	  
   }
 }

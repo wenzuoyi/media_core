@@ -3,12 +3,11 @@
 #include <future>
 #include <d3d9.h>
 #include <d3dx9tex.h>
-#include "bound_circle_buffer.hpp"
 #include "window_ruler.h"
-#include "async_runnable.hpp"
+#include "async_queue.hpp"
 #include "include/video_output_media_source.h"
 namespace output {
-	class Direct3DRender : public VideoOutputMediaSource , public utils::AsyncRunnable<VideoFramePtr> {
+	class Direct3DRender : public VideoOutputMediaSource , public utils::AsyncQueue<VideoFramePtr> {
 	public:
 		Direct3DRender();
     virtual ~Direct3DRender() = default;

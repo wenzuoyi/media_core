@@ -2,9 +2,9 @@
 #define MIRROR_HANDLER_IMPL_H_
 #include "./include/mirror_handler.h"
 #include "shared_mutex.h"
-#include "async_runnable.hpp"
+#include "async_queue.hpp"
 namespace handler {
-  class MirrorHandlerImpl : public MirrorHandler , public utils::AsyncRunnable<VideoFramePtr>{
+  class MirrorHandlerImpl : public MirrorHandler , public utils::AsyncQueue<VideoFramePtr>{
   public:
     MirrorHandlerImpl();
     virtual ~MirrorHandlerImpl();

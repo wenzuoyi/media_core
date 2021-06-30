@@ -74,30 +74,30 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(POCO)Foundation\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(POCO)Foundation\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(POCO)Foundation\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST)include\;$(POCO)Foundation\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -174,10 +174,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="async_executor.hpp" />
     <ClInclude Include="event_impl.h" />
     <ClInclude Include="character_set_convertor_impl.h" />
-    <ClInclude Include="include\async_runnable.hpp" />
+    <ClInclude Include="include\async_workflow.h" />
+    <ClInclude Include="include\async_queue.hpp" />
     <ClInclude Include="include\bound_circle_buffer.hpp" />
     <ClInclude Include="include\character_set_convertor.h" />
     <ClInclude Include="include\event.h" />
@@ -188,6 +188,7 @@
     <ClInclude Include="window_ruler_impl.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="async_workflow.cpp" />
     <ClCompile Include="event_impl.cpp" />
     <ClCompile Include="character_set_convertor.cpp" />
     <ClCompile Include="character_set_convertor_impl.cpp" />

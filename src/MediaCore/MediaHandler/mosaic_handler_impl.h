@@ -4,9 +4,9 @@
 #include <utility>
 #include <vector>
 #include <mutex>
-#include "async_runnable.hpp"
+#include "async_queue.hpp"
 namespace handler {
-  class MosaicHandlerImpl : public MosaicHandler , public utils::AsyncRunnable<VideoFramePtr>, public  std::mutex {
+  class MosaicHandlerImpl : public MosaicHandler , public utils::AsyncQueue<VideoFramePtr>, public  std::mutex {
   public:
     MosaicHandlerImpl();
     virtual ~MosaicHandlerImpl();
