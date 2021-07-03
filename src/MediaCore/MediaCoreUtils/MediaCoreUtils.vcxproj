@@ -174,23 +174,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="event_impl.h" />
     <ClInclude Include="character_set_convertor_impl.h" />
     <ClInclude Include="include\async_workflow.h" />
     <ClInclude Include="include\async_queue.hpp" />
     <ClInclude Include="include\bound_circle_buffer.hpp" />
     <ClInclude Include="include\character_set_convertor.h" />
-    <ClInclude Include="include\event.h" />
     <ClInclude Include="include\global_media_utils_source.h" />
     <ClInclude Include="include\window_ruler.h" />
     <ClInclude Include="window_ruler_impl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="async_workflow.cpp" />
-    <ClCompile Include="event_impl.cpp" />
     <ClCompile Include="character_set_convertor.cpp" />
     <ClCompile Include="character_set_convertor_impl.cpp" />
-    <ClCompile Include="event.cpp" />
     <ClCompile Include="window_ruler.cpp" />
     <ClCompile Include="window_ruler_impl.cpp" />
   </ItemGroup>

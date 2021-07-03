@@ -2,11 +2,9 @@
 #include <regex>
 #include <algorithm>
 namespace input {
-  RenderFileReaderImpl::RenderFileReaderImpl() {
+  RenderFileReaderImpl::RenderFileReaderImpl() : player_pause_control_(false), player_singleframe_control_(true){
     binary_file_reader_.SetEvent(this);
-	  player_pause_control_ = utils::Event::CreateInstance(true);
-	  player_pause_control_->NotifyAll();
-	  player_singleframe_control_ = utils::Event::CreateInstance(false);
+    player_pause_control_.set();
 	  current_video_base_info_ = std::make_shared<VideoBaseInfo>();
   }
 
@@ -15,11 +13,9 @@ namespace input {
   }
 
   void RenderFileReaderImpl::OnRequestFrameSize(uint64_t* frame_size) {
-    if (player_pause_control_ != nullptr) {
-      player_pause_control_->Wait();
-    }
-    if (single_frame_flag_ && player_singleframe_control_ != nullptr) {
-      player_singleframe_control_->Wait();
+  	player_pause_control_.wait();
+    if (single_frame_flag_) {
+      player_singleframe_control_.wait();
     }
     *frame_size = frame_size_;
   }
@@ -74,16 +70,11 @@ namespace input {
   }
 
   void RenderFileReaderImpl::Pause() {
-    if (player_pause_control_ != nullptr) {
-      player_pause_control_->Reset();
-    }
+      player_pause_control_.reset();
   }
 
   void RenderFileReaderImpl::Resume() {
-    if (player_pause_control_ != nullptr) {
-      player_pause_control_->NotifyAll();
-    }
-    
+    player_singleframe_control_.set();
   }
 
   bool RenderFileReaderImpl::Seek(int64_t time_stamp) {
@@ -92,9 +83,7 @@ namespace input {
 
   bool RenderFileReaderImpl::NextFrame() {
     single_frame_flag_ = true;
-    if (player_singleframe_control_ != nullptr) {
-      player_singleframe_control_->NotifyAll();
-    }
+    player_singleframe_control_.set();
     return true;
   }
 
