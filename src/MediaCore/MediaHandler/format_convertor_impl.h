@@ -1,13 +1,13 @@
 #ifndef FORMAT_CONVERTOR_IMPL_H_
 #define FORMAT_CONVERTOR_IMPL_H_
 #include "./include/format_convertor.h"
-
+#include "async_queue.hpp"
 enum AVPixelFormat;
 struct AVFrame;
 struct SwsContext;
 
 namespace handler {
-  class FormatConvertorImpl : public FormatConvertor {
+  class FormatConvertorImpl : public FormatConvertor, public utils::AsyncQueue<VideoFramePtr>{
   public:
     FormatConvertorImpl();
     virtual ~FormatConvertorImpl();
@@ -17,6 +17,7 @@ namespace handler {
     void InputVideoFrame(VideoFramePtr video_frame) override;
     void SetEvent(FormatConvertorEvent* event) override;
     void SetBasicFormatInfo(ConvertorBasicParamPtr param) override;
+    void AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) override;
   private:
 	  static AVPixelFormat ColorSpace2PixelFormat(output::ColorSpace color_space);
     SwsContext* image_convert_context_{nullptr};

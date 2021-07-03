@@ -11,7 +11,7 @@ namespace output {
     return var; \
   } \
 
-  Direct3DRender::Direct3DRender() : video_frames_list_(3), roi_() {
+  Direct3DRender::Direct3DRender() : roi_() {
   }
   
   void Direct3DRender::Init() {
@@ -63,20 +63,6 @@ namespace output {
     var = device_->CreateOffscreenPlainSurface(param_->width, param_->height, D3DFMT_X8R8G8B8,
                                                            D3DPOOL_DEFAULT, &customize_surface_, nullptr);  	
 		return SUCCEEDED(var);
-  }
-
-  bool Direct3DRender::CreateRenderTask() {
-	  exit_ = false;
-    render_task_ = std::async(std::launch::async, [this]() {
-      while (!exit_) {
-        auto item = video_frames_list_.PopBack();
-        if (item != nullptr) {
-          Render(item);
-        }
-      }
-	    video_frames_list_.Clear();
-    });
-	  return true;
   }
 
   bool Direct3DRender::CreateOSDFont() {
@@ -177,18 +163,14 @@ namespace output {
     if (!CreateOSDFont()) {
       return false;
     }
-    if (!CreateRenderTask()) {
-      return false;
-    }
+	  AsyncStart();
     is_playing_ = true;
     return true;
   }
 
   void Direct3DRender::Stop() {
-	  exit_ = true;
 	  InputVideoFrame(VideoFramePtr());
-	  render_task_.wait();
-	  video_frames_list_.Clear();
+	  AsyncStop();
     if (customize_surface_ != nullptr) {
       customize_surface_->Release();
       customize_surface_ = nullptr;
@@ -226,7 +208,7 @@ namespace output {
   }
 
   void Direct3DRender::InputVideoFrame(VideoFramePtr video_frame) {
-    video_frames_list_.PushFront(video_frame);
+	  Push(video_frame);
     if (sink_ != nullptr) {
       sink_->OnVideoTransmitFrame(video_frame);
     }
@@ -301,6 +283,12 @@ namespace output {
       return false;
     }
     return param_->width == video_frame->width && param_->height == video_frame->height;
+  }
+
+  void Direct3DRender::AsyncRun(VideoFramePtr frame) {
+	  if (frame != nullptr) {
+		  Render(frame);
+	  }
   }
 }
 

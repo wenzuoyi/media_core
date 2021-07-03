@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="async_handler.h" />
     <ClInclude Include="base_saver.h" />
     <ClInclude Include="bitmap_saver.h" />
     <ClInclude Include="format_convertor_impl.h" />
@@ -42,7 +41,6 @@
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="asnyc_handler.cpp" />
     <ClCompile Include="bitmap_saver.cpp" />
     <ClCompile Include="format_convertor.cpp" />
     <ClCompile Include="format_convertor_impl.cpp" />

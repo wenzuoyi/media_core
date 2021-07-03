@@ -2,7 +2,7 @@
 #define RENDER_FILE_READER_IMPL_H_
 #include "./include/render_file_reader.h"
 #include "binary_file_reader.h"
-#include "event.h"
+#include "Poco/Event.h"
 namespace input {
   class RenderFileReaderImpl : public RenderFileReader, public BinaryFileReaderEvent {
   public:
@@ -33,8 +33,8 @@ namespace input {
 	  static VideoBaseInfoPtr CloneVideoBaseInfo(VideoBaseInfoPtr video_base_info);
 	  BinaryFileReader binary_file_reader_;
 	  RenderFileReaderEvent* event_{ nullptr };
-	  utils::EventPtr player_pause_control_;
-	  utils::EventPtr player_singleframe_control_;
+	  Poco::Event player_pause_control_;
+	  Poco::Event player_singleframe_control_;
 	  uint64_t frame_size_{ 0 };
 	  std::atomic_bool single_frame_flag_{ false };
 	  VideoBaseInfoPtr current_video_base_info_{ nullptr };

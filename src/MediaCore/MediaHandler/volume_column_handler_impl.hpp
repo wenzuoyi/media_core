@@ -4,11 +4,11 @@
 #include <limits>
 #include <algorithm>
 #include <numeric>
-#include "async_handler.h"
+#include "async_queue.hpp"
 
 namespace handler {
   template <class T>
-  class VolumeColumnHandlerImpl final : public VolumeColumnHandler {
+  class VolumeColumnHandlerImpl final : public VolumeColumnHandler , public utils::AsyncQueue<AudioSamplePtr>{
   public:
 	  using PerChannelSamples = std::vector<T>;
 	  using PerChannelSamplesPtr = std::shared_ptr<PerChannelSamples>;
@@ -16,9 +16,17 @@ namespace handler {
 	  using ChannelSamplesCollectionPtr = std::unique_ptr<ChannelSamplesCollection>;
     VolumeColumnHandlerImpl() = default;
     virtual ~VolumeColumnHandlerImpl() = default;
+
   protected:
+    void AsyncRun(AudioSamplePtr audio_sample) override {
+      CalculateAudioSample(audio_sample);
+      if (volume_column_handler_event_ != nullptr) {
+        volume_column_handler_event_->OnTransmitAudioSample(AudioHandlerType::kAudioColumn, audio_sample);
+      }
+    }
+
     void InputAudioSample(AudioSamplePtr audio_sample) override {
-      async_handler_.InputBinaryPackage(audio_sample);
+      Push(audio_sample);
     }
 
     void SetEvent(void* event) override {
@@ -38,16 +46,11 @@ namespace handler {
       for (auto i = 0; i < channel_; ++i) {
         channel_samples_collection_->push_back(std::make_shared<PerChannelSamples>());
       }
-      async_handler_.Start([this](MediaBinaryPackagePtr media_binary_package) {
-        CalculateAudioSample(media_binary_package);
-        if (volume_column_handler_event_ != nullptr) {
-			      volume_column_handler_event_->OnTransmitAudioSample(AudioHandlerType::kAudioColumn, media_binary_package);
-        }
-      });
+      AsyncStart();
     }
 
     void Stop() override {
-      async_handler_.Stop();
+      AsyncStop();
       channel_samples_collection_->clear();
       channel_samples_collection_ = nullptr;
     }
@@ -92,7 +95,6 @@ namespace handler {
 
     VolumeColumnHandlerEvent* volume_column_handler_event_ {nullptr};
 	  ChannelSamplesCollectionPtr channel_samples_collection_;
-	  AsyncHandler async_handler_;
 	  int channel_{ 2 };
   };
 }

@@ -45,16 +45,10 @@
     <ClInclude Include="window_ruler_impl.h">
       <Filter>ruler</Filter>
     </ClInclude>
-    <ClInclude Include="include\event.h">
+    <ClInclude Include="include\async_queue.hpp">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\shared_mutex.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="shared_mutex_impl.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="event_impl.h">
+    <ClInclude Include="include\async_workflow.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,16 +65,7 @@
     <ClCompile Include="window_ruler_impl.cpp">
       <Filter>ruler</Filter>
     </ClCompile>
-    <ClCompile Include="event.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_mutex.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_mutex_impl.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="event_impl.cpp">
+    <ClCompile Include="async_workflow.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>

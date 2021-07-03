@@ -74,30 +74,30 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(POCO)Foundation\include\;$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(POCO)Foundation\include\;$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib64\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(POCO)Foundation\include\;$(BOOST)include\;$(SDL)include\;$(DirectX)Include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(BOOST)lib\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(POCO)Foundation\include\;$(BOOST)include\;$(SDL)include\;$(DirectX)include\;$(SolutionDir)MediaCoreUtils\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST)lib\;$(POCO)lib64\;$(SDL)lib\$(PlatformShortName)\;$(DirectX)Lib\$(PlatformShortName)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -3,35 +3,26 @@
 #include <libyuv.h>
 
 namespace handler {
-  MirrorHandlerImpl::MirrorHandlerImpl() {
-    if (mutex_ != nullptr) {
-      mutex_ = utils::SharedMutex::CreateInstance();
-    }
-  }
+	MirrorHandlerImpl::MirrorHandlerImpl() = default;
 
-  MirrorHandlerImpl::~MirrorHandlerImpl() {
-	  mutex_ = nullptr;
-  }
+	MirrorHandlerImpl::~MirrorHandlerImpl() = default;
 
   void MirrorHandlerImpl::Start() {
-	  utils::WriteLock lock(mutex_);
-	  enable_ = false;
+    {
+		  Poco::ScopedWriteRWLock lock(read_write_lock_);
+      enable_ = false;
+    }
+    AsyncStart();
   }
 
   void MirrorHandlerImpl::Stop() {
-	  Start();
+	  AsyncStop();
+	  Poco::ScopedWriteRWLock lock(read_write_lock_);
+	  enable_ = false;
   }
 
   void MirrorHandlerImpl::InputVideoFrame(VideoFramePtr video_frame) {
-    {
-		  utils::ReadLock lock(mutex_);
-      if (video_frame != nullptr && enable_) {
-		    video_frame = HandleVideoFrame(video_frame);
-      }
-    }
-    if (event_ != nullptr) {
-      event_->OnTransmitVideoFrame(VideoHandlerType::kMirror, video_frame);
-    }
+	  Push(video_frame);
   }
 
   void MirrorHandlerImpl::SetEvent(MirrorHandlerEvent* event) {
@@ -41,15 +32,27 @@ namespace handler {
   }
 
   void MirrorHandlerImpl::EnableMirror(bool enable) {
-	  utils::WriteLock lock(mutex_);
+	  Poco::ScopedWriteRWLock lock(read_write_lock_);
     if (enable_ != enable) {
       enable_ = enable;
     }
   }
 
   bool MirrorHandlerImpl::IsEnableMirror() const {
-	  utils::ReadLock lock(mutex_);
+	  Poco::ScopedReadRWLock lock(read_write_lock_);
 	  return enable_;
+  }
+
+  void MirrorHandlerImpl::AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) {
+	  {
+		  Poco::ScopedReadRWLock lock(read_write_lock_);
+		  if (video_frame != nullptr && enable_) {
+			  video_frame = HandleVideoFrame(video_frame);
+		  }
+	  }
+	  if (event_ != nullptr) {
+		  event_->OnTransmitVideoFrame(VideoHandlerType::kMirror, video_frame);
+	  }
   }
 
   VideoFramePtr MirrorHandlerImpl::HandleVideoFrame(VideoFramePtr source) {
