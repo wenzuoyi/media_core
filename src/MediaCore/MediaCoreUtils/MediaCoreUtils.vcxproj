@@ -182,9 +182,7 @@
     <ClInclude Include="include\character_set_convertor.h" />
     <ClInclude Include="include\event.h" />
     <ClInclude Include="include\global_media_utils_source.h" />
-    <ClInclude Include="include\shared_mutex.h" />
     <ClInclude Include="include\window_ruler.h" />
-    <ClInclude Include="shared_mutex_impl.h" />
     <ClInclude Include="window_ruler_impl.h" />
   </ItemGroup>
   <ItemGroup>
@@ -193,8 +191,6 @@
     <ClCompile Include="character_set_convertor.cpp" />
     <ClCompile Include="character_set_convertor_impl.cpp" />
     <ClCompile Include="event.cpp" />
-    <ClCompile Include="shared_mutex.cpp" />
-    <ClCompile Include="shared_mutex_impl.cpp" />
     <ClCompile Include="window_ruler.cpp" />
     <ClCompile Include="window_ruler_impl.cpp" />
   </ItemGroup>

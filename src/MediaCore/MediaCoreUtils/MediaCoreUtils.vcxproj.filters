@@ -48,12 +48,6 @@
     <ClInclude Include="include\event.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\shared_mutex.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="shared_mutex_impl.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="event_impl.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -78,12 +72,6 @@
       <Filter>ruler</Filter>
     </ClCompile>
     <ClCompile Include="event.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_mutex.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_mutex_impl.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="event_impl.cpp">

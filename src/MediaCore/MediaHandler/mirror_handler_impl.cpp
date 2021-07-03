@@ -3,19 +3,13 @@
 #include <libyuv.h>
 
 namespace handler {
-  MirrorHandlerImpl::MirrorHandlerImpl() {
-    if (mutex_ != nullptr) {
-      mutex_ = utils::SharedMutex::CreateInstance();
-    }
-  }
+	MirrorHandlerImpl::MirrorHandlerImpl() = default;
 
-  MirrorHandlerImpl::~MirrorHandlerImpl() {
-	  mutex_ = nullptr;
-  }
+	MirrorHandlerImpl::~MirrorHandlerImpl() = default;
 
   void MirrorHandlerImpl::Start() {
     {
-      utils::WriteLock lock(mutex_);
+		  Poco::ScopedWriteRWLock lock(read_write_lock_);
       enable_ = false;
     }
     AsyncStart();
@@ -23,7 +17,7 @@ namespace handler {
 
   void MirrorHandlerImpl::Stop() {
 	  AsyncStop();
-	  utils::WriteLock lock(mutex_);
+	  Poco::ScopedWriteRWLock lock(read_write_lock_);
 	  enable_ = false;
   }
 
@@ -38,20 +32,20 @@ namespace handler {
   }
 
   void MirrorHandlerImpl::EnableMirror(bool enable) {
-	  utils::WriteLock lock(mutex_);
+	  Poco::ScopedWriteRWLock lock(read_write_lock_);
     if (enable_ != enable) {
       enable_ = enable;
     }
   }
 
   bool MirrorHandlerImpl::IsEnableMirror() const {
-	  utils::ReadLock lock(mutex_);
+	  Poco::ScopedReadRWLock lock(read_write_lock_);
 	  return enable_;
   }
 
   void MirrorHandlerImpl::AsyncRun(std::shared_ptr<output::VideoFrame> video_frame) {
 	  {
-		  utils::ReadLock lock(mutex_);
+		  Poco::ScopedReadRWLock lock(read_write_lock_);
 		  if (video_frame != nullptr && enable_) {
 			  video_frame = HandleVideoFrame(video_frame);
 		  }

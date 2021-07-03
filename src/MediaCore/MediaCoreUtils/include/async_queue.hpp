@@ -2,35 +2,31 @@
 #define ASYNC_QUEUE_HPP_
 #include <thread>
 #include <deque>
-#include "shared_mutex.h"
+#include "Poco/RWLock.h"
 #include "async_workflow.h"
 namespace utils {
   template <class T>
   class AsyncQueue : public AsyncWorkflow {
   protected:
-	  AsyncQueue() {
-      shared_mutex_ = utils::SharedMutex::CreateInstance();
-    }
+	  AsyncQueue() = default;
 
-    virtual ~AsyncQueue() {
-      shared_mutex_ = nullptr;
-    }
+	  virtual ~AsyncQueue() = default;
 
     virtual void Push(T frame) {
-      utils::WriteLock lock(shared_mutex_);
+      Poco::ScopedWriteRWLock lock(read_write_lock_);
       queue_.push_back(frame);
     }
 
     void AsyncExecute() override {
       auto have_frame{false};
       {
-        utils::ReadLock lock(shared_mutex_);
+        Poco::ScopedReadRWLock lock(read_write_lock_);
         have_frame = queue_.empty();
       }
       if (!have_frame) {
         T frame{nullptr};
         {
-          utils::WriteLock lock(shared_mutex_);
+          Poco::ScopedWriteRWLock lock(read_write_lock_);
           frame = queue_.front();
           queue_.pop_front();
         }
@@ -43,7 +39,7 @@ namespace utils {
 	  virtual void AsyncRun(T frame) = 0;
   private:    
 	  std::deque<T> queue_;
-	  utils::SharedMutexPtr shared_mutex_;
+	  Poco::RWLock read_write_lock_;
   };
 }
 #endif // ASYNC_QUEUE_HPP_

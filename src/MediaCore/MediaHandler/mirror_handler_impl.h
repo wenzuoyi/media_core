@@ -1,7 +1,7 @@
 #ifndef MIRROR_HANDLER_IMPL_H_
 #define MIRROR_HANDLER_IMPL_H_
 #include "./include/mirror_handler.h"
-#include "shared_mutex.h"
+#include "Poco/RWLock.h"
 #include "async_queue.hpp"
 namespace handler {
   class MirrorHandlerImpl : public MirrorHandler , public utils::AsyncQueue<VideoFramePtr>{
@@ -20,7 +20,7 @@ namespace handler {
 	  static VideoFramePtr HandleVideoFrame(VideoFramePtr source);
 	  bool enable_{ false };
 	  MirrorHandlerEvent* event_{ nullptr };
-	  utils::SharedMutexPtr mutex_{ nullptr };
+	  mutable Poco::RWLock read_write_lock_;
   };
 }
 #endif // MIRROR_HANDLER_IMPL_H_
