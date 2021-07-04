@@ -16,6 +16,7 @@ namespace handler {
     void SetEvent(VideoDecoderHandlerEvent* event) override;
     void AsyncRun(VideoPackagePtr frame) override;
   private:
+    void ReallocateDecoder(VideoPackagePtr frame);
 	  VideoDecoderHandlerEvent* event_{ nullptr };
 	  VideoDecoderPtr video_decoder_{ nullptr };
 	  VideoPackageType current_decoder_type_{ VideoPackageType::kNone };

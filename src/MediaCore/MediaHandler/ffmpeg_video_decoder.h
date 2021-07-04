@@ -16,6 +16,7 @@ namespace handler {
     VideoFrameListPtr Decode(VideoPackagePtr package) override;
   private:
 	  int Decode(AVPacket* packet, std::function<void(AVFrame*)>&& callback) const;
+	  VideoFrameListPtr Flush();
 	  static AVCodecID ConvertToAVCodecID(VideoPackageType video_package_type);
 	  static VideoFramePtr ConvertAVFrameToVideoFrame(AVFrame* frame);
 	  const AVCodec* codec_{nullptr};

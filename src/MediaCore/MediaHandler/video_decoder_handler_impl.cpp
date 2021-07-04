@@ -12,6 +12,7 @@ namespace handler {
 
   void VideoDecoderHandlerImpl::Stop() {
     AsyncStop();
+    AsyncRun(nullptr);
     if (video_decoder_ != nullptr) {
       video_decoder_->Fini();
       video_decoder_ = nullptr;
@@ -30,10 +31,7 @@ namespace handler {
     }
   }
 
-  void VideoDecoderHandlerImpl::AsyncRun(VideoPackagePtr frame) {
-    if (frame == nullptr || frame->base_info == nullptr || frame->data == nullptr) {
-      return;
-    }
+  void VideoDecoderHandlerImpl::ReallocateDecoder(VideoPackagePtr frame) {
     if (frame->base_info->type != current_decoder_type_) {
       if (video_decoder_ != nullptr) {
         video_decoder_->Fini();
@@ -44,6 +42,15 @@ namespace handler {
       video_decoder_ = VideoDecoder::CreateInstance();
       video_decoder_->Init(frame->base_info->type);
       current_decoder_type_ = frame->base_info->type;
+    }
+  }
+
+  void VideoDecoderHandlerImpl::AsyncRun(VideoPackagePtr frame) {
+    if (frame != nullptr) {
+      if (frame->base_info == nullptr || frame->data == nullptr) {
+		    return;
+      }
+      ReallocateDecoder(frame);
     }
     auto decoding_frame = video_decoder_->Decode(frame);
     if (decoding_frame != nullptr) {

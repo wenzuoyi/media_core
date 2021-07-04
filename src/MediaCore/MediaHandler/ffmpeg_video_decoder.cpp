@@ -38,7 +38,10 @@ namespace handler {
   }
 
   VideoFrameListPtr FFmpegVideoDecoder::Decode(VideoPackagePtr package) {
-    if (package == nullptr || package->data == nullptr) {
+    if (package == nullptr) {
+      return Flush();
+    }
+    if (package->data == nullptr) {
       return nullptr;
     }
     auto offset = 0U;
@@ -50,7 +53,7 @@ namespace handler {
       }
       auto* buffer = &(*(package->data))[0] + offset;
       auto buffer_size = package->data->size() - offset;
-      auto parse_bytes = ::av_parser_parse2(parser_, context_, &packet->data, &packet->size, buffer, buffer_size,
+      auto parse_bytes = ::av_parser_parse2(parser_, context_, &packet->data, &packet->size, buffer, static_cast<int>(buffer_size),
                                             AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
       if (parse_bytes <= 0) {
         ::av_packet_free(&packet);
@@ -97,6 +100,26 @@ namespace handler {
       }
     }
 	  return result;
+  }
+
+  VideoFrameListPtr FFmpegVideoDecoder::Flush() {
+    auto result = std::make_shared<VideoFrameList>();
+    if (result == nullptr) {
+      return nullptr;
+    }
+    auto* packet = ::av_packet_alloc();
+    if (packet != nullptr) {
+	    packet->data = nullptr;
+	    packet->size = 0;
+      Decode(packet, [this, result](AVFrame* frame) {
+        if (frame != nullptr) {
+          auto item = ConvertAVFrameToVideoFrame(frame);
+          result->push_back(item);
+        }
+      });
+      ::av_packet_free(&packet);
+    }
+    return result;
   }
 
   inline AVCodecID FFmpegVideoDecoder::ConvertToAVCodecID(VideoPackageType video_package_type) {
