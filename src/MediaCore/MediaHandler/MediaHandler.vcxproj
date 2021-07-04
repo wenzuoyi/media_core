@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="base_saver.h" />
     <ClInclude Include="bitmap_saver.h" />
+    <ClInclude Include="ffmpeg_video_decoder.h" />
     <ClInclude Include="format_convertor_impl.h" />
     <ClInclude Include="include\base_audio_handler.h" />
     <ClInclude Include="include\audio_handler_datatype.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="include\mosaic_handler.h" />
     <ClInclude Include="include\rotation_handler.h" />
     <ClInclude Include="include\snapshot_handler.h" />
+    <ClInclude Include="include\video_decoder_handler.h" />
     <ClInclude Include="include\video_handler_datatype.h" />
     <ClInclude Include="include\volume_column_handler.h" />
     <ClInclude Include="jpeg_saver.h" />
@@ -38,10 +40,13 @@
     <ClInclude Include="mosaic_handler_impl.h" />
     <ClInclude Include="rotation_handler_impl.h" />
     <ClInclude Include="snapshot_handler_impl.h" />
+    <ClInclude Include="video_decoder.h" />
+    <ClInclude Include="video_decoder_handler_impl.h" />
     <ClInclude Include="volume_column_handler_impl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bitmap_saver.cpp" />
+    <ClCompile Include="ffmpeg_video_decoder.cpp" />
     <ClCompile Include="format_convertor.cpp" />
     <ClCompile Include="format_convertor_impl.cpp" />
     <ClCompile Include="jpeg_saver.cpp" />
@@ -53,6 +58,9 @@
     <ClCompile Include="rotation_handler_impl.cpp" />
     <ClCompile Include="snapshot_handler.cpp" />
     <ClCompile Include="snapshot_handler_impl.cpp" />
+    <ClCompile Include="video_decoder.cpp" />
+    <ClCompile Include="video_decoder_handler.cpp" />
+    <ClCompile Include="video_decoder_handler_impl.cpp" />
     <ClCompile Include="volume_column_handler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -111,7 +119,7 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)InputMediaSource\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(LIBYUV)lib\$(PlatformShortName)\$(Configuration)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(POCO)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,21 +127,21 @@
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)InputMediaSource\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(LIBYUV)lib\$(PlatformShortName)\$(Configuration)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(POCO)lib64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)InputMediaSource\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(LIBYUV)lib\$(PlatformShortName)\$(Configuration)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(POCO)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\$(PlatformShortName)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOST)include\;$(FFMPEG)include\;$(LIBYUV)include\;$(POCO)Foundation\include\;$(SolutionDir)MediaCoreUtils\include\;$(SolutionDir)OutputMediaSource\include\;$(SolutionDir)InputMediaSource\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOST)lib\;$(FFMPEG)lib\$(PlatformShortName)\;$(LIBYUV)lib\$(PlatformShortName)\$(Configuration)\;$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\;$(POCO)lib64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -151,7 +159,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;avcodec.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f
@@ -175,7 +183,7 @@ xcopy "$(POCO)bin\PocoFoundationd.dll" "$(SolutionDir)..\..\bin\$(PlatformShortN
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;avcodec.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(FFMPEG)bin\$(PlatformShortName)\*.dll" "$(SolutionDir)..\..\bin\$(PlatformShortName)\$(Configuration)\" /s /e /i /h /k /y /f
@@ -202,7 +210,7 @@ xcopy "$(POCO)bin64\PocoFoundation64d.dll" "$(SolutionDir)..\..\bin\$(PlatformSh
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;avcodec.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -232,7 +240,7 @@ xcopy "$(POCO)bin\PocoFoundation.dll" "$(SolutionDir)..\..\bin\$(PlatformShortNa
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)..\..\pdb\$(PlatformShortName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(SolutionDir)..\..\lib\$(PlatformShortName)\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MediaCoreUtils.lib;swscale.lib;avutil.lib;avcodec.lib;yuv.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>

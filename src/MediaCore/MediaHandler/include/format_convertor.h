@@ -7,7 +7,7 @@ namespace handler {
 	class FormatConvertor;
 	using FormatConvertorPtr = std::shared_ptr<FormatConvertor>;
 
-  class MEDIA_HANDLER_API_HEADER FormatConvertorEvent : public BaseVideoHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER FormatConvertorEvent : virtual public BaseVideoHandlerEvent {
   public:
     FormatConvertorEvent();
     virtual ~FormatConvertorEvent();

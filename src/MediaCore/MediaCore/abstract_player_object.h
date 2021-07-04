@@ -33,6 +33,7 @@ namespace core {
     void OnVideoOutputException(unsigned error_code) override;
     void OnVideoCustomPainting(HDC hdc) override;
     void OnVideoTransmitFrame(VideoFramePtr video_frame) override;
+    void OnHandlerException(handler::VideoHandlerType video_handler_type, const std::string& message, int code) override;
 	  handler::MosaicHandlerPtr mosaic_handler_{ nullptr };
 	  handler::MirrorHandlerPtr mirror_handler_{ nullptr };
 	  handler::RotationHandlerPtr rotation_handler_{ nullptr };

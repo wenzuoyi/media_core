@@ -12,7 +12,8 @@ namespace input {
 		kH265,
 		kYUV420,
 		kYUV422,
-		kRGB
+		kRGB,
+    kNone
 	};
 	enum class AudioPackageType {
 		kACC,

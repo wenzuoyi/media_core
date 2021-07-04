@@ -34,6 +34,9 @@
     <Filter Include="snapshot">
       <UniqueIdentifier>{8b7bb48b-f5b1-4223-983d-967d32c14e66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="decoder">
+      <UniqueIdentifier>{c93d4e08-640d-4d5f-bb42-9979e3b2c0be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_handler.h">
@@ -96,6 +99,18 @@
     <ClInclude Include="jpeg_saver.h">
       <Filter>snapshot</Filter>
     </ClInclude>
+    <ClInclude Include="include\video_decoder_handler.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="video_decoder_handler_impl.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="video_decoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_video_decoder.h">
+      <Filter>decoder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="volume_column_handler.cpp">
@@ -136,6 +151,18 @@
     </ClCompile>
     <ClCompile Include="jpeg_saver.cpp">
       <Filter>snapshot</Filter>
+    </ClCompile>
+    <ClCompile Include="video_decoder_handler.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="video_decoder_handler_impl.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_video_decoder.cpp">
+      <Filter>decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="video_decoder.cpp">
+      <Filter>decoder</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 namespace handler {
 	class MirrorHandler;
 	using MirrorHandlerPtr = std::shared_ptr<MirrorHandler>;
-  class MEDIA_HANDLER_API_HEADER MirrorHandlerEvent : public BaseVideoHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER MirrorHandlerEvent : virtual public BaseVideoHandlerEvent {
   public:
     MirrorHandlerEvent();
     virtual ~MirrorHandlerEvent();

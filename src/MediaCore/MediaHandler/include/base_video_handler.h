@@ -8,6 +8,7 @@ namespace handler {
 		BaseVideoHandlerEvent() = default;
 		virtual ~BaseVideoHandlerEvent() = default;
 		virtual void OnTransmitVideoFrame(VideoHandlerType video_handler_type, VideoFramePtr video_frame) = 0;
+		virtual void OnHandlerException(VideoHandlerType video_handler_type, const std::string& message, int code) = 0;
 	};
 	class MEDIA_HANDLER_API_HEADER BaseVideoHandler {
 	public:

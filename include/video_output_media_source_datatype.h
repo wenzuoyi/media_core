@@ -32,7 +32,8 @@ namespace output {
 	  std::array<int, 3> line_size;
   };
   using VideoFramePtr = std::shared_ptr<VideoFrame>;
-
+  using VideoFrameList = std::vector<VideoFramePtr>;
+  using VideoFrameListPtr = std::shared_ptr<VideoFrameList>;
   struct VideoOutputParam {
     HWND render_wnd{nullptr};
     unsigned width{0};

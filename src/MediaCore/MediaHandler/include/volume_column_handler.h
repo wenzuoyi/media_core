@@ -5,7 +5,7 @@
 namespace handler {
 	class VolumeColumnHandler;
 	using VolumeColumnHandlerPtr = std::shared_ptr<VolumeColumnHandler>;
-  class MEDIA_HANDLER_API_HEADER VolumeColumnHandlerEvent : public BaseAudioHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER VolumeColumnHandlerEvent : virtual public BaseAudioHandlerEvent {
   public:
 	  VolumeColumnHandlerEvent() = default;
 	  virtual ~VolumeColumnHandlerEvent() = default;

@@ -5,7 +5,7 @@
 namespace handler {
 	class MosaicHandler;
 	using MosaicHandlerPtr = std::shared_ptr<MosaicHandler>;
-  class MEDIA_HANDLER_API_HEADER MosaicHandlerEvent : public BaseVideoHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER MosaicHandlerEvent : virtual public BaseVideoHandlerEvent {
   public:
 	  MosaicHandlerEvent();
 	  virtual  ~MosaicHandlerEvent();

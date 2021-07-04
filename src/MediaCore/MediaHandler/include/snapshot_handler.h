@@ -6,7 +6,7 @@
 namespace handler {
 	class SnapshotHandler;
 	using SnapshotHandlerPtr = std::shared_ptr<SnapshotHandler>;
-	class MEDIA_HANDLER_API_HEADER SnapshotHandlerEvent : public BaseVideoHandlerEvent {
+	class MEDIA_HANDLER_API_HEADER SnapshotHandlerEvent : virtual public BaseVideoHandlerEvent {
 	public:
 		SnapshotHandlerEvent();
 		virtual ~SnapshotHandlerEvent();

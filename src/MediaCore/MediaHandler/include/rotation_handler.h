@@ -5,7 +5,7 @@
 namespace handler {
 	class RotationHandler;
 	using RotationHandlerPtr = std::shared_ptr<RotationHandler>;
-  class MEDIA_HANDLER_API_HEADER RotationHandlerEvent: public BaseVideoHandlerEvent {
+  class MEDIA_HANDLER_API_HEADER RotationHandlerEvent: virtual public BaseVideoHandlerEvent {
   public:
 	  RotationHandlerEvent();
 	  virtual ~RotationHandlerEvent();

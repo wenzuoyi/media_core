@@ -127,6 +127,9 @@ namespace core {
     }
   }
 
+  void AbstractPlayerObject::OnHandlerException(handler::VideoHandlerType video_handler_type, const std::string& message, int code) {
+  }
+
   void AbstractPlayerObject::OnAudioOutputException(unsigned error_code) {
   }
 
