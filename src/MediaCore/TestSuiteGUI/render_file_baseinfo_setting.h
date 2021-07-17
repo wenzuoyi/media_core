@@ -2,7 +2,7 @@
 #define RENDER_FILE_BASEINFO_SETTING_H_
 #include "base_auto_layout_dialog.h"
 #include "afxwin.h"
-#include "render_file_player_dataype.h"
+#include "video_render_file_player_dataype.h"
 class RenderFileBaseInfoSetting : public BaseAutoLayoutDialog {
 DECLARE_DYNAMIC(RenderFileBaseInfoSetting)
   RenderFileBaseInfoSetting(CWnd* pParent = NULL);

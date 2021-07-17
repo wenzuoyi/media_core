@@ -204,23 +204,36 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)..\..\include\" /s /e /i /h /k /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="abstract_player_object.h" />
+    <ClInclude Include="abstract_audio_player.h" />
+    <ClInclude Include="filter.h" />
     <ClInclude Include="include\base_player.h" />
     <ClInclude Include="include\base_player_datatype.h" />
     <ClInclude Include="include\file_player.h" />
     <ClInclude Include="include\global_media_core.h" />
     <ClInclude Include="include\media_core_erorcode.h" />
-    <ClInclude Include="include\render_file_player.h" />
-    <ClInclude Include="include\render_file_player_dataype.h" />
+    <ClInclude Include="include\video_render_file_player.h" />
+    <ClInclude Include="include\video_render_file_player_dataype.h" />
     <ClInclude Include="media_core_errormessage.h" />
-    <ClInclude Include="render_file_player_impl.h" />
+    <ClInclude Include="multiple_channel_base_video_player.h" />
+    <ClInclude Include="multiple_channel_compress_video_player.h" />
+    <ClInclude Include="multiple_channel_uncompress_video_player.h" />
+    <ClInclude Include="unique_channel_base_video_player.h" />
+    <ClInclude Include="unique_channel_compress_video_player.h" />
+    <ClInclude Include="unique_channel_uncompress_video_player.h" />
+    <ClInclude Include="video_render_file_player_impl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="abstract_player_object.cpp" />
+    <ClCompile Include="abstract_audio_player.cpp" />
     <ClCompile Include="base_player.cpp" />
     <ClCompile Include="file_player.cpp" />
-    <ClCompile Include="render_file_player.cpp" />
-    <ClCompile Include="render_file_player_impl.cpp" />
+    <ClCompile Include="multiple_channel_base_video_player.cpp" />
+    <ClCompile Include="multiple_channel_compress_video_player.cpp" />
+    <ClCompile Include="multiple_channel_uncompress_video_player.cpp" />
+    <ClCompile Include="unique_channel_base_video_player.cpp" />
+    <ClCompile Include="unique_channel_compress_video_player.cpp" />
+    <ClCompile Include="unique_channel_uncompress_video_player.cpp" />
+    <ClCompile Include="video_render_file_player.cpp" />
+    <ClCompile Include="video_render_file_player_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

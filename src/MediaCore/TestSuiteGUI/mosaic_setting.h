@@ -1,7 +1,7 @@
 #ifndef MOSAIC_SETTING_H_
 #define MOSAIC_SETTING_H_
 #include "base_auto_layout_dialog.h"
-#include "render_file_player.h"
+#include "base_player_datatype.h"
 class MosaicSetting : public BaseAutoLayoutDialog {
 DECLARE_DYNAMIC(MosaicSetting)
   MosaicSetting(CWnd* pParent = NULL); // 标准构造函数

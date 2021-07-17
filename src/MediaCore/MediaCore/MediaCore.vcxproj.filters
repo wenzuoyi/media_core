@@ -28,6 +28,9 @@
     <Filter Include="player\network">
       <UniqueIdentifier>{f668b9e0-353a-45db-b640-7203ca09385f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="player\base\video">
+      <UniqueIdentifier>{ccbbe6f5-6478-4f45-979e-34ff97f58216}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\global_media_core.h">
@@ -39,19 +42,7 @@
     <ClInclude Include="include\file_player.h">
       <Filter>player\file</Filter>
     </ClInclude>
-    <ClInclude Include="include\render_file_player.h">
-      <Filter>player\file</Filter>
-    </ClInclude>
     <ClInclude Include="include\base_player_datatype.h">
-      <Filter>player\base</Filter>
-    </ClInclude>
-    <ClInclude Include="include\render_file_player_dataype.h">
-      <Filter>player\file</Filter>
-    </ClInclude>
-    <ClInclude Include="render_file_player_impl.h">
-      <Filter>player\file</Filter>
-    </ClInclude>
-    <ClInclude Include="abstract_player_object.h">
       <Filter>player\base</Filter>
     </ClInclude>
     <ClInclude Include="include\media_core_erorcode.h">
@@ -60,22 +51,73 @@
     <ClInclude Include="media_core_errormessage.h">
       <Filter>player\base</Filter>
     </ClInclude>
+    <ClInclude Include="include\video_render_file_player.h">
+      <Filter>player\file</Filter>
+    </ClInclude>
+    <ClInclude Include="video_render_file_player_impl.h">
+      <Filter>player\file</Filter>
+    </ClInclude>
+    <ClInclude Include="include\video_render_file_player_dataype.h">
+      <Filter>player\file</Filter>
+    </ClInclude>
+    <ClInclude Include="abstract_audio_player.h">
+      <Filter>player\base</Filter>
+    </ClInclude>
+    <ClInclude Include="unique_channel_base_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
+    <ClInclude Include="unique_channel_compress_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
+    <ClInclude Include="unique_channel_uncompress_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
+    <ClInclude Include="filter.h">
+      <Filter>player\base</Filter>
+    </ClInclude>
+    <ClInclude Include="multiple_channel_base_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
+    <ClInclude Include="multiple_channel_uncompress_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
+    <ClInclude Include="multiple_channel_compress_video_player.h">
+      <Filter>player\base\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base_player.cpp">
       <Filter>player\base</Filter>
     </ClCompile>
-    <ClCompile Include="render_file_player.cpp">
-      <Filter>player\file</Filter>
-    </ClCompile>
     <ClCompile Include="file_player.cpp">
       <Filter>player\file</Filter>
     </ClCompile>
-    <ClCompile Include="render_file_player_impl.cpp">
+    <ClCompile Include="video_render_file_player.cpp">
       <Filter>player\file</Filter>
     </ClCompile>
-    <ClCompile Include="abstract_player_object.cpp">
+    <ClCompile Include="video_render_file_player_impl.cpp">
+      <Filter>player\file</Filter>
+    </ClCompile>
+    <ClCompile Include="abstract_audio_player.cpp">
       <Filter>player\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unique_channel_base_video_player.cpp">
+      <Filter>player\base\video</Filter>
+    </ClCompile>
+    <ClCompile Include="unique_channel_compress_video_player.cpp">
+      <Filter>player\base\video</Filter>
+    </ClCompile>
+    <ClCompile Include="unique_channel_uncompress_video_player.cpp">
+      <Filter>player\base\video</Filter>
+    </ClCompile>
+    <ClCompile Include="multiple_channel_base_video_player.cpp">
+      <Filter>player\base\video</Filter>
+    </ClCompile>
+    <ClCompile Include="multiple_channel_uncompress_video_player.cpp">
+      <Filter>player\base\video</Filter>
+    </ClCompile>
+    <ClCompile Include="multiple_channel_compress_video_player.cpp">
+      <Filter>player\base\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

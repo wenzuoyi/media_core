@@ -5,12 +5,12 @@
 namespace core {
 	class RenderFilePlayer;
 	using RenderFilePlayerPtr = std::shared_ptr<RenderFilePlayer>;
-  class MEDIA_CORE_API_HEADER RenderFilePlayerEvent : public  FilePlayerEvent {
+  class MEDIA_CORE_API_HEADER RenderFilePlayerEvent : virtual public  FilePlayerEvent {
   public:
 	  RenderFilePlayerEvent();
 	  virtual  ~RenderFilePlayerEvent();
   };
-	class MEDIA_CORE_API_HEADER RenderFilePlayer : public  FilePlayer {
+	class MEDIA_CORE_API_HEADER RenderFilePlayer : virtual public  FilePlayer {
 	public:
 		RenderFilePlayer();
 		virtual ~RenderFilePlayer();

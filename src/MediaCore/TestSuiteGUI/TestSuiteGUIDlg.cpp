@@ -190,7 +190,7 @@ HCURSOR TestSuiteGUIDialog::OnQueryDragIcon() {
 int TestSuiteGUIDialog::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   if (CDialogEx::OnCreate(lpCreateStruct) == -1)
     return -1;
-  render_file_player_ = core::RenderFilePlayer::CreateInstance();
+  render_file_player_ = core::VideoRenderFilePlayer::CreateInstance();
   if (render_file_player_ == nullptr) {
 	  return -1;
   }
@@ -207,13 +207,13 @@ void TestSuiteGUIDialog::OnDestroy() {
 }
 
 void TestSuiteGUIDialog::OnClose() {
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kPause) {
+  if (render_file_player_->Status() == core::VideoRenderFilePlayer::PlayerStatus::kPause) {
 	  render_file_player_->Resume();
   }
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kRun) {
+  if (render_file_player_->Status() == core::VideoRenderFilePlayer::PlayerStatus::kRun) {
 	  render_file_player_->Stop();
   }
-  if (render_file_player_->Status() == core::RenderFilePlayer::PlayerStatus::kStop) {
+  if (render_file_player_->Status() == core::VideoRenderFilePlayer::PlayerStatus::kStop) {
 	  render_file_player_->Close();
   }
   CDialogEx::OnClose();

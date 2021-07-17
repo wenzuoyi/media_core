@@ -1,14 +1,16 @@
-#ifndef RENDER_FILE_PLAYER_IMPL_H_
-#define RENDER_FILE_PLAYER_IMPL_H_
-#include "include/render_file_player.h"
-#include "abstract_player_object.h"
-#include "render_file_reader.h"
 
+#ifndef VIDEO_RENDER_FILE_PLAYER_IMPL_H_
+#define VIDEO_RENDER_FILE_PLAYER_IMPL_H_
+#include "include/video_render_file_player.h"
+#include "unique_channel_uncompress_video_player.h"
+#include "render_file_reader.h"
 namespace core {
-  class RenderFilePlayerImpl : public AbstractPlayerObject, public RenderFilePlayer , public input::RenderFileReaderEvent {
+  class VideoRenderFilePlayerImpl : public VideoRenderFilePlayer ,
+                                                         public input::RenderFileReaderEvent,
+                                                         public UniqueChannelBaseVideoPlayerEvent {
   public:
-    RenderFilePlayerImpl();
-    virtual ~RenderFilePlayerImpl();
+    VideoRenderFilePlayerImpl();
+    virtual ~VideoRenderFilePlayerImpl();
   protected:
     bool Init(BasicPlayerParamPtr param) override;
     void Fini() override;
@@ -41,7 +43,7 @@ namespace core {
     void RPlay(bool enable) override;
     void PreviousFrame() override;
     void EnableLoopPlayback(bool enable) override;
-    void SetEvent(RenderFilePlayerEvent* event) override;
+    void SetEvent(VideoRenderFilePlayerEvent* event) override;
     void SetFormat(RenderFormat format) override;
     void SetResolution(const std::string& resolution) override;
     int Width() const override;
@@ -55,14 +57,17 @@ namespace core {
     void OnAudioBaseInfoChanged(input::InputMediaType type, input::AudioBaseInfoPtr previous_format,  input::AudioBaseInfoPtr current_format) override;
     void OnEOF(input::InputMediaType type) override;
     void OnBOF(input::InputMediaType type) override;
-	  void OnVideoCustomPainting(HDC hdc) override;
+    void OnVideoException(const std::string& message, int code, BaseVideoPlayerFilterPtr filter) override;
+    void OnVideoPainting(HDC hdc, BaseVideoPlayerFilterPtr filter) override;
+    void OnVideoFrame(VideoFramePtr video_frame, BaseVideoPlayerFilterPtr filter) override;
   private:
 	  static VideoFramePtr CreateYUVObject(VideoPackagePtr package);
     input::RenderFileReaderPtr render_file_reader_{nullptr};
-    RenderFilePlayerEvent* event_{nullptr};
+    VideoRenderFilePlayerEvent* event_{nullptr};
     VideoBaseInfoPtr video_base_info_{nullptr};    
     BasicPlayerParamPtr basic_player_param_{nullptr};
+    UniqueChannelUnCompressVideoPlayerPtr unique_channel_uncompress_video_player_;
 	  PlayerStatus player_status_{ PlayerStatus::kClose };
   };
 }
-#endif // RENDER_FILE_PLAYER_IMPL_H_
+#endif // VIDEO_RENDER_FILE_PLAYER_IMPL_H_

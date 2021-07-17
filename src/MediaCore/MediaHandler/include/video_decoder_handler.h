@@ -21,7 +21,7 @@ namespace handler {
     virtual void Stop() = 0;
     virtual void InputVideoPackage(VideoPackagePtr video_package) = 0;
     virtual void SetEvent(VideoDecoderHandlerEvent* event) = 0;
-    virtual VideoDecoderHandlerPtr CreateInstance();
+    static VideoDecoderHandlerPtr CreateInstance();
   };
 }
 #endif // VIDEO_DECODER_HANDLER_H_

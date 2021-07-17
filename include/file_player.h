@@ -2,7 +2,7 @@
 #define FILE_PLAYER_H_
 #include "base_player.h"
 namespace core {
-  class MEDIA_CORE_API_HEADER FilePlayerEvent : public BasePlayerEvent {
+  class MEDIA_CORE_API_HEADER FilePlayerEvent : virtual public BasePlayerEvent {
   public:
 	  FilePlayerEvent();
 	  virtual ~FilePlayerEvent();
@@ -10,7 +10,7 @@ namespace core {
 	  virtual void OnBOF() = 0;
   };
 
-  class MEDIA_CORE_API_HEADER FilePlayer : public BasePlayer {
+  class MEDIA_CORE_API_HEADER FilePlayer : virtual public BasePlayer {
   public:
     FilePlayer();
     virtual ~FilePlayer();

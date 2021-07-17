@@ -3,13 +3,13 @@
 #include <map>
 #include <memory>
 #include "afxwin.h"
-#include "render_file_player.h"
+#include "video_render_file_player.h"
 #include "base_auto_layout_dialog.h"
 #include "osd_config_dialog.h"
 #include "mouse_locator.h"
 
 
-class TestSuiteGUIDialog : public BaseAutoLayoutDialog , public core::RenderFilePlayerEvent {
+class TestSuiteGUIDialog : public BaseAutoLayoutDialog , public core::VideoRenderFilePlayerEvent {
 public:
   TestSuiteGUIDialog(CWnd* pParent = nullptr); // 标准构造函数
   #ifdef AFX_DESIGN_TIME
